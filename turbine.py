@@ -1,8 +1,6 @@
 import gas_dynamics as gd
 import math
 
-# I did this HA ... Regards, Jose
-
 def turbine_efficiency(
     Tt5: float, Tt4: float, Pt5: float, Pt4: float, gas: gd.fluid = gd.fluids.air
 ) -> float:
