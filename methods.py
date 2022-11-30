@@ -1,6 +1,9 @@
 # Initial
 # Jose R.
 
+class Property():
+    pass
+
 class LinkPorts:
     def __init__(self) -> None:
         pass

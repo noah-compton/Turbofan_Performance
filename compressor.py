@@ -2,54 +2,55 @@
 
 # Import Packages:
 import gas_dynamics as gd
+from methods import Property
 
 class Compressor:
     def __init__(self, **kwargs):
-        for property, value, unit in kwargs:
-            if property == "Pt_in":
-                Pt_in.value = value
-                Pt_in.unit = unit
+        for property in kwargs.keys():
+            values = kwargs[property]
+            
+            append = Property()
+            
+            if len(values) >= 2:
+                append.value = values[0]
+                append.unit = values[1]
+                
+            elif len(values) == 1:
+                append.value = values[0]
+                append.unit = ''
+            
+            else:
+                raise ValueError('Not enough inputs')
+                
 
+            if property == "Pt_in":
+                self.Pt_in = append
+                
+                if len(values) < 2:
+                    self.Pt_in.unit = "kPa"
+                    raise Warning("Pt_in has not enough inputs, assuming kPa for units")   
+                
             elif property == "Tt_in":
-                Tt_in.value = value
-                Tt_in.unit = unit
+                self.Tt_in = append
+                
+                if len(values) < 2:
+                    self.Tt_in.unit = "K"
+                    raise Warning("Tt_in has not enough inputs, assuming K for units")   
+                
 
             elif property == "W_in":
-                W_in.value = value
-                W_in.unit = unit
+                self.W_in = append
+                
+                if len(values) < 2:
+                    self.W_in.unit = "lbm/s"
+                    raise Warning("W_in has not enough inputs, assuming lbm/s for units")   
+                
+            elif property == "name":
+                self.name = values
 
-            
-        self._Pt_in.value = Pt_in.value
-        self._Tt_in.value = Tt_in.value
-        self._W_in.value  = W_in.value
-
-        self._Pt_in.unit = Pt_in.unit
-        self._Tt_in.unit = Tt_in.unit
-        self._W_in.unit  = W_in.unit
-
-
-    def __str__(self) -> str:
-        print('Compressor class')
-        
-    @property
-    def Pt_in(self):
-        return self._Pt_in
-
-    def Tt_in(self):
-        return self._Tt_in
-
-    def W_in(self):
-        return self._W_in
-
-    @Pt_in.setter
-    def Pt_in(self, Pt_in):
-        if Pt_in < 0:
-            raise ValueError(f"{self.name} error; Pt_in < 0")
-
-    @Tt_in.setter
-    def Pt_in(self, Pt_in):
-        if self.units == "SI" and self.Tt_in < -273.15:
-            raise ValueError(f"{self.name} error; Tt_in < 0 K")
-        elif self.units == "FPS" and self.Tt_in < -273.15:
-            raise ValueError(f"{self.name} error; Tt_in < 0 K")
+    def __str__(self): 
+        str = f"{self.name} Characteristics:\n" \
+              f"Efficiency:\n" \
+              f"Pressure Ratio:\n"
+        return str
 
