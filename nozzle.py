@@ -5,3 +5,6 @@ import math
 
 class core_nozzle:
     def velocity_out()
+
+class fan_nozzle:
+    def velocity_out()
