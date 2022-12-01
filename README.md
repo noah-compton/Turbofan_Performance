@@ -1,2 +1,7 @@
-# EML6934-GroupProject
-Group project for EML6934, jet engine performance package
+# Jet Engine Package
+
+## Authors
+Noah Compton | Isabel Husted | Jose Roque
+
+The University of Florida, Gainesville | Herbert Wertheim College of Engineering
+
