@@ -4,64 +4,64 @@ import math
 
 class turbine:
     def turbine_efficiency(
-        Tt5: float, Tt4: float, Pt5: float, Pt4: float, gas: gd.fluid = gd.fluids.air
+        Tt_out: float,
+        Tt_in: float,
+        Pt_out: float,
+        Pt_in: float,
+        gas: gd.fluid = gd.fluids.air,
     ) -> float:
         # Calculates the isentropic turbine efficiency from conditions before and after turbine
 
-        turbine_effficiency = (1 - (Tt5 / Tt4)) / (
-            1 - (Pt5 / Pt4) ** ((gas.gamma - 1) / gas.gamma)
+        turbine_effficiency = (1 - (Tt_out / Tt_in)) / (
+            1 - (Pt_out / Pt_in) ** ((gas.gamma - 1) / gas.gamma)
         )
 
         return turbine_efficiency
 
-    def turbine_Tt5_from_efficiency(
+    def turbine_Tt_out_from_efficiency(
         efficiency: float,
-        Tt4: float,
-        Pt5: float,
-        Pt4: float,
+        Tt_in: float,
+        Pt_out: float,
+        Pt_in: float,
         gas: gd.fluid = gd.fluids.air,
     ) -> float:
         # Calculates the temperature after turbine using isentropic efficiency
 
-        Tt5 = (-Tt4) * (
-            efficiency * (1 - (Pt5 / Pt4) ** ((gas.gamma - 1) / gas.gamma)) - 1
+        Tt_out = (-Tt_in) * (
+            efficiency * (1 - (Pt_out / Pt_in) ** ((gas.gamma - 1) / gas.gamma)) - 1
         )
 
-        return Tt5
+        return Tt_out
 
-    def turbine_Pt5_from_efficiency(
+    def turbine_Pt_out_from_efficiency(
         efficiency: float,
-        Tt5: float,
-        Tt4: float,
-        Pt4: float,
+        Tt_out: float,
+        Tt_in: float,
+        Pt_in: float,
         gas: gd.fluid = gd.fluids.air,
     ) -> float:
         # Calculates the pressure after turbine using isentropic efficiency
 
-        Pt5 = Pt4 * (1 - ((1 - Tt5 / Tt4) / efficiency)) ** (
+        Pt_out = Pt_in * (1 - ((1 - Tt_out / Tt_in) / efficiency)) ** (
             gas.gamma / (gas.gamma - 1)
         )
 
-        return Pt5
+        return Pt_out
 
-    def turbine_Tt5(
-        Tt4: float, Pt5: float, Pt4: float, gas: gd.fluid = gd.fluids.air
+    def turbine_Tt_out(
+        Tt_in: float, Pt_out: float, Pt_in: float, gas: gd.fluid = gd.fluids.air
     ) -> float:
         # Calculates the ideal total temperature after turbine
 
-        Tt5 = Tt4 * (Pt5 / Pt4) ** ((gas.gamma - 1) / gas.gamma)
+        Tt_out = Tt_in * (Pt_out / Pt_in) ** ((gas.gamma - 1) / gas.gamma)
 
-        return Tt5
+        return Tt_out
 
-    def turbine_Pt5(
-        Tt5: float, Tt4: float, Pt4: float, gas: gd.fluid = gd.fluids.air
+    def turbine_Pt_out(
+        Tt_out: float, Tt_in: float, Pt_in: float, gas: gd.fluid = gd.fluids.air
     ) -> float:
         # Calculates the ideal total pressure after turbine
 
-        Pt5 = Pt4 * (Tt5 / Tt4) ** (gas.gamma / (gas.gamma - 1))
+        Pt_out = Pt_in * (Tt_out / Tt_in) ** (gas.gamma / (gas.gamma - 1))
 
-        return Pt5
-
-
-pressure = turbine.turbine_Tt5_from_efficiency(0.50, 3000, 2000, 1000)
-print(pressure)
+        return Pt_out

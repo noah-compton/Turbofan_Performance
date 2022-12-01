@@ -3,5 +3,5 @@
 import gas_dynamics as gd
 import math
 
-class nozzle:
-    
+class core_nozzle:
+    def velocity_out()
