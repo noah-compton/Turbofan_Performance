@@ -2,11 +2,10 @@ import gas_dynamics as gd
 import math
 
 
-class turbine:
-    def turbine_efficiency(
-        Tt5: float, Tt4: float, Pt5: float, Pt4: float, gas: gd.fluid = gd.fluids.air
-    ) -> float:
-        # Calculates the isentropic turbine efficiency from conditions before and after turbine
+def turbine_efficiency(
+    Tt5: float, Tt4: float, Pt5: float, Pt4: float, gas: gd.fluid = gd.fluids.air
+) -> float:
+    # Calculates the isentropic turbine efficiency from conditions before and after turbine
 
         turbine_effficiency = (1 - (Tt5 / Tt4)) / (
             1 - (Pt5 / Pt4) ** ((gas.gamma - 1) / gas.gamma)
