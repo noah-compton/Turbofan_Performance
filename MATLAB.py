@@ -4,6 +4,7 @@
 
 import math
 from compressor import Compressor
+from burner import Burner
 import pdb
 
 # Air constants
@@ -77,10 +78,10 @@ T_c = (pi_c)**((y-1)/(y*ec)) # Tt3/Tt2 temperature ratio [-]
 Pt3 = pi_c*Pt2 # [Pa]
 Tt3 = T_c*Tt2 # [K]
 
-print(f"Cmp020.Tr = {Cmp020.TR['value']}; MATLAB: {T_c}\n")
-print(f"Cmp020.Pt_out = {Cmp020.Pt_out['value']}; MATLAB: {Pt3}\n")
-print(f"Cmp020.Tt_out = {Cmp020.Tt_out['value']}; MATLAB: {Tt3}\n")
+Brn30 = Burner(name='Brn030', Pt_in=Cmp020.Pt_out, Tt_in=Cmp020.Tt_out)
+Brn030.calc()
 
+pdb.set_trace()
 
 # (d) Burner
 Pt4 = pi_b*Pt3 # [kPa]

@@ -1,2 +1,126 @@
-# Initial
-# Jose R.
+# Date    | Description of Changes:                          | Author
+# ----------------------------------------------------------------------------
+
+
+class Burner:
+    def __init__(self, **kwargs):
+        
+        init = {'value': 0., 'unit': '-'}
+        
+        self.name   = ''
+        
+        # Inlet
+        self.Pt_in  = init.copy()
+        self.Tt_in  = init.copy()
+        self.W_in   = init.copy()
+        self.Wf     = init.copy()
+
+        # Outlet
+        self.Pt_out = init.copy()
+        self.Tt_out = init.copy()
+        self.W_out  = init.copy()
+         
+        # Characteristics
+        self.PR     = init.copy()
+        self.TR     = init.copy()
+        self.e      = init.copy()
+        
+        for property in kwargs:
+            
+            values = kwargs[property]
+            
+            if len(values) >= 2:
+                value = values[0]
+                unit = values[1]
+                
+            elif len(values) == 1:
+                value = values[0]
+                unit = ''
+            
+            else:
+                raise ValueError('Not enough inputs')
+                
+
+            if property == "Pt_in":
+                self.Pt_in['value'] = value 
+                
+                if len(values) < 2:
+                    self.Pt_in['unit'] = 'Pa'
+                    raise Warning("Pt_in has not enough inputs, assuming kPa for units")   
+                
+            elif property == "Tt_in":
+                self.Tt_in['value'] = value 
+                
+                if len(values) < 2:
+                    self.Tt_in['unit'] = "K"
+                    raise Warning("Tt_in has not enough inputs, assuming K for units")   
+                
+            elif property == "W_in":
+                self.W_in['value'] = value 
+                
+                if len(values) < 2:
+                    self.W_in['unit'] = "lbm/s"
+                    raise Warning("W_in has not enough inputs, assuming lbm/s for units")   
+            
+            elif property == "Wf":
+                self.Wf['value'] = value 
+                
+                if len(values) < 2:
+                    self.Wf['unit'] = "lbm/hr"
+                    raise Warning("Wf has not enough inputs, assuming lbm/hr for units")   
+
+            elif property == "PR":
+                self.PR['value'] = value 
+                
+                if len(values) < 2:
+                    self.PR['unit'] = "-"
+                    raise Warning("PR has not enough inputs, assuming value is dimensionless")        
+
+            elif property == "TR":
+                self.TR['value'] = value 
+                
+                if len(values) < 2:
+                    self.TR['unit'] = "-"
+                    raise Warning("TR has not enough inputs, assuming value is dimensionless")     
+                    
+            elif property == "e":
+                self.e['value'] = value 
+                
+                if len(values) < 2:
+                    self.e['unit'] = "-"
+                    raise Warning("e has not enough inputs, assuming value is dimensionless")        
+                             
+            elif property == "name":
+                self.name = values
+    
+    def calc(self):
+        y = 1.4
+        
+        if self.PR['value'] > 0. and self.TR['value'] > 0.:
+            self.e['value'] = ((y-1)/y) * (math.log(self.PR['value'])/ math.log(self.TR['value']))
+            self.e['unit'] = '-'
+        
+        elif self.PR['value'] > 0. and self.e['value'] > 0.:
+            self.TR['value'] = self.PR['value']**((y-1)/(y*self.e['value']))
+            self.TR['unit'] = '-'       
+       
+        elif self.TR['value'] > 0. and self.e['value'] > 0.:        
+        # elif hasattr(self, 'TR['value']') and hasattr(self, "e['value']"):
+            self.PR['value'] = self.TR['value']**((y*self.e['value'])/(y-1))
+            self.PR['unit'] = '-'
+
+        else:
+            raise ValueError("Not enough compressor characteristics were defined, check input")
+        
+    
+        self.Pt_out['value'] = self.PR['value'] * self.Pt_in['value']
+        self.Tt_out['value'] = self.TR['value'] * self.Tt_in['value']
+        self.Pt_out['unit'] = self.Pt_in['unit']
+        self.Tt_out['unit'] = self.Tt_in['unit']     
+
+        
+    def __str__(self): 
+        str = f"{self.name} Characteristics:\n" \
+              f"Efficiency:\n" \
+              f"Pressure Ratio:\n"
+        return str
