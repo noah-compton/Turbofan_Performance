@@ -1,81 +1,120 @@
-# Initial
+# Date    | Description of Changes:                          | Author
+# ----------------------------------------------------------------------------
+# Dec 1   | First compressor class working                   | Jose R.
+#         | Need to incorporate gas_dynamics package         |
+# ----------------------------------------------------------------------------
+# Nov 30  | Initial .py file on GitHub                       | Jose R. 
 
-# Import Packages:
-import gas_dynamics as gd
-from methods import Property
+import math
 
 class Compressor:
     def __init__(self, **kwargs):
+        
+        init = {'value': 0., 'unit': '-'}
+        
+        self.name = ''
+        self.Pt_in = init.copy()
+        self.Tt_in = init.copy()
+        # self.W_in['value'] = unit.copy()
+        self.PR = init.copy()
+        self.TR = init.copy()
+        self.e = init.copy()
+        
+        self.Pt_out = init.copy()
+        self.Tt_out = init.copy()
+        # self.W_out = init.copy()
+        
+        self.PR = init.copy()
+        self.TR = init.copy()
+        self.e = init.copy()
+        
         for property in kwargs:
+            
             values = kwargs[property]
             
-            append = Property()
-            
             if len(values) >= 2:
-                append.value = values[0]
-                append.unit = values[1]
+                value = values[0]
+                unit = values[1]
                 
             elif len(values) == 1:
-                append.value = values[0]
-                append.unit = ''
+                value = values[0]
+                unit = ''
             
             else:
                 raise ValueError('Not enough inputs')
                 
 
             if property == "Pt_in":
-                self.Pt_in = append
+                self.Pt_in['value'] = value 
                 
                 if len(values) < 2:
-                    self.Pt_in.unit = "kPa"
+                    self.Pt_in['unit'] = 'Pa'
                     raise Warning("Pt_in has not enough inputs, assuming kPa for units")   
                 
             elif property == "Tt_in":
-                self.Tt_in = append
+                self.Tt_in['value'] = value 
                 
                 if len(values) < 2:
-                    self.Tt_in.unit = "K"
+                    self.Tt_in['unit'] = "K"
                     raise Warning("Tt_in has not enough inputs, assuming K for units")   
                 
-            elif property == "W_in":
-                self.W_in = append
+            # elif property == "W_in":
+            #     self.W_in = append
                 
-                if len(values) < 2:
-                    self.W_in.unit = "lbm/s"
-                    raise Warning("W_in has not enough inputs, assuming lbm/s for units")   
+            #     if len(values) < 2:
+            #         self.W_in['unit'] = "lbm/s"
+            #         raise Warning("W_in has not enough inputs, assuming lbm/s for units")   
 
-            elif property == "pi_c":
-                self.pi_c = append
+            elif property == "PR":
+                self.PR['value'] = value 
                 
                 if len(values) < 2:
-                    self.pi_c.unit = "-"
-                    raise Warning("pi_c has not enough inputs, assuming value is dimensionless")        
+                    self.PR['unit'] = "-"
+                    raise Warning("PR has not enough inputs, assuming value is dimensionless")        
 
-            elif property == "t_c":
-                self.t_c = append
+            elif property == "TR":
+                self.TR['value'] = value 
                 
                 if len(values) < 2:
-                    self.t_c.unit = "-"
-                    raise Warning("t_c has not enough inputs, assuming value is dimensionless")        
+                    self.TR['unit'] = "-"
+                    raise Warning("TR has not enough inputs, assuming value is dimensionless")     
                     
+            elif property == "e":
+                self.e['value'] = value 
+                
+                if len(values) < 2:
+                    self.e['unit'] = "-"
+                    raise Warning("e has not enough inputs, assuming value is dimensionless")        
+                             
             elif property == "name":
                 self.name = values
     
-    def compressor_calculations(self):
-        if hasattr(self, 'pi_c') and hasattr(self, "t_c"):
-            # Calculate Efficiency
-            pass
-        elif hasattr(self, 'pi_c') and hasattr(self, "e_c"):
-            # Calculate Pressure Ratio
-            pass
-        elif hasattr(self, 't_c') and hasattr(self, "e_c"):
-            # Calculate Temperature Ratio
-            pass
+    def calc(self):
+        y = 1.4
+        
+        if self.PR['value'] > 0. and self.TR['value'] > 0.:
+            self.e['value'] = ((y-1)/y) * (math.log(self.PR['value'])/ math.log(self.TR['value']))
+            self.e['unit'] = '-'
+        
+        elif self.PR['value'] > 0. and self.e['value'] > 0.:
+            self.TR['value'] = self.PR['value']**((y-1)/(y*self.e['value']))
+            self.TR['unit'] = '-'       
+       
+        elif self.TR['value'] > 0. and self.e['value'] > 0.:        
+        # elif hasattr(self, 'TR['value']') and hasattr(self, "e['value']"):
+            self.PR['value'] = self.TR['value']**((y*self.e['value'])/(y-1))
+            self.PR['unit'] = '-'
+
         else:
             raise ValueError("Not enough compressor characteristics were defined, check input")
+        
+    
+        self.Pt_out['value'] = self.PR['value'] * self.Pt_in['value']
+        self.Tt_out['value'] = self.TR['value'] * self.Tt_in['value']
+        self.Pt_out['unit'] = self.Pt_in['unit']
+        self.Tt_out['unit'] = self.Tt_in['unit']     
 
-    compressor_calculations()
-
+        
     def __str__(self): 
         str = f"{self.name} Characteristics:\n" \
               f"Efficiency:\n" \

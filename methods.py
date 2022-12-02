@@ -2,7 +2,9 @@
 # Jose R.
 
 class Property():
-    pass
+    def __init__(self,value,unit):
+        self.value = value
+        self.unit = unit
 
 class LinkPorts:
     def __init__(self) -> None:
