@@ -2,9 +2,14 @@
 # all pi_a are TOTAL ratios
 # unless pi_(greek letter), check definition.
 
+# Define global variables
+global R, y, cp, M0, P0, T0
+
+# Import Packages
 import math
 from compressor import Compressor
 from burner import Burner
+from methods import LinkPort
 import pdb
 
 # Air constants
@@ -13,7 +18,6 @@ y = 1.4 # Constant through the engine
 cp = 1004 # [J/ kg K]
 
 # Given:
-
 # Stream (0)
 M0 = 2 # Freestream Mach number [-]
 P0 = 12000 # [Pa]
@@ -78,10 +82,8 @@ T_c = (pi_c)**((y-1)/(y*ec)) # Tt3/Tt2 temperature ratio [-]
 Pt3 = pi_c*Pt2 # [Pa]
 Tt3 = T_c*Tt2 # [K]
 
-Brn30 = Burner(name='Brn030', Pt_in=Cmp020.Pt_out, Tt_in=Cmp020.Tt_out)
+Brn030 = Burner(name='Brn030', Pt_in=LinkPort(Cmp020.Pt_out), Tt_in=LinkPort(Cmp020.Tt_out), Tt_out=(Tt4,'K'), e=(nb,'-'), PR=(pi_b, '-'))
 Brn030.calc()
-
-pdb.set_trace()
 
 # (d) Burner
 Pt4 = pi_b*Pt3 # [kPa]

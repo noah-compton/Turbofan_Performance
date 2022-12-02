@@ -1,6 +1,7 @@
 # Date    | Description of Changes:                          | Author
 # ----------------------------------------------------------------------------
 
+import pdb
 
 class Burner:
     def __init__(self, **kwargs):
@@ -23,7 +24,9 @@ class Burner:
         # Characteristics
         self.PR     = init.copy()
         self.TR     = init.copy()
+        self.TRmax  = init.copy()
         self.e      = init.copy()
+        self.f      = init.copy()
         
         for property in kwargs:
             
@@ -54,6 +57,7 @@ class Burner:
                 if len(values) < 2:
                     self.Tt_in['unit'] = "K"
                     raise Warning("Tt_in has not enough inputs, assuming K for units")   
+            
                 
             elif property == "W_in":
                 self.W_in['value'] = value 
@@ -68,7 +72,14 @@ class Burner:
                 if len(values) < 2:
                     self.Wf['unit'] = "lbm/hr"
                     raise Warning("Wf has not enough inputs, assuming lbm/hr for units")   
-
+            
+            elif property == "Tt_out":
+                self.Tt_out['value'] = value 
+                
+                if len(values) < 2:
+                    self.Tt_out['unit'] = "K"
+                    raise Warning("Tt_in has not enough inputs, assuming K for units")   
+                        
             elif property == "PR":
                 self.PR['value'] = value 
                 
@@ -94,29 +105,27 @@ class Burner:
                 self.name = values
     
     def calc(self):
-        y = 1.4
+        y = 1.4        # This can go away by adding the air as inlet fluid
+        cp = 1004      # This can go away by adding the air as inlet fluid
+        Q = 42800000   # This can go away by adding the air as inlet fluid
+        T0 = 223       # This should be a global variable
         
-        if self.PR['value'] > 0. and self.TR['value'] > 0.:
-            self.e['value'] = ((y-1)/y) * (math.log(self.PR['value'])/ math.log(self.TR['value']))
-            self.e['unit'] = '-'
-        
-        elif self.PR['value'] > 0. and self.e['value'] > 0.:
-            self.TR['value'] = self.PR['value']**((y-1)/(y*self.e['value']))
-            self.TR['unit'] = '-'       
-       
-        elif self.TR['value'] > 0. and self.e['value'] > 0.:        
-        # elif hasattr(self, 'TR['value']') and hasattr(self, "e['value']"):
-            self.PR['value'] = self.TR['value']**((y*self.e['value'])/(y-1))
-            self.PR['unit'] = '-'
-
+        if self.Tt_out['unit'] == self.Tt_in['unit']:
+            dTt = self.Tt_out['value'] - self.Tt_in['value']
         else:
-            raise ValueError("Not enough compressor characteristics were defined, check input")
+            raise ValueError(f"Units not consistent, check Tt_out and Tt_in for {self.name}")
         
-    
+        self.f['value'] = cp * ( dTt ) / (Q*self.e['value'] - cp*self.Tt_out['value'])
+        
+        self.TRmax['value'] = self.Tt_out['value'] / T0
+        self.TRmax['unit'] = '-'
+        
         self.Pt_out['value'] = self.PR['value'] * self.Pt_in['value']
-        self.Tt_out['value'] = self.TR['value'] * self.Tt_in['value']
         self.Pt_out['unit'] = self.Pt_in['unit']
-        self.Tt_out['unit'] = self.Tt_in['unit']     
+
+        if self.Tt_out == 0: 
+            self.Tt_out['value'] = self.TR['value'] * self.Tt_in['value']
+            self.Tt_out['unit'] = self.Tt_in['unit']     
 
         
     def __str__(self): 

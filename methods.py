@@ -6,9 +6,9 @@ class Property():
         self.value = value
         self.unit = unit
 
-class LinkPorts:
-    def __init__(self) -> None:
-        pass
+# class LinkPorts:
+#     def __init__(self) -> None:
+#         pass
 
 def Drag():
     pass
@@ -17,3 +17,9 @@ def Drag():
 def Thrust():
     pass
     # Calculate Net Thrust
+    
+def LinkPort(outlet):
+    
+    inlet = (outlet['value'] , outlet['unit'])
+    
+    return inlet
