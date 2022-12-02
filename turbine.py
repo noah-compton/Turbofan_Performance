@@ -6,7 +6,7 @@
 # ----------------------------------------------------------------------------
 # Dec 2   | Turbine changed to a Class with appropriate      | Noah C.
 #         | alterations for workability                      |
-#         | To do:                                           |   
+#         | To do:                                           |
 #         |   - Add _str_ method                             |
 #         |   - Add a5, byp ratio, m0, mfan, and mf methods  |
 # ----------------------------------------------------------------------------
@@ -16,8 +16,13 @@
 #         | functions.                                       |
 # ----------------------------------------------------------------------------
 
+# .gamma .R .cp
+
 import gas_dynamics as gd
 import math
+
+global y
+y = gd.fluids.air.gamma
 
 
 class Turbine:
@@ -38,18 +43,17 @@ class Turbine:
         # Outlet
         self.Pt_out = initial.copy()
         self.Tt_out = initial.copy()
-        self.speed_o_sound_out = initial.copy()      # a_out
+        self.speed_o_sound_out = initial.copy()  # a_out
 
-        # Characteristics                            
-        self.pressure_ratio = initial.copy()         # PR
-        self.temperature_ratio = initial.copy()      # TR
+        # Characteristics
+        self.pressure_ratio = initial.copy()  # PR
+        self.temperature_ratio = initial.copy()  # TR
         self.polytropic_efficiency = initial.copy()  # e
         self.mechanical_efficiency = initial.copy()  # Nm
-        self.bypass_ratio = initial.copy()           # BPR
-        self.mach_at_exit = initial.copy()           # M_out
-        self.m0 = initial.copy()                     # 
-        self.mf = initial.copy()                     # Wf
-
+        self.bypass_ratio = initial.copy()  # BPR
+        self.mach_at_exit = initial.copy()  # M_out
+        self.m0 = initial.copy()  #
+        self.mf = initial.copy()  # Wf
 
         for value in kwargs:
             values = kwargs[property]
@@ -74,20 +78,20 @@ class Turbine:
                 self.Pt_in["value"] = value
 
                 if len(values) == 2:
-                    self.Pt_in["unit"] = unit
+                    self.Pt_in["units"] = unit
 
                 elif len(values) < 2:
-                    self.Pt_in["unit"] = "kPa"
+                    self.Pt_in["units"] = "kPa"
                     raise Warning("Not enough inputs: assuming kPa as units for Pt_in.")
 
             elif property == "Tt_in":
                 self.Tt_in["value"] = value
 
                 if len(values) == 2:
-                    self.Tt_in["unit"] = unit
+                    self.Tt_in["units"] = unit
 
                 if len(values) < 2:
-                    self.Tt_in["unit"] = "K"
+                    self.Tt_in["units"] = "K"
                     raise Warning("Not enough inputs: assuming K as units for Tt_in.")
 
             elif property == "Pressure Ratio":
@@ -97,7 +101,7 @@ class Turbine:
                     self.pressure_ratio["unit"] = unit
 
                 if len(values) < 2:
-                    self.pressure_ratio["unit"] = ""
+                    self.pressure_ratio["units"] = ""
                     raise Warning(
                         "Not enough inputs: assuming dimensionless parameter."
                     )
@@ -106,10 +110,10 @@ class Turbine:
                 self.temperature_ratio["value"] = value
 
                 if len(values) == 2:
-                    self.temperature_ratio["unit"] = unit
+                    self.temperature_ratio["units"] = unit
 
                 elif len(values) < 2:
-                    self.temperature_ratio["unit"] = ""
+                    self.temperature_ratio["units"] = ""
                     raise Warning(
                         "Not enough inputs: assuming dimensionless parameter."
                     )
@@ -118,30 +122,30 @@ class Turbine:
                 self.polytropic_efficiency["value"] = value
 
                 if len(values) == 2:
-                    self.polytropic_efficiency["unit"] = unit
+                    self.polytropic_efficiency["units"] = unit
 
                 elif len(values) < 2:
-                    self.polytropic_efficiency["unit"] = ""
+                    self.polytropic_efficiency["units"] = ""
                     raise Warning("Efficiency being used as a percentage.")
 
             elif property == "Mechanical Efficiency":
                 self.mechanical_efficiency["value"] = value
 
                 if len(values) == 2:
-                    self.mechanical_efficiency["unit"] = unit
+                    self.mechanical_efficiency["units"] = unit
 
                 elif len(values) < 2:
-                    self.mechanical_efficiency["unit"] = ""
+                    self.mechanical_efficiency["units"] = ""
                     raise Warning("Efficiency being used as a percentage.")
 
             elif property == "Bypass Ratio":
                 self.bypass_ratio["value"] = value
 
                 if len(values) == 2:
-                    self.bypass_ratio["unit"] = unit
+                    self.bypass_ratio["units"] = unit
 
                 elif len(values) < 2:
-                    self.bypass_ratio["unit"] = ""
+                    self.bypass_ratio["units"] = ""
                     raise Warning(
                         "Not enough inputs: assuming dimensionless parameter."
                     )
@@ -150,30 +154,30 @@ class Turbine:
                 self.mach_at_exit["value"] = value
 
                 if len(values) == 2:
-                    self.mach_at_exit["unit"] = unit
+                    self.mach_at_exit["units"] = unit
 
                 elif len(values) < 2:
-                    self.mach_at_exit["unit"] = ""
+                    self.mach_at_exit["units"] = ""
                     raise Warning("Using Mach as dimensionless parameter.")
 
             elif property == "m0":
                 self.m0["value"] = value
 
                 if len(values) == 2:
-                    self.m0["unit"] = unit
+                    self.m0["units"] = unit
 
                 elif len(values) < 2:
-                    self.m0["unit"] = "kg/s"
+                    self.m0["units"] = "kg/s"
                     raise Warning("Not enough inputs: assuming kg/s for units")
 
             elif property == "mf":
                 self.mf["value"] = value
 
                 if len(values) == 2:
-                    self.mf["unit"] = unit
+                    self.mf["units"] = unit
 
                 elif len(values) < 2:
-                    self.mf["unit"] = "kg/s"
+                    self.mf["units"] = "kg/s"
                     raise Warning("Not enough inputs: assuming kg/s for units")
 
             elif property == "name":
@@ -186,7 +190,7 @@ class Turbine:
             self.polytropic_efficiency["value"] = (
                 1 - self.temperature_ratio["value"]
             ) / (1 - (self.pressure_ratio["value"] ** ((y - 1) / y)))
-            self.polytropic_efficiency["unit"] = "-"
+            self.polytropic_efficiency["units"] = "-"
 
         else:
             raise ValueError(
@@ -272,10 +276,12 @@ class Turbine:
                 "Incorrect inputs. Pressure ratio and polytropic efficiency required only."
             )
 
-    def static_temperature(self):
-        y = 1.4
 
-        if self.Tt_in["value"] > 0 and 
+# def static_temperature(self):
+#     y = 1.4
+
+#     if self.Tt_in["value"] > 0:
+
 
 #     def turbine_Pt_out(
 #         Tt_out: float, Tt_in: float, Pt_in: float, gas: gd.fluid = gd.fluids.air
