@@ -9,6 +9,9 @@ class Mixer:
         init = {'value': 0., 'unit': '-'}
         
         self.name   = ''
+        self.inlet1 = ''
+        self.inlet2 = ''
+        self.outlet = ''
         
         # Inlet
         self.Pt_in  = init.copy()

@@ -10,6 +10,14 @@
 #     def __init__(self) -> None:
 #         pass
 
+import pdb
+import gas_dynamics as gd
+
+def Fluid(name: str, gamma: float, R: float, units: str):
+    gas = gd.fluids(name=name, gamma=gamma, R=R, units=units)
+
+    return gas    
+    
 def Drag():
     pass
     #Calculate Drag
@@ -26,7 +34,7 @@ def Thrust():
 def LinkPorts(object1, object2):
     object2.Pt_in = object1.Pt_out
     object2.Tt_in = object1.Tt_out
-    object2.W_in = object1.W_out
+    object2.W_in  = object1.W_out
     
     object2.inlet  = object1.name
     object1.outlet = object2.name
