@@ -43,17 +43,17 @@ class Turbine:
         # P5 = Pt5*(((Tt5/T5)**(y/(y-1)))**-1)     #
         self.T_out = initial.copy()                #
         # T5 = Tt5*((1+0.5*(y-1)*M5**2)**-1)       # Mixer needed
-        self.a_out = initial.copy()    # a_out
+        self.a_out = initial.copy()                # Speed of sound at exit
 
         # Characteristics                            
-        self.PR = initial.copy()                     # PR
-        self.TR = initial.copy()                     # TR
-        self.eff_poly = initial.copy()               # e
-        self.eff_mech = initial.copy()               # Nm
-        self.bypass_ratio = initial.copy()           # BPR
-        self.mach_at_exit = initial.copy()           # M_out
-        self.m0 = initial.copy()                     # 
-        self.mf = initial.copy()                     # Wf
+        self.PR = initial.copy()                     # Pressure Ratio
+        self.TR = initial.copy()                     # Temperature Ratio
+        self.eff_poly = initial.copy()               # Polytropic efficiency
+        self.eff_mech = initial.copy()               # Mechanicsal efficiency
+        self.BPR = initial.copy()                    # BPR -> bypass ratio
+        self.XMN_out = initial.copy()                # Mach out
+        self.W_core = initial.copy()                 # 
+        self.W_f = initial.copy()                    # W_f -> fuel flow
 
 
         for value in kwargs:
@@ -95,58 +95,58 @@ class Turbine:
                     self.Tt_in["units"] = "K"
                     raise Warning("Not enough inputs: assuming K as units for Tt_in.")
 
-            elif property == "Pressure Ratio":
-                self.pressure_ratio["value"] = value
+            elif property == "PR":
+                self.PR["value"] = value
 
                 if len(values) == 2:
-                    self.pressure_ratio["unit"] = unit
+                    self.PR["unit"] = unit
 
                 if len(values) < 2:
-                    self.pressure_ratio["units"] = ""
+                    self.PR["units"] = ""
                     raise Warning(
                         "Not enough inputs: assuming dimensionless parameter."
                     )
 
-            elif property == "Temperature Ratio":
-                self.temperature_ratio["value"] = value
+            elif property == "TR":
+                self.TR["value"] = value
 
                 if len(values) == 2:
-                    self.temperature_ratio["units"] = unit
+                    self.TR["units"] = unit
 
                 elif len(values) < 2:
-                    self.temperature_ratio["units"] = ""
+                    self.TR["units"] = ""
                     raise Warning(
                         "Not enough inputs: assuming dimensionless parameter."
                     )
 
-            elif property == "Polytropic Efficiency":
-                self.polytropic_efficiency["value"] = value
+            elif property == "eff_poly":
+                self.eff_poly["value"] = value
 
                 if len(values) == 2:
-                    self.polytropic_efficiency["units"] = unit
+                    self.eff_poly["units"] = unit
 
                 elif len(values) < 2:
-                    self.polytropic_efficiency["units"] = ""
+                    self.eff_poly["units"] = ""
                     raise Warning("Efficiency being used as a percentage.")
 
-            elif property == "Mechanical Efficiency":
-                self.mechanical_efficiency["value"] = value
+            elif property == "eff_mech":
+                self.eff_mech["value"] = value
 
                 if len(values) == 2:
-                    self.mechanical_efficiency["units"] = unit
+                    self.eff_mech["units"] = unit
 
                 elif len(values) < 2:
-                    self.mechanical_efficiency["units"] = ""
+                    self.eff_mech["units"] = ""
                     raise Warning("Efficiency being used as a percentage.")
 
-            elif property == "Bypass Ratio":
-                self.bypass_ratio["value"] = value
+            elif property == "BPR":
+                self.BPR["value"] = value
 
                 if len(values) == 2:
-                    self.bypass_ratio["units"] = unit
+                    self.BPR["units"] = unit
 
                 elif len(values) < 2:
-                    self.bypass_ratio["units"] = ""
+                    self.BPR["units"] = ""
                     raise Warning(
                         "Not enough inputs: assuming dimensionless parameter."
                     )
@@ -161,7 +161,7 @@ class Turbine:
                     self.mach_at_exit["units"] = ""
                     raise Warning("Using Mach as dimensionless parameter.")
 
-            elif property == "m0":
+            elif property == "W_core":
                 self.m0["value"] = value
 
                 if len(values) == 2:
@@ -171,7 +171,7 @@ class Turbine:
                     self.m0["units"] = "kg/s"
                     raise Warning("Not enough inputs: assuming kg/s for units")
 
-            elif property == "mf":
+            elif property == "W_f":
                 self.mf["value"] = value
 
                 if len(values) == 2:
@@ -183,6 +183,10 @@ class Turbine:
 
             elif property == "name":
                 self.name = values
+
+            else:
+                raise ValueError("Incorrect inputs!")
+
 
     def poly_efficiency(self):
         y = 1.4
