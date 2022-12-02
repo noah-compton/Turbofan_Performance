@@ -5,13 +5,25 @@
 # Define global variables
 global R, y, cp, M0, P0, T0
 
+air = gd.fluids.air
+
 # Import Packages
 import math
 from compressor import Compressor
 from burner import Burner
-from turbine import Turbine
-from methods import LinkPort
+# from turbine import Turbine
+from methods import LinkPorts
 import pdb
+
+# Components
+Cmp020 = Compressor(name='Cmp020')
+
+# Test Data
+pi_c = 20 # compressor pressure ratio
+ec = 0.9 # Polytropic efficiency
+Cmp020.PR       = {'value': pi_c , 'unit': '-' }
+Cmp020.eff_poly = {'value': ec   , 'unit': '-' }
+
 
 # Air constants
 R = 287 # [J / kg K]
@@ -29,8 +41,7 @@ m2 = 25 # [kg/s] (1+bypass_ratio)*m0 = 25 kg/s (total mass incoming)
 pi_d = 0.9 # total pressure ratio across the inlet (diffuser)
 
 # Compressor (2-3)
-pi_c = 20 # compressor pressure ratio
-ec = 0.9 # Polytropic efficiency
+
 
 # Fan 
 pi_f = 1.5 # fan pressure ratio
@@ -76,14 +87,24 @@ Tt15 = Tt13 # [K]
 Pt15 = Pt13 # [Pa]
 
 # (c) Compressor
-Cmp020 = Compressor(name="Cmp020", Pt_in=(Pt2, 'Pa'), Tt_in=(Tt2, 'K'), e=(ec, "-"), PR = (pi_c, "-"))
-Cmp020.calc()
+# Cmp020 = Compressor(name="Cmp020")
+# , Pt_in=(Pt2, 'Pa'), Tt_in=(Tt2, 'K'), e=(ec, "-"), PR = (pi_c, "-"))
 
 T_c = (pi_c)**((y-1)/(y*ec)) # Tt3/Tt2 temperature ratio [-]
 Pt3 = pi_c*Pt2 # [Pa]
 Tt3 = T_c*Tt2 # [K]
 
-Brn030 = Burner(name='Brn030', Pt_in=LinkPort(Cmp020.Pt_out), Tt_in=LinkPort(Cmp020.Tt_out), Tt_out=(Tt4,'K'), e=(nb,'-'), PR=(pi_b, '-'))
+Cmp020.TR       = {'value': T_c   , 'unit': '-' }
+Cmp020.Pt_in    = {'value': Pt3   , 'unit': 'Pa' }
+Cmp020.Tt_in    = {'value': Tt3   , 'unit': 'K' }
+
+Cmp020.calc()
+
+Brn030 = Burner(name='Brn030')
+LinkPorts(Cmp020, Brn030)
+
+pdb.set_trace()
+
 Brn030.calc()
 
 # (d) Burner
