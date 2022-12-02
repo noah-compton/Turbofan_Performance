@@ -9,6 +9,7 @@ global R, y, cp, M0, P0, T0
 import math
 from compressor import Compressor
 from burner import Burner
+from turbine import Turbine
 from methods import LinkPort
 import pdb
 
@@ -91,6 +92,11 @@ f = cp*((Tt4-Tt3)/(Qr*nb-cp*Tt4)) # mf/m0 [-]
 T_x = Tt4/T0 # [-] Tau_Lambda
 
 # (e) Turbine
+
+Trb040 = Turbine(name='Trb040')
+Trb040.LinkPort(Brn030)
+Trb040.calc()
+
 pi_t = (pi_fd*pi_f)/(pi_b*pi_c) # Pt5/Pt4 [-]
 T_t = (pi_t)**((y-1)*et/y) # Tt5/Tt4 [-]
 Tt5 = T_t*Tt4 # [K]

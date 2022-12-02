@@ -15,6 +15,8 @@ class Compressor:
         init = {'value': 0., 'unit': '-'}
         
         self.name   = ''
+        self.inlet = ''
+        self.outlet = ''
         
         # Inlet
         self.Pt_in  = init.copy()
@@ -143,7 +145,12 @@ class Compressor:
         self.Tt_out['unit'] = self.Tt_in['unit']     
         self.W_out['unit']  = self.W_in['unit']
 
-        
+    @classmethod
+    def LinkPort(self, cls):
+        cls.Pt_out = self.Pt_in
+        cls.Tt_out = self.Tt_in
+        cls.W_out  = self.W_in
+
     def __str__(self): 
         str = f"{self.name} Characteristics:\n" \
               f"Efficiency:\n" \

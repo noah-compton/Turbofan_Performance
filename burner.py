@@ -9,6 +9,8 @@ class Burner:
         init = {'value': 0., 'unit': '-'}
         
         self.name   = ''
+        self.inlet = ''
+        self.outlet = ''
         
         # Inlet
         self.Pt_in  = init.copy()
@@ -103,7 +105,7 @@ class Burner:
                              
             elif property == "name":
                 self.name = values
-    
+
     def calc(self):
         y = 1.4        # This can go away by adding the air as inlet fluid
         cp = 1004      # This can go away by adding the air as inlet fluid
@@ -112,6 +114,10 @@ class Burner:
         
         if self.Tt_out['unit'] == self.Tt_in['unit']:
             dTt = self.Tt_out['value'] - self.Tt_in['value']
+            
+            if self.Tt_out['value'] > 0 and self.Tt_in['value'] > 0:
+                    self.TR['value'] = self.Tt_out['value'] / self.Tt_in['value']
+       
         else:
             raise ValueError(f"Units not consistent, check Tt_out and Tt_in for {self.name}")
         
@@ -127,7 +133,7 @@ class Burner:
             self.Tt_out['value'] = self.TR['value'] * self.Tt_in['value']
             self.Tt_out['unit'] = self.Tt_in['unit']     
 
-        
+
     def __str__(self): 
         str = f"{self.name} Characteristics:\n" \
               f"Efficiency:\n" \

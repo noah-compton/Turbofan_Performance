@@ -1,5 +1,9 @@
 # Date    | Description of Changes:                          | Author
 # ----------------------------------------------------------------------------
+# Dec 2   | Added comments                                   | Jose R.
+#         | Downstream station needs:                        |
+#         |  - Static P and T exiting Turbine                |
+# ----------------------------------------------------------------------------
 # Dec 2   | Turbine changed to a Class with appropriate      | Noah C.
 #         | alterations for workability                      |
 #         | To do:                                           |   
@@ -23,11 +27,15 @@ class Turbine:
 
         self.name = ""
 
-        # Inlet
+        # Inlet                                     Dec 2; JR Comment
         self.Pt_in = initial.copy()
         self.Tt_in = initial.copy()
+        # self.T_out = initial.copy()                #
+        # T5 = Tt5*((1+0.5*(y-1)*M5**2)**-1)         # Mixer needed
+        # self.P_out = initial.copy()                # Parameters
+        # P5 = Pt5*(((Tt5/T5)**(y/(y-1)))**-1)       #
 
-        # Outlet                                     Dec 2; JR Comment
+        # Outlet
         self.Pt_out = initial.copy()
         self.Tt_out = initial.copy()
         self.speed_o_sound_out = initial.copy()      # a_out
@@ -41,6 +49,7 @@ class Turbine:
         self.mach_at_exit = initial.copy()           # M_out
         self.m0 = initial.copy()                     # 
         self.mf = initial.copy()                     # Wf
+
 
         for value in kwargs:
             values = kwargs[property]
