@@ -35,15 +35,15 @@ class Turbine:
         # Inlet                                     Dec 2; JR Comment
         self.Pt_in = initial.copy()
         self.Tt_in = initial.copy()
-        # self.T_out = initial.copy()                #
-        # T5 = Tt5*((1+0.5*(y-1)*M5**2)**-1)         # Mixer needed
-        # self.P_out = initial.copy()                # Parameters
-        # P5 = Pt5*(((Tt5/T5)**(y/(y-1)))**-1)       #
 
         # Outlet
         self.Pt_out = initial.copy()
         self.Tt_out = initial.copy()
-        self.speed_o_sound_out = initial.copy()  # a_out
+        self.P_out = initial.copy()                # Parameters
+        # P5 = Pt5*(((Tt5/T5)**(y/(y-1)))**-1)     #
+        self.T_out = initial.copy()                #
+        # T5 = Tt5*((1+0.5*(y-1)*M5**2)**-1)       # Mixer needed
+        self.a_out = initial.copy()    # a_out
 
         # Characteristics                            
         self.pressure_ratio = initial.copy()         # PR
