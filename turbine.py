@@ -27,20 +27,20 @@ class Turbine:
         self.Pt_in = initial.copy()
         self.Tt_in = initial.copy()
 
-        # Outlet
+        # Outlet                                     Dec 2; JR Comment
         self.Pt_out = initial.copy()
         self.Tt_out = initial.copy()
-        self.speed_o_sound_out = initial.copy()
+        self.speed_o_sound_out = initial.copy()      # a_out
 
-        # Characteristics
-        self.pressure_ratio = initial.copy()
-        self.temperature_ratio = initial.copy()
-        self.polytropic_efficiency = initial.copy()
-        self.mechanical_efficiency = initial.copy()
-        self.bypass_ratio = initial.copy()
-        self.mach_at_exit = initial.copy()
-        self.m0 = initial.copy()
-        self.mf = initial.copy()
+        # Characteristics                            
+        self.pressure_ratio = initial.copy()         # PR
+        self.temperature_ratio = initial.copy()      # TR
+        self.polytropic_efficiency = initial.copy()  # e
+        self.mechanical_efficiency = initial.copy()  # Nm
+        self.bypass_ratio = initial.copy()           # BPR
+        self.mach_at_exit = initial.copy()           # M_out
+        self.m0 = initial.copy()                     # 
+        self.mf = initial.copy()                     # Wf
 
         for value in kwargs:
             values = kwargs[property]
