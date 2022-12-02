@@ -46,10 +46,10 @@ class Turbine:
         self.a_out = initial.copy()    # a_out
 
         # Characteristics                            
-        self.pressure_ratio = initial.copy()         # PR
-        self.temperature_ratio = initial.copy()      # TR
-        self.polytropic_efficiency = initial.copy()  # e
-        self.mechanical_efficiency = initial.copy()  # Nm
+        self.PR = initial.copy()                     # PR
+        self.TR = initial.copy()                     # TR
+        self.eff_poly = initial.copy()               # e
+        self.eff_mech = initial.copy()               # Nm
         self.bypass_ratio = initial.copy()           # BPR
         self.mach_at_exit = initial.copy()           # M_out
         self.m0 = initial.copy()                     # 
