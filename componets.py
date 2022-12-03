@@ -3,6 +3,8 @@
 
 # Import Major Components
 from compressor import Compressor
+from turbine import Turbine
+from nozzle import Nozzle
 
 # add other components
 # ex: from turbine import Turbine
