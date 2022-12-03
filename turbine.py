@@ -1,5 +1,7 @@
 # Date    | Description of Changes:                          | Author
 # ----------------------------------------------------------------------------
+# Dec 3   | Added units & _str_ def                          | Noah C.
+# ----------------------------------------------------------------------------
 # Dec 3   | Added remaining calc.                            | Noah C.
 #         | Need to check characteristics.                   |
 #         | To do:                                           |
