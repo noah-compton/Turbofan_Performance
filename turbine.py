@@ -1,5 +1,11 @@
 # Date    | Description of Changes:                          | Author
 # ----------------------------------------------------------------------------
+# Dec 3   | Added remaining calc.                            | Noah C.
+#         | Need to check characteristics.                   |
+#         | To do:                                           |
+#         |  - add _str_ def                                 |
+#         |  - check remaining stuff                         |
+# ----------------------------------------------------------------------------
 # Dec 3   | Static T def set. Variable names changed.        | Noah C.
 #         | To do:                                           |
 #         |  - Create cacl(self) method                      |
@@ -60,6 +66,7 @@ class Turbine:
         self.XMN_out = initial.copy()  # Mach out
         self.W_core = initial.copy()  #
         self.W_f = initial.copy()  # W_f -> fuel flow
+        self.W_fan = initial.copy()  # W_fan -> fan mass flow rate
 
         for value in kwargs:
             values = kwargs[property]
@@ -297,8 +304,8 @@ class Turbine:
     def sonic_velocity_out(self):
         y = 1.4
 
-        if self.Tt_in["value"] > 0 and self.XMN_out["value"] > 0:
-            self.T_out["value"] = self.Tt_in["value"] * (
+        if self.Tt_out["value"] > 0 and self.XMN_out["value"] > 0:
+            self.T_out["value"] = self.Tt_out["value"] * (
                 (1 + 0.5 * (y - 1) * self.XMN_out["value"] ** 2) ** -1
             )
 
@@ -309,73 +316,68 @@ class Turbine:
                 "Incorrect inputs. Total tempurature out (Tt5) and Mach out (XMN_out) required only."
             )
 
+    def static_pressure(self):
+        y = 1.4
 
-#     def turbine_Pt_out(
-#         Tt_out: float, Tt_in: float, Pt_in: float, gas: gd.fluid = gd.fluids.air
-#     ) -> float:
-#         # Calculates the ideal total pressure after turbine
+        if (
+            self.Pt_out["value"] > 0
+            and self.Tt_out["value"] > 0
+            and self.XMN_out["value"] > 0
+        ):
+            self.T_out["value"] = self.Tt_out["value"] * (
+                (1 + 0.5 * (y - 1) * self.XMN_out["value"] ** 2) ** -1
+            )
 
-#         Pt_out = Pt_in * (Tt_out / Tt_in) ** (gas.gamma / (gas.gamma - 1))
+            self.P_out["value"] = self.Pt_out["value"] * (
+                ((self.Tt_out["value"] / self.T_out["value"]) ** (y / (y - 1))) ** -1
+            )
 
-#     def turbine_efficiency(
-#         Tt_out: float,
-#         Tt_in: float,
-#         Pt_out: float,
-#         Pt_in: float,
-#         gas: gd.fluid = gd.fluids.air,
-#     ) -> float:
-#         # Calculates the isentropic turbine efficiency from conditions before and after turbine
+        else:
+            raise ValueError(
+                "Incorrect inputs. Total temperature out (Tt_out), total pressure out (Pt_out), and Mach number out (XMN_out) required."
+            )
 
-#         turbine_effficiency = (1 - (Tt_out / Tt_in)) / (
-#             1 - (Pt_out / Pt_in) ** ((gas.gamma - 1) / gas.gamma)
-#         )
+    def calc(self):
+        y = 1.4
 
-#         return turbine_efficiency
+        if self.PR["value"] > 0 and self.eff_poly["value"] > 0:
+            self.TR["value"] = self.PR["value"] ** (
+                (y - 1) * self.eff_poly["value"] / y
+            )
+            self.TR["units"] = "-"
 
-#     def turbine_Tt_out_from_efficiency(
-#         efficiency: float,
-#         Tt_in: float,
-#         Pt_out: float,
-#         Pt_in: float,
-#         gas: gd.fluid = gd.fluids.air,
-#     ) -> float:
-#         # Calculates the temperature after turbine using isentropic efficiency
+        elif self.TR["value"] > 0 and self.eff_poly["value"] > 0:
+            self.PR["value"] = (
+                1 - ((1 - self.TR["value"]) / self.eff_poly["value"])
+            ) ** (y / (y - 1))
+            self.PR["units"] = "-"
 
-#         Tt_out = (-Tt_in) * (
-#             efficiency * (1 - (Pt_out / Pt_in) ** ((gas.gamma - 1) / gas.gamma)) - 1
-#         )
+        elif self.TR["value"] > 0 and self.PR["value"] > 0:
+            self.eff_poly["value"] = (1 - self.TR["value"]) / (
+                1 - (self.PR["value"] ** ((y - 1) / y))
+            )
+            self.eff_poly["units"] = "-"
 
-#         return Tt_out
+        else:
+            raise ValueError("Not enough turbine characteristics defined. Check input.")
 
-#     def turbine_Pt_out_from_efficiency(
-#         efficiency: float,
-#         Tt_out: float,
-#         Tt_in: float,
-#         Pt_in: float,
-#         gas: gd.fluid = gd.fluids.air,
-#     ) -> float:
-#         # Calculates the pressure after turbine using isentropic efficiency
-
-#         Pt_out = Pt_in * (1 - ((1 - Tt_out / Tt_in) / efficiency)) ** (
-#             gas.gamma / (gas.gamma - 1)
-#         )
-
-#         return Pt_out
-
-#     def turbine_Tt_out(
-#         Tt_in: float, Pt_out: float, Pt_in: float, gas: gd.fluid = gd.fluids.air
-#     ) -> float:
-#         # Calculates the ideal total temperature after turbine
-
-#         Tt_out = Tt_in * (Pt_out / Pt_in) ** ((gas.gamma - 1) / gas.gamma)
-
-#         return Tt_out
-
-#     def turbine_Pt_out(
-#         Tt_out: float, Tt_in: float, Pt_in: float, gas: gd.fluid = gd.fluids.air
-#     ) -> float:
-#         # Calculates the ideal total pressure after turbine
-
-#         Pt_out = Pt_in * (Tt_out / Tt_in) ** (gas.gamma / (gas.gamma - 1))
-
-#         return Pt_out
+        self.TR["value"] = self.PR["value"] ** ((y - 1) * self.eff_poly["value"] / y)
+        self.Tt_out["value"] = self.TR["value"] * self.Tt_in["value"]
+        self.T_out["value"] = self.Tt_out * (
+            (1 + 0.5 * (y - 1) * self.XMN_out["value"] ** 2) ** -1
+        )
+        self.a_out["value"] = math.sqrt(y * gd.fluids.air.R * self.T_out["value"])
+        self.BPR["value"] = (
+            self.eff_mech["value"]
+            * (1 + Burner.f["value"])
+            * Burner.TRmax["value"]
+            * (1 - self.TR["value"])
+            - Flight_Conditions.TR["value"] * (Compressor.TR["value"] - 1)
+        ) / (Flight_Conditions.TR["value"] * (Fan.TR["value"] - 1))
+        self.Pt_out["value"] = self.Pt_in["value"] * self.PR["value"]
+        self.P_out["value"] = self.Pt_out["value"] * (
+            ((self.Tt_out["value"] / self.T_out["value"]) ** (y / (y - 1))) ** -1
+        )
+        self.W_core["value"] = Inlet.W_total["value"] / (1 + self.BPR["value"])
+        self.W_fan["value"] = Inlet.W_total["value"] - self.W_core["value"]
+        self.W_f["value"] = Burner.f["value"] * self.W_core["value"]
