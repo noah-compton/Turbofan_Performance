@@ -1,5 +1,11 @@
 # Date    | Description of Changes:                          | Author
 # ----------------------------------------------------------------------------
+# Dec 3   | Static T def set. Variable names changed.        | Noah C.
+#         | To do:                                           |
+#         |  - Create cacl(self) method                      |
+#         |  - Define remaining outputs/characteristics      |
+#         |    - (whew)                                      |
+# ----------------------------------------------------------------------------
 # Dec 2   | Added comments                                   | Jose R.
 #         | Downstream station needs:                        |
 #         |  - Static P and T exiting Turbine                |
@@ -39,22 +45,21 @@ class Turbine:
         # Outlet
         self.Pt_out = initial.copy()
         self.Tt_out = initial.copy()
-        self.P_out = initial.copy()                # Parameters
+        self.P_out = initial.copy()  # Parameters
         # P5 = Pt5*(((Tt5/T5)**(y/(y-1)))**-1)     #
-        self.T_out = initial.copy()                #
+        self.T_out = initial.copy()  #
         # T5 = Tt5*((1+0.5*(y-1)*M5**2)**-1)       # Mixer needed
-        self.a_out = initial.copy()                # Speed of sound at exit
+        self.a_out = initial.copy()  # Speed of sound at exit
 
-        # Characteristics                            
-        self.PR = initial.copy()                     # Pressure Ratio
-        self.TR = initial.copy()                     # Temperature Ratio
-        self.eff_poly = initial.copy()               # Polytropic efficiency
-        self.eff_mech = initial.copy()               # Mechanicsal efficiency
-        self.BPR = initial.copy()                    # BPR -> bypass ratio
-        self.XMN_out = initial.copy()                # Mach out
-        self.W_core = initial.copy()                 # 
-        self.W_f = initial.copy()                    # W_f -> fuel flow
-
+        # Characteristics
+        self.PR = initial.copy()  # Pressure Ratio
+        self.TR = initial.copy()  # Temperature Ratio
+        self.eff_poly = initial.copy()  # Polytropic efficiency
+        self.eff_mech = initial.copy()  # Mechanicsal efficiency
+        self.BPR = initial.copy()  # BPR -> bypass ratio
+        self.XMN_out = initial.copy()  # Mach out
+        self.W_core = initial.copy()  #
+        self.W_f = initial.copy()  # W_f -> fuel flow
 
         for value in kwargs:
             values = kwargs[property]
@@ -151,7 +156,7 @@ class Turbine:
                         "Not enough inputs: assuming dimensionless parameter."
                     )
 
-            elif property == "Mach at Exit":
+            elif property == "XMN_out":
                 self.mach_at_exit["value"] = value
 
                 if len(values) == 2:
@@ -187,15 +192,14 @@ class Turbine:
             else:
                 raise ValueError("Incorrect inputs!")
 
-
     def poly_efficiency(self):
         y = 1.4
 
-        if self.temperature_ratio["value"] > 0 and self.pressure_ratio["value"] > 0:
-            self.polytropic_efficiency["value"] = (
-                1 - self.temperature_ratio["value"]
-            ) / (1 - (self.pressure_ratio["value"] ** ((y - 1) / y)))
-            self.polytropic_efficiency["units"] = "-"
+        if self.TR["value"] > 0 and self.PR["value"] > 0:
+            self.eff_poly["value"] = (1 - self.TR["value"]) / (
+                1 - (self.PR["value"] ** ((y - 1) / y))
+            )
+            self.eff_poly["units"] = "-"
 
         else:
             raise ValueError(
@@ -207,12 +211,12 @@ class Turbine:
 
         if (
             self.Tt_in["value"] > 0
-            and self.pressure_ratio["value"] > 0
-            and self.polytropic_efficiency["value"] > 0
+            and self.PR["value"] > 0
+            and self.eff_poly["value"] > 0
         ):
-            self.Tt_out["value"] = (-self.Tt_in["value"]) * self.polytropic_efficiency[
-                "value"
-            ] * (1 - (self.pressure_ratio["value"]) ** ((y - 1) / y)) - 1
+            self.Tt_out["value"] = (-self.Tt_in["value"]) * self.eff_poly["value"] * (
+                1 - (self.PR["value"]) ** ((y - 1) / y)
+            ) - 1
 
         else:
             raise ValueError(
@@ -224,15 +228,11 @@ class Turbine:
 
         if (
             self.Pt_in["value"] > 0
-            and self.temperature_ratio["self"] > 0
-            and self.polytropic_efficiency["self"] > 0
+            and self.TR["self"] > 0
+            and self.eff_poly["self"] > 0
         ):
             self.Pt_out["value"] = self.Pt_in["value"] * (
-                1
-                - (
-                    (1 - self.temperature_ratio["value"])
-                    / self.polytropic_efficiency["value"]
-                )
+                1 - ((1 - self.TR["value"]) / self.eff_poly["value"])
             ) ** (y / (y - 1))
 
         else:
@@ -243,10 +243,10 @@ class Turbine:
     def ideal_Tt_out(self):
         y = 1.4
 
-        if self.Tt_in["value"] > 0 and self.pressure_ratio["value"] > 0:
-            self.Tt_out["value"] = self.Tt_in["value"] * self.pressure_ratio[
-                "value"
-            ] ** ((y - 1) / y)
+        if self.Tt_in["value"] > 0 and self.PR["value"] > 0:
+            self.Tt_out["value"] = self.Tt_in["value"] * self.PR["value"] ** (
+                (y - 1) / y
+            )
 
         else:
             raise ValueError(
@@ -256,10 +256,10 @@ class Turbine:
     def ideal_Pt_out(self):
         y = 1.4
 
-        if self.Pt_in["value"] > 0 and self.temperature_ratio["value"] > 0:
-            self.Pt_out["value"] = self.Pt_in["value"] * self.temperature_ratio[
-                "value"
-            ] ** (y / (y - 1))
+        if self.Pt_in["value"] > 0 and self.TR["value"] > 0:
+            self.Pt_out["value"] = self.Pt_in["value"] * self.TR["value"] ** (
+                y / (y - 1)
+            )
 
         else:
             raise ValueError(
@@ -271,9 +271,9 @@ class Turbine:
     def temperature_ratio_from_poly_efficiency(self):
         y = 1.4
 
-        if self.pressure_ratio["value"] > 0 and self.poly_efficiency["value"] > 0:
-            self.temperature_ratio["value"] = self.pressure_ratio["value"] ** (
-                (y - 1) * self.poly_efficiency["value"] / y
+        if self.PR["value"] > 0 and self.eff_poly["value"] > 0:
+            self.TR["value"] = self.PR["value"] ** (
+                (y - 1) * self.eff_poly["value"] / y
             )
 
         else:
@@ -284,7 +284,31 @@ class Turbine:
     def static_temperature(self):
         y = 1.4
 
-        if self.Tt_in["value"] > 0 and 
+        if self.Tt_in["value"] > 0 and self.XMN_out["value"] > 0:
+            self.T_out["value"] = self.Tt_in["value"] * (
+                (1 + 0.5 * (y - 1) * self.XMN_out["value"] ** 2) ** -1
+            )
+
+        else:
+            raise ValueError(
+                "Incorrect inputs. Total tempurature out (Tt5) and Mach out (XMN_out) required only."
+            )
+
+    def sonic_velocity_out(self):
+        y = 1.4
+
+        if self.Tt_in["value"] > 0 and self.XMN_out["value"] > 0:
+            self.T_out["value"] = self.Tt_in["value"] * (
+                (1 + 0.5 * (y - 1) * self.XMN_out["value"] ** 2) ** -1
+            )
+
+            self.a_out["value"] = math.sqrt(gd.fluids.air.R * y * self.T_out["value"])
+
+        else:
+            raise ValueError(
+                "Incorrect inputs. Total tempurature out (Tt5) and Mach out (XMN_out) required only."
+            )
+
 
 #     def turbine_Pt_out(
 #         Tt_out: float, Tt_in: float, Pt_in: float, gas: gd.fluid = gd.fluids.air

@@ -3,10 +3,10 @@
 
 # Import Major Components
 from compressor import Compressor
+
 # add other components
 # ex: from turbine import Turbine
 # ex: from fan import Fan
-
 
 
 # Define Other Components
@@ -18,4 +18,3 @@ class Shaft:
 class Duct:
     def __init__(self) -> None:
         pass
-
