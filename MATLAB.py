@@ -171,6 +171,9 @@ pi_m = pi_mi * pi_mf  # [-]
 Pt6m = Pt6mi * pi_m  # [Pa]
 
 # (g) Nozzle
+# Noz090 = Nozzle(name="Noz090")
+# LinkPorts(Mix015, Noz090)
+# Noz090.calc()
 Pt9 = pi_n * Pt6m  # [Pa]
 Pt9_9 = Pt9 / P9  # Total pressure to pressure ratio [-]
 
