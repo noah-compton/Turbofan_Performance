@@ -38,6 +38,12 @@ import math
 global y
 y = gd.fluids.air.gamma
 
+from fan import Fan
+from compressor import Compressor
+from burner import Burner
+from inlet import Inlet
+from flight_conditions import Flight_Conditions
+
 
 class Turbine:
     def _init_(self, **kwargs):
