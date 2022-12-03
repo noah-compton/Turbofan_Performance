@@ -382,6 +382,15 @@ class Turbine:
         self.W_fan["value"] = Inlet.W_total["value"] - self.W_core["value"]
         self.W_f["value"] = Burner.f["value"] * self.W_core["value"]
 
+        self.Pt_out["units"] = self.Pt_in["units"]
+        self.Tt_out["units"] = self.Tt_in["units"]
+        self.T_out["units"] = self.Tt_out["units"]
+        self.P_out["units"] = self.Pt_out["units"]
+        self.a_out["units"] = "m/s"
+        self.W_core["units"] = "kg/s"
+        self.W_fan["units"] = self.W_core["units"]
+        self.W_f["units"] = self.W_core["units"]
+
     def __str__(self):
         str = f"{self.name} Characteristics:\n" f"Efficiency:\n" f"Pressure Ratio:\n"
         return str
