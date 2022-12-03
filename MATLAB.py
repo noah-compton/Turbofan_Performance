@@ -4,6 +4,7 @@
 
 # Define global variables
 global R, y, cp, M0, P0, T0
+import gas_dynamics as gd
 
 air = gd.fluids.air
 
