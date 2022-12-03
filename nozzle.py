@@ -129,3 +129,19 @@ class Nozzle:
         self.a_out["value"] = math.sqrt(y * gd.fluids.air.R * self.T_out["value"])
         self.u_out["value"] = self.a_out["value"] * self.XMN_out["value"]
         self.u_effective["value"] = self.u_out["value"]
+
+        self.P_out["units"] = self.Pt_in["units"]
+        self.Pt_out["units"] = self.Pt_in["units"]
+        self.Pt_P["units"] = ""
+        self.S1["units"] = ""
+        self.XMN_out["units"] = ""
+        self.S2["units"] = ""
+        self.Tt_out["units"] = self.Tt_in["units"]
+        self.T_out["units"] = self.Tt_in["units"]
+        self.a_out["units"] = "m/s"
+        self.u_out["units"] = "m/s"
+        self.u_effective["units"] = self.u_out["units"]
+
+    def __str__(self):
+        str = f"{self.name} Characteristics:\n" f"Efficiency:\n" f"Pressure Ratio:\n"
+        return str
