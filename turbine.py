@@ -53,10 +53,8 @@ class Turbine:
         # Outlet
         self.Pt_out = initial.copy()
         self.Tt_out = initial.copy()
-        self.P_out = initial.copy()  # Parameters
-        # P5 = Pt5*(((Tt5/T5)**(y/(y-1)))**-1)     #
-        self.T_out = initial.copy()  #
-        # T5 = Tt5*((1+0.5*(y-1)*M5**2)**-1)       # Mixer needed
+        self.P_out = initial.copy()
+        self.T_out = initial.copy()
         self.a_out = initial.copy()  # Speed of sound at exit
 
         # Characteristics
