@@ -37,8 +37,8 @@ class Inlet:
         self.Pt_out = init.copy()
 
         #Characteristics
-        self.Pi_d = init.copy()
-        self.T_r = init.copy()
+        self.PR = init.copy()
+        self.TR = init.copy()
 
         for property in kwargs:
 
@@ -76,7 +76,7 @@ class Inlet:
                     raise Warning("Not enough inputs: assuming K as units for T_in.")
 
             elif property == "M0":
-                self.T0["value"] = value
+                self.M0["value"] = value
 
                 if len(values) == 2:
                     self.M0["unit"] = unit
@@ -97,14 +97,14 @@ class Inlet:
                     self.m2["unit"] = "kg/s"
                     raise Warning("Not enough inputs: assuming kg/s as units for m2.")
 
-            elif property == "Pi_d":
-                self.Pi_d["value"] = value
+            elif property == "PR":
+                self.PR["value"] = value
 
                 if len(values) == 2:
-                    self.Pi_d["unit"] = unit
+                    self.PR["unit"] = unit
 
                 elif len(values) < 2:
-                    self.Pi_d["unit"] = ""
+                    self.PR["unit"] = ""
                     raise Warning(
                         "Not enough inputs: assuming dimensionless parameter."
                     )
@@ -131,8 +131,8 @@ class Inlet:
         self.Tt_in["value"] = gd.stagnation_temperature_ratio(mach=self.M0["value"])
         self.Pt_in["value"] = gd.stagnation_pressure_ratio(mach=self.M0["value"])
         self.Tt_out["value"] = self.Tt_in["value"]
-        self.T_r = self.Tt_in["value"] / self.T0["value"]
-        self.Pt_out["value"] = self.Pt_in["value"] * self.Pi_d["value"]
+        self.TR = self.Tt_in["value"] / self.T0["value"]
+        self.Pt_out["value"] = self.Pt_in["value"] * self.PR["value"]
 
         # units
         self.a_in["unit"] = "m/s"
@@ -141,6 +141,7 @@ class Inlet:
         self.Pt_in["unit"] = "Pa"
         self.Tt_out["unit"] = "K"
         self.Pt_out["unit"] = "Pa"
+        self.TR["unit"] = ""
 
     def __str__(self):
         str = f"{self.name} Characteristics:\n"
