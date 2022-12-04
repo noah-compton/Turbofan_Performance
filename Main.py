@@ -38,5 +38,3 @@ P0 = 12000  # [Pa] free stream static pressure
 T0 = 223  # [K] free stream static temp
 
 components.configuration("configuration one")
-
-Inlet

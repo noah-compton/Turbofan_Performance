@@ -1,3 +1,3 @@
-from components import configuration
+import components
 
-configuration("configuration one")
+components.get_comps()
