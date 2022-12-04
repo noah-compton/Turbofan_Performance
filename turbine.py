@@ -406,7 +406,6 @@ class Turbine:
         return str
 
 
-print(Turbine.__str__)
 # self.PR = initial.copy()  # Pressure Ratio
 # self.TR = initial.copy()  # Temperature Ratio
 # self.eff_poly = initial.copy()  # Polytropic efficiency
