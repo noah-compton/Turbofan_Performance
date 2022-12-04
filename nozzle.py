@@ -21,6 +21,8 @@ class Nozzle:
         initial = {"value": 0.0, "unit": "-"}
 
         self.name = ""
+        self.inlet = ""
+        self.outlet = ""
 
         # Inlet
         self.Pt_in = initial.copy()

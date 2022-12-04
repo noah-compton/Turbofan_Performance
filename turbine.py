@@ -57,6 +57,8 @@ class Turbine:
         initial = {"value": 0.0, "unit": "-"}
 
         self.name = ""
+        self.inlet = ""
+        self.outlet = ""
 
         # Inlet                                     Dec 2; JR Comment
         self.Pt_in = initial.copy()
