@@ -35,14 +35,14 @@
 import gas_dynamics as gd
 import math
 
-global y
+global y, R
+R = gd.fluids.air.R
 y = gd.fluids.air.gamma
 
 from fan import Fan
 from compressor import Compressor
 from burner import Burner
 from inlet import Inlet
-from flight_conditions import Flight_Conditions
 
 
 class Turbine:
@@ -378,8 +378,8 @@ class Turbine:
             * (1 + Burner.f["value"])
             * Burner.TRmax["value"]
             * (1 - self.TR["value"])
-            - Flight_Conditions.TR["value"] * (Compressor.TR["value"] - 1)
-        ) / (Flight_Conditions.TR["value"] * (Fan.TR["value"] - 1))
+            - Inlet.TR["value"] * (Compressor.TR["value"] - 1)
+        ) / (Inlet.TR["value"] * (Fan.TR["value"] - 1))
         self.Pt_out["value"] = self.Pt_in["value"] * self.PR["value"]
         self.P_out["value"] = self.Pt_out["value"] * (
             ((self.Tt_out["value"] / self.T_out["value"]) ** (y / (y - 1))) ** -1
