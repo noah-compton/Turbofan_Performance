@@ -5,6 +5,23 @@
 
 import components
 from methods import LinkPorts
+import gas_dynamics as gd
+
+from inlet import Inlet  # Added, Noah C. Dec 3
+from fan import Fan  # Added, Noah C. Dec 3
+from compressor import Compressor
+from burner import Burner  # Added, Noah C. Dec 3
+from turbine import Turbine  # Added, Noah C. Dec 3
+from mixer import Mixer  # Added, Noah C. Dec 3
+from nozzle import Nozzle  # Added, Noah C. Dec 3
+
+Int10 = Inlet(name="Int10")
+Fan20 = Fan(name="Fan20")
+Cmp30 = Compressor(name="Cmp30")
+Brn40 = Burner(name="Brn40")
+Trb50 = Turbine(name="Trb50")
+Mix60 = Mixer(name="Mix60")
+Noz70 = Nozzle(name="Noz70")
 
 # Component Characteristics
 W_total = 25  # [kg/s] total mass flow coming into engine
@@ -34,7 +51,9 @@ R = 287  # [J / kg K]  gas constant
 y = 1.4  # Ratio of specific heats -> remains constant throughout
 cp = 1004  # [J / kg K] specific heat
 XMN_0 = 2  # Free stream Mach number
-P0 = 12000  # [Pa] free stream static pressure
+P0 = 12  # [kPa] free stream static pressure
 T0 = 223  # [K] free stream static temp
-
-components.configuration("configuration one")
+Pt0 = gd.stagnation_pressure(pressure=P0, mach=XMN_0)
+Tt0 = gd.stagnation_temperature(temperature=T0, mach=XMN_0)
+Int10.Pt_in = {"value": Pt0, "units": "kPa"}
+Int10.Tt_in = {"value": Tt0, "units": "K"}

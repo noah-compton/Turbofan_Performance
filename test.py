@@ -1,3 +1,7 @@
 import components
 
-components.get_comps()
+import Main
+
+components.configuration("one")
+
+print(P0)
