@@ -398,5 +398,21 @@ class Turbine:
         self.W_f["units"] = self.W_core["units"]
 
     def __str__(self):
-        str = f"{self.name} Characteristics:\n" f"Efficiency:\n" f"Pressure Ratio:\n"
+        str = (
+            f"{self.name} Characteristics:\n Temperature Ratio: {self.TR}\n Bypass Ratio: {self.BPR}\n Mach at exit: {self.XMN_out}\n Core mass flow rate: {self.W_core}\n Fuel mass flow rate: {self.W_f}\n Fan mass flow rate: {self.W_fan}"
+            f"Efficiency:\n Polytropic Efficiency: {self.eff_poly}\n Mechanical Efficiency: {self.eff_mech}"
+            f"Pressure Ratio: {self.PR}"
+        )
         return str
+
+
+print(Turbine.__str__)
+# self.PR = initial.copy()  # Pressure Ratio
+# self.TR = initial.copy()  # Temperature Ratio
+# self.eff_poly = initial.copy()  # Polytropic efficiency
+# self.eff_mech = initial.copy()  # Mechanicsal efficiency
+# self.BPR = initial.copy()  # BPR -> bypass ratio
+# self.XMN_out = initial.copy()  # Mach out
+# self.W_core = initial.copy()  #
+# self.W_f = initial.copy()  # W_f -> fuel flow
+# self.W_fan = initial.copy()  # W_fan -> fan mass flow rate
