@@ -1,4 +1,10 @@
 # Date    | Description of Changes:                          | Author
+# -----------------------------------------------------------------------------
+# Dec 4   | Changed W_core to W_in and added W_out.          | Noah C.
+#         | Changed W_f to Wf. Edited for loop:              |
+#         |     "for value in kwargs"                        |
+#         |        - changed to                              |
+#         |     "for property in kwargs"                     |
 # ----------------------------------------------------------------------------
 # Dec 3   | Added units & _str_ def                          | Noah C.
 # ----------------------------------------------------------------------------
@@ -55,6 +61,7 @@ class Turbine:
         # Inlet                                     Dec 2; JR Comment
         self.Pt_in = initial.copy()
         self.Tt_in = initial.copy()
+        self.W_in = initial.copy()
 
         # Outlet
         self.Pt_out = initial.copy()
@@ -62,6 +69,7 @@ class Turbine:
         self.P_out = initial.copy()
         self.T_out = initial.copy()
         self.a_out = initial.copy()  # Speed of sound at exit
+        self.W_out = initial.copy()
 
         # Characteristics
         self.PR = initial.copy()  # Pressure Ratio
@@ -70,8 +78,7 @@ class Turbine:
         self.eff_mech = initial.copy()  # Mechanicsal efficiency
         self.BPR = initial.copy()  # BPR -> bypass ratio
         self.XMN_out = initial.copy()  # Mach out
-        self.W_core = initial.copy()  #
-        self.W_f = initial.copy()  # W_f -> fuel flow
+        self.Wf = initial.copy()  # W_f -> fuel flow
         self.W_fan = initial.copy()  # W_fan -> fan mass flow rate
 
         for property in kwargs:
@@ -179,24 +186,24 @@ class Turbine:
                     self.mach_at_exit["units"] = ""
                     raise Warning("Using Mach as dimensionless parameter.")
 
-            elif property == "W_core":
-                self.m0["value"] = value
+            elif property == "W_in":
+                self.W_in["value"] = value
 
                 if len(values) == 2:
-                    self.m0["units"] = unit
+                    self.W_in["units"] = unit
 
                 elif len(values) < 2:
-                    self.m0["units"] = "kg/s"
+                    self.W_in["units"] = "kg/s"
                     raise Warning("Not enough inputs: assuming kg/s for units")
 
             elif property == "Wf":
-                self.mf["value"] = value
+                self.Wf["value"] = value
 
                 if len(values) == 2:
-                    self.mf["units"] = unit
+                    self.Wf["units"] = unit
 
                 elif len(values) < 2:
-                    self.mf["units"] = "kg/s"
+                    self.Wf["units"] = "kg/s"
                     raise Warning("Not enough inputs: assuming kg/s for units")
 
             elif property == "name":
@@ -384,18 +391,20 @@ class Turbine:
         self.P_out["value"] = self.Pt_out["value"] * (
             ((self.Tt_out["value"] / self.T_out["value"]) ** (y / (y - 1))) ** -1
         )
-        self.W_core["value"] = Inlet.W_total["value"] / (1 + self.BPR["value"])
-        self.W_fan["value"] = Inlet.W_total["value"] - self.W_core["value"]
-        self.W_f["value"] = Burner.f["value"] * self.W_core["value"]
+        self.W_in["value"] = Inlet.W_total["value"] / (1 + self.BPR["value"])
+        self.W_fan["value"] = Inlet.W_total["value"] - self.W_in["value"]
+        self.Wf["value"] = Burner.f["value"] * self.W_in["value"]
+        self.W_out["value"] = self.W_in["value"] + self.Wf["out"]
 
         self.Pt_out["units"] = self.Pt_in["units"]
         self.Tt_out["units"] = self.Tt_in["units"]
         self.T_out["units"] = self.Tt_out["units"]
         self.P_out["units"] = self.Pt_out["units"]
         self.a_out["units"] = "m/s"
-        self.W_core["units"] = "kg/s"
-        self.W_fan["units"] = self.W_core["units"]
-        self.W_f["units"] = self.W_core["units"]
+        self.W_in["units"] = "kg/s"
+        self.W_fan["units"] = self.W_in["units"]
+        self.W_f["units"] = self.W_in["units"]
+        self.W_out["units"] = self.W_in["units"]
 
     def __str__(self):
         str = (
