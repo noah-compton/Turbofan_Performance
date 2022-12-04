@@ -14,8 +14,9 @@ import pdb
 import gas_dynamics as gd
 
 def Fluid(name: str, gamma: float, R: float, units: str):
-    gas = gd.fluids(name=name, gamma=gamma, R=R, units=units)
-
+    gas = gd.fluid(name=name, gamma=gamma, R=R, units=units)
+    gas.cp = gas.gamma * gas.R / (gas.gamma - 1)
+    gas.cv = gas.cp - gas.R
     return gas    
     
 def Drag():
@@ -35,6 +36,7 @@ def LinkPorts(object1, object2):
     object2.Pt_in = object1.Pt_out
     object2.Tt_in = object1.Tt_out
     object2.W_in  = object1.W_out
+    object2.TRmax = object1.TRmax
     
     object2.inlet  = object1.name
     object1.outlet = object2.name

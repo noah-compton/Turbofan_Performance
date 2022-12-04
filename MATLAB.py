@@ -3,10 +3,6 @@
 # unless pi_(greek letter), check definition.
 
 # Define global variables
-global R, y, cp, M0, P0, T0
-
-air = gd.fluids.air
-
 # Import Packages
 import math
 from compressor import Compressor
@@ -14,7 +10,11 @@ from burner import Burner
 # from turbine import Turbine
 from methods import LinkPorts
 import pdb
+import gas_dynamics as gd
 
+pdb.set_trace()
+
+air = Fluids
 # Components
 Cmp020 = Compressor(name='Cmp020')
 
@@ -38,6 +38,9 @@ T0 = 223 # [K]
 
 # Inlet (2)
 m2 = 25 # [kg/s] (1+bypass_ratio)*m0 = 25 kg/s (total mass incoming)
+# m0 -> Core Mass Flow or W_core
+# m2 -> Total Mass Flow
+# mfan  -> Bypass Mass Flow or W_bypass 
 pi_d = 0.9 # total pressure ratio across the inlet (diffuser)
 
 # Compressor (2-3)
@@ -102,8 +105,6 @@ Cmp020.calc()
 
 Brn030 = Burner(name='Brn030')
 LinkPorts(Cmp020, Brn030)
-
-pdb.set_trace()
 
 Brn030.calc()
 
