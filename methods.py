@@ -36,9 +36,13 @@ def LinkPorts(object1, object2):
     object2.Pt_in = object1.Pt_out
     object2.Tt_in = object1.Tt_out
     object2.W_in  = object1.W_out
-    object2.TRmax = object1.TRmax
+    # object2.TRmax = object1.TRmax
     
     object2.inlet  = object1.name
     object1.outlet = object2.name
+
+# Define a function that checks units
+def check_units(var1, var2):
+    pass
     
     

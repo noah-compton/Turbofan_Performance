@@ -12,7 +12,7 @@ import math
 from compressor import Compressor
 from burner import Burner
 # from turbine import Turbine
-from nozzle import Nozzle
+# from nozzle import Nozzle
 # from inlet import Inlet 
 
 # from turbine import Turbine
@@ -21,16 +21,16 @@ import pdb
 # import gas_dynamics as gd
 
 # Components
-In010 = Inlet(name='In010')
+# In010 = Inlet(name='In010')
 Cmp020 = Compressor(name="Cmp020")
 Brn030 = Burner(name='Brn030')
-Trb040 = Turbine(name='Trb040')
+# Trb040 = Turbine(name='Trb040')
 
 # Test Data
 pi_c = 20  # compressor pressure ratio
 ec = 0.9  # Polytropic efficiency
-Cmp020.PR       = {"value": pi_c, "unit": "-"}
-Cmp020.eff_poly = {"value": ec, "unit": "-"}
+Cmp020.PR       = {"value": pi_c, "units": "-"}
+Cmp020.eff_poly = {"value": ec, "units": "-"}
 
 # Air constants
 R = 287  # [J / kg K]
@@ -42,6 +42,10 @@ cp = 1004  # [J/ kg K]
 M0 = 2  # Freestream Mach number [-]
 P0 = 12000  # [Pa]
 T0 = 223  # [K]
+
+# Test Data
+Int10.Pt_in       = {"value": Pt0, "units": "-"}
+Int10.Tt_in       = {"value": Tt0, "units": "-"}
 
 # Inlet (2)
 m2 = 25 # [kg/s] (1+bypass_ratio)*m0 = 25 kg/s (total mass incoming)
@@ -101,14 +105,16 @@ T_c = (pi_c) ** ((y - 1) / (y * ec))  # Tt3/Tt2 temperature ratio [-]
 Pt3 = pi_c * Pt2  # [Pa]
 Tt3 = T_c * Tt2  # [K]
 
-Cmp020.TR = {"value": T_c, "unit": "-"}
-Cmp020.Pt_in = {"value": Pt3, "unit": "Pa"}
-Cmp020.Tt_in = {"value": Tt3, "unit": "K"}
+Cmp020.TR = {"value": T_c, "units": "-"}
+Cmp020.Pt_in = {"value": Pt3, "units": "Pa"}
+Cmp020.Tt_in = {"value": Tt3, "units": "K"}
 
 Cmp020.calc()
 
-Brn030 = Burner(name="Brn030")
+pdb.set_trace()
 LinkPorts(Cmp020, Brn030)
+pdb.set_trace()
+
 
 Brn030.calc()
 
@@ -119,9 +125,9 @@ T_x = Tt4 / T0  # [-] Tau_Lambda
 
 # (e) Turbine
 
-Trb040 = Turbine(name="Trb040")
-Trb040.LinkPort(Trb040, Brn030)
-Trb040.calc()
+# Trb040 = Turbine(name="Trb040")
+# Trb040.LinkPort(Trb040, Brn030)
+# Trb040.calc()
 
 pi_t = (pi_fd * pi_f) / (pi_b * pi_c)  # Pt5/Pt4 [-]
 T_t = (pi_t) ** ((y - 1) * et / y)  # Tt5/Tt4 [-]

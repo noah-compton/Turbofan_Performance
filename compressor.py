@@ -22,19 +22,19 @@ class Compressor:
         self.outlet = ""
 
         # Inlet
-        self.Pt_in  = init.copy()
-        self.Tt_in  = init.copy()
-        self.W_in   = init.copy()
+        self.Pt_in     = init.copy()
+        self.Tt_in     = init.copy()
+        self.W_in      = init.copy()
 
         # Outlet
-        self.Pt_out = init.copy()
-        self.Tt_out = init.copy()
-        self.W_out  = init.copy()
+        self.Pt_out    = init.copy()
+        self.Tt_out    = init.copy()
+        self.W_out     = init.copy()
          
         # Characteristics
-        self.PR     = init.copy()
-        self.TR     = init.copy()
-        self.e      = init.copy()
+        self.PR        = init.copy()
+        self.TR        = init.copy()
+        self.eff_poly  = init.copy()
         
         for property in kwargs:
 
@@ -113,13 +113,13 @@ class Compressor:
                     )
 
             elif property == "e":
-                self.e['value'] = value 
+                self.eff_poly['value'] = value 
                 
                 if len(values) == 2:
-                    self.e['units']  = units
+                    self.eff_poly['units']  = units
                     
                 if len(values) < 2:
-                    self.e['units'] = "-"
+                    self.eff_poly['units'] = "-"
                     raise Warning("e has not enough inputs, assuming value is dimensionless")        
                              
             elif property == "name":
@@ -127,18 +127,18 @@ class Compressor:
 
     def calc(self):
         y = 1.4
-        
+
         if self.PR['value'] > 0. and self.TR['value'] > 0.:
-            self.e['value'] = ((y-1)/y) * (math.log(self.PR['value'])/ math.log(self.TR['value']))
-            self.e['units'] = '-'
+            self.eff_poly['value'] = ((y-1)/y) * (math.log(self.PR['value'])/ math.log(self.TR['value']))
+            self.eff_poly['units'] = '-'
         
-        elif self.PR['value'] > 0. and self.e['value'] > 0.:
-            self.TR['value'] = self.PR['value']**((y-1)/(y*self.e['value']))
+        elif self.PR['value'] > 0. and self.eff_poly['value'] > 0.:
+            self.TR['value'] = self.PR['value']**((y-1)/(y*self.eff_poly['value']))
             self.TR['units'] = '-'       
        
-        elif self.TR['value'] > 0. and self.e['value'] > 0.:        
+        elif self.TR['value'] > 0. and self.eff_poly['value'] > 0.:        
         # elif hasattr(self, 'TR['value']') and hasattr(self, "e['value']"):
-            self.PR['value'] = self.TR['value']**((y*self.e['value'])/(y-1))
+            self.PR['value'] = self.TR['value']**((y*self.eff_poly['value'])/(y-1))
             self.PR['units'] = '-'
 
         else:
@@ -149,7 +149,7 @@ class Compressor:
         self.Pt_out["value"] = self.PR["value"] * self.Pt_in["value"]
         self.Tt_out["value"] = self.TR["value"] * self.Tt_in["value"]
         self.W_out["value"] = self.W_in["value"]
-
+        # pdb.set_trace()
         self.Pt_out["units"] = self.Pt_in["units"]
         self.Tt_out["units"] = self.Tt_in["units"]
         self.W_out["units"] = self.W_in["units"]
