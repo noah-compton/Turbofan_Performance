@@ -22,23 +22,23 @@ class Inlet:
         self.name   = ''
         
         #Inlet
-        self.P0 = init.copy()
-        self.T0= init.copy()
-        self.M0 = init.copy()
-        self.m2 = init.copy()
+        self.P0 = init.copy() # P_in
+        self.T0 = init.copy() # T_in
+        self.M0 = init.copy() # XMN_in
+        self.m2 = init.copy() # W_in
 
         #Outlet
         self.Pt_in = init.copy()
         self.Tt_in = init.copy()
-        self.a0 = init.copy()
-        self.u0 = init.copy()
+        self.a0 = init.copy()    # a_in
+        self.u0 = init.copy()    # u_in
         self.Tt_out = init.copy()
         self.Pt_out = init.copy()
-        self.Dram = init.copy()
+        self.Dram = init.copy()     # Will be calculated outside of the class
 
         #Characteristics
-        self.Pi_d = init.copy()
-        self.T_r = init.copy()
+        self.Pi_d = init.copy()    # Pi_d = PR
+        self.T_r = init.copy()     # TR
 
         for property in kwargs:
 

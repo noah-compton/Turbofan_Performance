@@ -11,13 +11,13 @@
 #         pass
 
 import pdb
-import gas_dynamics as gd
+# import gas_dynamics as gd
 
-def Fluid(name: str, gamma: float, R: float, units: str):
-    gas = gd.fluid(name=name, gamma=gamma, R=R, units=units)
-    gas.cp = gas.gamma * gas.R / (gas.gamma - 1)
-    gas.cv = gas.cp - gas.R
-    return gas    
+# def Fluid(name: str, gamma: float, R: float, units: str):
+#     gas = gd.fluid(name=name, gamma=gamma, R=R, units=units)
+#     gas.cp = gas.gamma * gas.R / (gas.gamma - 1)
+#     gas.cv = gas.cp - gas.R
+#     return gas    
     
 def Drag():
     pass

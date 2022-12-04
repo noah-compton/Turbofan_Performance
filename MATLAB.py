@@ -3,34 +3,34 @@
 # unless pi_(greek letter), check definition.
 
 # Define global variables
-global R, y, cp, M0, P0, T0
+# global R, y, cp, M0, P0, T0
 
-air = gd.fluids.air
+# air = gd.fluids.air
 
 # Import Packages
 import math
 from compressor import Compressor
 from burner import Burner
-from turbine import Turbine
+# from turbine import Turbine
 from nozzle import Nozzle
+# from inlet import Inlet 
 
 # from turbine import Turbine
 from methods import LinkPorts
 import pdb
-import gas_dynamics as gd
+# import gas_dynamics as gd
 
-pdb.set_trace()
-
-air = Fluids
 # Components
+In010 = Inlet(name='In010')
 Cmp020 = Compressor(name="Cmp020")
+Brn030 = Burner(name='Brn030')
+Trb040 = Turbine(name='Trb040')
 
 # Test Data
 pi_c = 20  # compressor pressure ratio
 ec = 0.9  # Polytropic efficiency
-Cmp020.PR = {"value": pi_c, "unit": "-"}
+Cmp020.PR       = {"value": pi_c, "unit": "-"}
 Cmp020.eff_poly = {"value": ec, "unit": "-"}
-
 
 # Air constants
 R = 287  # [J / kg K]
