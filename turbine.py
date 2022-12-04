@@ -404,14 +404,3 @@ class Turbine:
             f"Pressure Ratio: {self.PR}"
         )
         return str
-
-
-# self.PR = initial.copy()  # Pressure Ratio
-# self.TR = initial.copy()  # Temperature Ratio
-# self.eff_poly = initial.copy()  # Polytropic efficiency
-# self.eff_mech = initial.copy()  # Mechanicsal efficiency
-# self.BPR = initial.copy()  # BPR -> bypass ratio
-# self.XMN_out = initial.copy()  # Mach out
-# self.W_core = initial.copy()  #
-# self.W_f = initial.copy()  # W_f -> fuel flow
-# self.W_fan = initial.copy()  # W_fan -> fan mass flow rate
