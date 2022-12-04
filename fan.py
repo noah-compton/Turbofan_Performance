@@ -12,6 +12,8 @@ class Fan:
         init = {'value': 0., 'unit': '-'}
         
         self.name   = ''
+        self.inlet = ''
+        self.outlet = ''
     
         #Inlet
         self.Pt_in = init.copy()
