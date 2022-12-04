@@ -16,7 +16,7 @@ y = gd.fluids.air.gamma
 
 
 class Nozzle:
-    def _init_(self, **kwargs):
+    def __init__(self, **kwargs):
 
         initial = {"value": 0.0, "unit": "-"}
 

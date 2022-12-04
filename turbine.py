@@ -46,7 +46,7 @@ from inlet import Inlet
 
 
 class Turbine:
-    def _init_(self, **kwargs):
+    def __init__(self, **kwargs):
 
         initial = {"value": 0.0, "unit": "-"}
 
@@ -398,5 +398,9 @@ class Turbine:
         self.W_f["units"] = self.W_core["units"]
 
     def __str__(self):
-        str = f"{self.name} Characteristics:\n" f"Efficiency:\n" f"Pressure Ratio:\n"
+        str = (
+            f"{self.name} Characteristics:\n Temperature Ratio: {self.TR}\n Bypass Ratio: {self.BPR}\n Mach at exit: {self.XMN_out}\n Core mass flow rate: {self.W_core}\n Fuel mass flow rate: {self.W_f}\n Fan mass flow rate: {self.W_fan}"
+            f"Efficiency:\n Polytropic Efficiency: {self.eff_poly}\n Mechanical Efficiency: {self.eff_mech}"
+            f"Pressure Ratio: {self.PR}"
+        )
         return str
