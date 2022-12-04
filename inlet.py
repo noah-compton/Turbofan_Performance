@@ -21,6 +21,8 @@ class Inlet:
         init = {'value': 0., 'unit': '-'}
         
         self.name   = ''
+        self.inlet = ''
+        self.outlet = ''
         
         #Inlet
         self.P0 = init.copy()
