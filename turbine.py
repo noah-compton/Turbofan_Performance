@@ -74,7 +74,7 @@ class Turbine:
         self.W_f = initial.copy()  # W_f -> fuel flow
         self.W_fan = initial.copy()  # W_fan -> fan mass flow rate
 
-        for value in kwargs:
+        for property in kwargs:
             values = kwargs[property]
 
             if len(values) >= 2:
@@ -189,7 +189,7 @@ class Turbine:
                     self.m0["units"] = "kg/s"
                     raise Warning("Not enough inputs: assuming kg/s for units")
 
-            elif property == "W_f":
+            elif property == "Wf":
                 self.mf["value"] = value
 
                 if len(values) == 2:

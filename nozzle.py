@@ -41,7 +41,7 @@ class Nozzle:
         self.S1 = initial.copy()
         self.S2 = initial.copy()
 
-        for value in kwargs:
+        for property in kwargs:
             values = kwargs[property]
 
             if len(values) >= 2:
