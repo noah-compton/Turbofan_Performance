@@ -12,6 +12,8 @@ class Fan:
         init = {'value': 0., 'unit': '-'}
         
         self.name   = ''
+        self.inlet = ''
+        self.outlet = ''
     
         #Inlet
         self.Pt_in = init.copy()
@@ -19,12 +21,10 @@ class Fan:
         #Outlet
         self.Pt_13 = init.copy()
         self.Tt_13 = init.copy()
-        self.Pt_15 = init.copy()
-        self.Tt_15 = init.copy()
         #Characteristics
-        self.T_f = init.copy()    # TR
-        self.Pi_f = init.copy()   # PR
-        self.ef = init.copy()     # eff_poly
+        self.TR = init.copy()    # TR
+        self.PR = init.copy()   # PR
+        self.eff_poly = init.copy()     # eff_poly
 
         for property in kwargs:
 
@@ -43,53 +43,53 @@ class Fan:
 
             
             if property == "Pt_in":
-                self.P0['value'] = value
+                self.Pt_in['value'] = value
 
                 if len(values) == 2:
-                    self.P0["unit"] = unit
+                    self.Pt_in["unit"] = unit
 
                 elif len(values) < 2:
-                    self.P0['unit'] = 'Pa'
+                    self.Pt_in['unit'] = 'Pa'
                     raise Warning("Not enough inputs: assuming Pa for units for Pt_in")
             
             elif property == "Tt_in":
-                 self.T0["value"] = value
+                 self.Tt_in["value"] = value
 
                  if len(values) == 2:
-                    self.T0["unit"] = unit
+                    self.Tt_in["unit"] = unit
 
                  elif len(values) < 2:
-                        self.T0["unit"] = "K"
+                        self.Tt_in["unit"] = "K"
                         raise Warning("Not enough inputs: assuming K for units for Tt_in ")
             
-            elif property == "T_f":
-                 self.T0["value"] = value
+            elif property == "TR":
+                 self.TR["value"] = value
 
                  if len(values) == 2:
-                    self.T0["unit"] = unit
+                    self.TR["unit"] = unit
 
                  elif len(values) < 2:
-                        self.T0["unit"] = ""
+                        self.TR["unit"] = ""
                         raise Warning("Not enough inputs: assuming dimensionless parameter")
             
-            elif property == "Pi_f":
-                 self.T0["value"] = value
+            elif property == "PR":
+                 self.PR["value"] = value
 
                  if len(values) == 2:
-                    self.T0["unit"] = unit
+                    self.PR["unit"] = unit
 
                  elif len(values) < 2:
-                        self.T0["unit"] = ""
+                        self.PR["unit"] = ""
                         raise Warning("Not enough inputs: assuming dimensionless parameter")
             
-            elif property == "ef":
-                 self.T0["value"] = value
+            elif property == "eff_poly":
+                 self.eff_poly["value"] = value
 
                  if len(values) == 2:
-                    self.T0["unit"] = unit
+                    self.eff_poly["unit"] = unit
 
                  elif len(values) < 2:
-                        self.T0["unit"] = ""
+                        self.eff_poly["unit"] = ""
                         raise Warning("Not enough inputs: assuming dimensionless parameter")
 
            
@@ -103,18 +103,14 @@ class Fan:
              raise ValueError("Incorrect inputs for inlet: nonzero values required for Pt_in and Tt_in")
         
         #values
-        self.T_f["value"] = (self.Pi_f["value"] ** ((y - 1)/(y*self.ef["value"])))
-        self.Pt_13["value"] = self.Pi_f["value"] * self.Pt_in["value"]
-        self.Tt_13["value"] = self.T_f["value"] * self.Tt_in["value"]
-        self.Pt_15["value"] = self.Pt_13["value"]
-        self.Tt_15["value"] = self.Tt_13["value"]
+        self.TR["value"] = (self.PR["value"] ** ((y - 1)/(y*self.ef["value"])))
+        self.Pt_13["value"] = self.PR["value"] * self.Pt_in["value"]
+        self.Tt_13["value"] = self.TR["value"] * self.Tt_in["value"]
 
         #units
-        self.T_f["unit"] =''
+        self.TR["unit"] =''
         self.Pt_13["unit"] = 'Pa'
         self.Tt_13["unit"] = 'K'
-        self.Pt_15["unit"] = 'Pa'
-        self.Tt_15["unit"] = 'K'
 
     def __str__(self):
         str = f"{self.name} Characteristics:\n"
