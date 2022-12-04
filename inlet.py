@@ -31,11 +31,10 @@ class Inlet:
         # Outlet
         self.Pt_in = init.copy()
         self.Tt_in = init.copy()
-        self.a0 = init.copy()    # a_in
-        self.u0 = init.copy()    # u_in
+        self.a_in = init.copy()    # a_in
+        self.u_in = init.copy()    # u_in
         self.Tt_out = init.copy()
         self.Pt_out = init.copy()
-        self.Dram = init.copy()     # Will be calculated outside of the class
 
         #Characteristics
         self.Pi_d = init.copy()
@@ -127,23 +126,21 @@ class Inlet:
             )
 
         # calculate values
-        self.a0["value"] = math.sqrt(y * R * self.T0["value"])
-        self.u0["value"] = self.M0["value"] * self.a_in["value"]
+        self.a_in["value"] = math.sqrt(y * R * self.T0["value"])
+        self.u_in["value"] = self.M0["value"] * self.a_in["value"]
         self.Tt_in["value"] = gd.stagnation_temperature_ratio(mach=self.M0["value"])
         self.Pt_in["value"] = gd.stagnation_pressure_ratio(mach=self.M0["value"])
         self.Tt_out["value"] = self.Tt_in["value"]
         self.T_r = self.Tt_in["value"] / self.T0["value"]
         self.Pt_out["value"] = self.Pt_in["value"] * self.Pi_d["value"]
-        self.Dram["value"] = self.m2["value"] * self.u_in["value"]
 
         # units
-        self.a0["unit"] = "m/s"
-        self.u0["unit"] = "m/s"
+        self.a_in["unit"] = "m/s"
+        self.u_in["unit"] = "m/s"
         self.Tt_in["unit"] = "K"
         self.Pt_in["unit"] = "Pa"
         self.Tt_out["unit"] = "K"
         self.Pt_out["unit"] = "Pa"
-        self.Dram["unit"] = "kN"
 
     def __str__(self):
         str = f"{self.name} Characteristics:\n"
