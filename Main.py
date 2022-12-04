@@ -57,3 +57,4 @@ Pt0 = gd.stagnation_pressure(pressure=P0, mach=XMN_0)
 Tt0 = gd.stagnation_temperature(temperature=T0, mach=XMN_0)
 Int10.Pt_in = {"value": Pt0, "units": "kPa"}
 Int10.Tt_in = {"value": Tt0, "units": "K"}
+Int10.W_in = {"value": W_total, "units": "kg/s"}
