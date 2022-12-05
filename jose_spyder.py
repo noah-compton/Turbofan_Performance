@@ -65,4 +65,3 @@ Mix50.W_in2   = {'value': MATLAB.mfan            , 'units': 'pps' }
 Trb40.calc()
 
 Mix50.calc()
-
