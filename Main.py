@@ -69,6 +69,6 @@ Int10.calc()
 Fan20.eff_poly = {"value": ef, "units": ""}
 Fan20.PR = {"value": pi_f, "units": ""}
 LinkPorts(Int10, Fan20)
-Fan20.calc()
+# Fan20.calc()
 print(Fan20.W_in["value"])
-print(Int10.W_in["value"])
+print(Int10.W_out["value"])

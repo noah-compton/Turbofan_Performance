@@ -49,11 +49,11 @@ class Inlet:
 
             if len(values) >= 2:
                 value = values[0]
-                unit = values[1]
+                units = values[1]
 
             elif len(values) == 1:
                 value = values[0]
-                unit = ""
+                units = ""
 
             else:
                 raise ValueError("Not enough inputs")
@@ -62,7 +62,7 @@ class Inlet:
                 self.P_in["value"] = value
 
                 if len(values) == 2:
-                    self.P_in["units"] = unit
+                    self.P_in["units"] = units
 
                 elif len(values) < 2:
                     self.P_in["units"] = "Pa"
@@ -72,7 +72,7 @@ class Inlet:
                 self.T_in["value"] = value
 
                 if len(values) == 2:
-                    self.T_in["units"] = unit
+                    self.T_in["units"] = units
 
                 elif len(values) < 2:
                     self.T_in["units"] = "K"
@@ -82,7 +82,7 @@ class Inlet:
                 self.XMN_in["value"] = value
 
                 if len(values) == 2:
-                    self.XMN_in["units"] = unit
+                    self.XMN_in["units"] = units
 
                 elif len(values) < 2:
                     self.XMN_in["units"] = ""
@@ -94,7 +94,7 @@ class Inlet:
                 self.W_in["value"] = value
 
                 if len(values) == 2:
-                    self.W_in["units"] = unit
+                    self.W_in["units"] = units
 
                 elif len(values) < 2:
                     self.W_in["units"] = "kg/s"
@@ -104,7 +104,7 @@ class Inlet:
                 self.PR["value"] = value
 
                 if len(values) == 2:
-                    self.PR["units"] = unit
+                    self.PR["units"] = units
 
                 elif len(values) < 2:
                     self.PR["units"] = ""
