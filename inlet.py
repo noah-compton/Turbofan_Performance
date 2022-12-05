@@ -144,7 +144,7 @@ class Inlet:
         )
 
         self.Tt_out["value"] = self.Tt_in["value"]
-        self.TR = (
+        self.TR["value"] = (
             self.Tt_in["value"] / self.T_in["value"]
         )  # Does TR just == 1 since Tt_out = Tt_in?
         self.Pt_out["value"] = self.Pt_in["value"] * self.PR["value"]
@@ -159,7 +159,9 @@ class Inlet:
         self.Tt_out["units"] = "K"
         self.Pt_out["units"] = "Pa"
         self.W_out["units"] = "kg/s"
-        # self.TR["units"] = ""  -> Noah C. Dec 4, for some reason code broke down with this
+        self.TR[
+            "units"
+        ] = ""  # -> Noah C. Dec 4, for some reason code broke down with this
 
     def __str__(self):
         str = f"{self.name} Characteristics:\n"

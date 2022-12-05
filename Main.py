@@ -3,7 +3,6 @@
 # Dec 4   | Fist upload to GitHub                            | Noah C.
 # -----------------------------------------------------------------------------
 
-import components
 from methods import LinkPorts
 import gas_dynamics as gd
 
@@ -83,4 +82,17 @@ Brn40.eff_mech = {"value": nb, "units": ""}
 Brn40.Tt_out = {"value": Tt4, "units": "K"}
 LinkPorts(Cmp30, Brn40)
 Brn40.calc()
-print(Brn40.TR["value"])
+
+# Turbine
+pi_t = pi_f / (pi_b * pi_c)
+Trb50.PR = {"value": pi_t, "units": ""}
+Trb50.eff_mech = {"value": nm, "units": ""}
+Trb50.eff_poly = {"value": et, "units": ""}
+Trb50.XMN_out = {"value": M5, "units": ""}
+Trb50.burner_f = {"value": Brn40.f["value"], "units": Brn40.f["units"]}
+Trb50.burner_TRmax = {"value": Brn40.TRmax["value"], "units": Brn40.TRmax["units"]}
+Trb50.compr_TR = {"value": Cmp30.TR["value"], "units": Cmp30.TR["units"]}
+Trb50.fan_TR = {"value": Fan20.TR["value"], "units": Fan20.TR["units"]}
+Trb50.inlet_TR = {"value": Int10.TR["value"], "units": Int10.TR["units"]}
+LinkPorts(Trb50, Brn40)
+Trb50.calc()
