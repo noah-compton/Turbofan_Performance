@@ -49,11 +49,11 @@ class Inlet:
 
             if len(values) >= 2:
                 value = values[0]
-                unit = values[1]
+                units = values[1]
 
             elif len(values) == 1:
                 value = values[0]
-                unit = ""
+                units = ""
 
             else:
                 raise ValueError("Not enough inputs")
