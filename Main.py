@@ -96,3 +96,4 @@ Trb50.fan_TR = {"value": Fan20.TR["value"], "units": Fan20.TR["units"]}
 Trb50.inlet_TR = {"value": Int10.TR["value"], "units": Int10.TR["units"]}
 LinkPorts(Brn40, Trb50)
 Trb50.calc()
+print(Trb50.W_in["value"])
