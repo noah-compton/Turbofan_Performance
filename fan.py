@@ -106,7 +106,7 @@ class Fan:
             )
 
         # values
-        self.TR["value"] = self.PR["value"] ** ((y - 1) / (y * self.ef["value"]))
+        self.TR["value"] = self.PR["value"] ** ((y - 1) / (y * self.eff_poly["value"]))
         self.Pt_13["value"] = self.PR["value"] * self.Pt_in["value"]
         self.Tt_13["value"] = self.TR["value"] * self.Tt_in["value"]
 

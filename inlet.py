@@ -158,6 +158,7 @@ class Inlet:
         self.Pt_in["units"] = "Pa"
         self.Tt_out["units"] = "K"
         self.Pt_out["units"] = "Pa"
+        self.W_out["units"] = "kg/s"
         # self.TR["units"] = ""  -> Noah C. Dec 4, for some reason code broke down with this
 
     def __str__(self):
