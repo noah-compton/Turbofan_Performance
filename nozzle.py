@@ -27,6 +27,7 @@ class Nozzle:
         # Inlet
         self.Pt_in = initial.copy()
         self.Tt_in = initial.copy()
+        self.W_in = initial.copy()
 
         # Outlet
         self.Pt_out = initial.copy()
@@ -37,6 +38,7 @@ class Nozzle:
         self.P_out = initial.copy()
         self.u_out = initial.copy()
         self.u_effective = initial.copy()
+        self.W_out = initial.copy()
 
         # Characteristics
         self.a_out = initial.copy()
@@ -112,7 +114,7 @@ class Nozzle:
             else:
                 raise ValueError("Incorrect inputs!")
 
-    def calc(self):
+    def calc(self, P0):
         y = 1.4
 
         if self.PR["value"] > 0 and self.Pt_in["value"]:
@@ -121,7 +123,7 @@ class Nozzle:
         else:
             raise ValueError("Incorrecpt inputs for nozzle.")
 
-        self.P_out["value"] = Freestream.P["value"]
+        self.P_out["value"] = P0
         self.Pt_P["value"] = self.Pt_out["value"] / self.P_out["value"]
         self.S1["value"] = (self.Pt_P["value"]) ** ((y - 1) / y) - 1
         self.XMN_out["value"] = math.sqrt(2 * self.S1["value"] / (y - 1))
@@ -131,6 +133,7 @@ class Nozzle:
         self.a_out["value"] = math.sqrt(y * gd.fluids.air.R * self.T_out["value"])
         self.u_out["value"] = self.a_out["value"] * self.XMN_out["value"]
         self.u_effective["value"] = self.u_out["value"]
+        self.W_out["value"] = self.W_in["value"]
 
         self.P_out["units"] = self.Pt_in["units"]
         self.Pt_out["units"] = self.Pt_in["units"]
@@ -143,6 +146,7 @@ class Nozzle:
         self.a_out["units"] = "m/s"
         self.u_out["units"] = "m/s"
         self.u_effective["units"] = self.u_out["units"]
+        self.W_out["units"] = self.W_in["units"]
 
     def __str__(self):
         str = f"{self.name} Characteristics:\n" f"Efficiency:\n" f"Pressure Ratio:\n"
