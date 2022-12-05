@@ -85,7 +85,7 @@ class Turbine:
         self.Wf = initial.copy()  # W_f -> fuel flow
         self.W_fan = initial.copy()  # W_fan -> fan mass flow rate
 
-        for value in kwargs:
+        for property in kwargs:
             values = kwargs[property]
 
             if len(values) >= 2:
@@ -276,19 +276,16 @@ class Turbine:
             else:
                 raise ValueError("Incorrect inputs!")
 
-    def poly_efficiency(self):
-        y = 1.4
+    def polytropic_efficiency(TR: float, PR: float, gas=gd.fluids.air):
+        y = gd.fluids.air.gamma
 
-        if self.TR["value"] > 0 and self.PR["value"] > 0:
-            self.eff_poly["value"] = (1 - self.TR["value"]) / (
-                1 - (self.PR["value"] ** ((y - 1) / y))
-            )
-            self.eff_poly["units"] = "-"
-
+        if TR > 0 and PR > 0:
+            eff_poly = (1 - TR) / (1 - (PR ** ((y - 1) / y)))
         else:
             raise ValueError(
                 "Incorrect inputs. Temperature ratio and pressure ratio required only."
             )
+        return eff_poly
 
     def Tt_out_from_poly_efficiency(self):
         y = 1.4
@@ -416,7 +413,7 @@ class Turbine:
 
     def calc(self):
         y = 1.4
-        
+
         if self.PR["value"] > 0 and self.eff_poly["value"] > 0:
             self.TR["value"] = self.PR["value"] ** (
                 (y - 1) * self.eff_poly["value"] / y
