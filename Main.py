@@ -3,7 +3,7 @@
 # Dec 4   | Fist upload to GitHub                            | Noah C.
 # -----------------------------------------------------------------------------
 
-from methods import LinkPorts
+from processess import LinkPorts
 import gas_dynamics as gd
 
 from inlet import Inlet  # Added, Noah C. Dec 3
