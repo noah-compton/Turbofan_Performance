@@ -11,35 +11,35 @@ def LinkPorts(object1, object2):
     object2.inlet  = object1.name
     object1.outlet = object2.name
 
-# def LinkStreams(object1, object2, object3):
-#     object3.Pt_in1 = object1.Pt_out
-#     object3.Tt_in1 = object1.Tt_out
-#     object3.W_in1  = object1.W_out
+def LinkStreams(object1, object2, object3):
+    object3.Pt_in1 = object1.Pt_out
+    object3.Tt_in1 = object1.Tt_out
+    object3.W_in1  = object1.W_out
     
-#     object1.outlet  = object3.name
-#     object3.inlet1  = object1.name
+    object1.outlet  = object3.name
+    object3.inlet1  = object1.name
     
-#     object3.Pt_in = object2.Pt_out
-#     object3.Tt_in = object2.Tt_out
-#     object3.W_in  = object2.W_out
+    object3.Pt_in = object2.Pt_out
+    object3.Tt_in = object2.Tt_out
+    object3.W_in  = object2.W_out
     
-#     object3.inlet2  = object2.name
-#     object2.outlet  = object1.name
+    object3.inlet2  = object2.name
+    object2.outlet  = object1.name
     
-# def SplitStream(object1, object2, object3):
-#     object2.Pt_in = object1.Pt_out1
-#     object2.Tt_in = object1.Tt_out1
-#     object2.W_in  = object1.W_out1
+def SplitStream(object1, object2, object3):
+    object2.Pt_in = object1.Pt_out1
+    object2.Tt_in = object1.Tt_out1
+    object2.W_in  = object1.W_out1
     
-#     object2.inlet  = object1.name
-#     object1.outlet1 = object2.name
+    object2.inlet  = object1.name
+    object1.outlet1 = object2.name
     
-#     object3.Pt_in = object1.Pt_out2
-#     object3.Tt_in = object1.Tt_out2
-#     object3.W_in  = object1.W_out2
+    object3.Pt_in = object1.Pt_out2
+    object3.Tt_in = object1.Tt_out2
+    object3.W_in  = object1.W_out2
     
-#     object3.inlet  = object1.name
-#     object1.outlet2 = object3.name
+    object3.inlet  = object1.name
+    object1.outlet2 = object3.name
     
     
 # Define a function that checks units

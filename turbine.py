@@ -471,9 +471,9 @@ class Turbine:
         self.W_out["units"] = self.W_in["units"]
 
     def __str__(self):
-        str = (
+        output = (
             f"{self.name} Characteristics:\n Temperature Ratio: {self.TR}\n Bypass Ratio: {self.BPR}\n Mach at exit: {self.XMN_out}\n Core mass flow rate: {self.W_core}\n Fuel mass flow rate: {self.W_f}\n Fan mass flow rate: {self.W_fan}"
             f"Efficiency:\n Polytropic Efficiency: {self.eff_poly}\n Mechanical Efficiency: {self.eff_mech}\n"
             f" Pressure Ratio: {self.PR}"
         )
-        return str
+        return output
