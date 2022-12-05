@@ -5,6 +5,7 @@
 #         | Update __str__ definition                        |
 # ----------------------------------------------------------------------------
 # Nov 30  | Initial .py file on GitHub                       | Jose R.
+import math
 
 class Compressor:
     def __init__(self, **kwargs):
@@ -134,7 +135,6 @@ class Compressor:
             self.TR['units'] = '-'       
        
         elif self.TR['value'] > 0. and self.eff_poly['value'] > 0.:        
-        # elif hasattr(self, 'TR['value']') and hasattr(self, "e['value']"):
             self.PR['value'] = self.TR['value']**((y*self.eff_poly['value'])/(y-1))
             self.PR['units'] = '-'
 

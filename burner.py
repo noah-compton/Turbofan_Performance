@@ -148,7 +148,12 @@ class Burner:
         # Calculate TRmax
         self.max_temperature_ratio(T0)
 
-        
+        # Calculate Fuel Flow
+        self.fuel_flow()
+
+        # Conservation
+        self.mass_conservation()
+
         self.Pt_out['value'] = self.PR['value'] * self.Pt_in['value']
         self.Pt_out['units'] = self.Pt_in['units']
 

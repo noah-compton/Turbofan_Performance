@@ -46,24 +46,8 @@ Trb40.eff_mech = {'value': MATLAB.nm    , 'units': '-' }
 Trb40.eff_poly = {'value': MATLAB.et    , 'units': '-' }
 Trb40.W_out    = Trb40.W_in
 
-# Bypass, Station: 13
-
-# Mixer, Station 50
-
 Mix50.Tt_in2  = {'value': MATLAB.Tt15  , 'units': 'K' }
 Mix50.PR      = {'value': MATLAB.pi_mf , 'units': '-' }
-
-# Nozzle, Station 70
-
-
-
-
-
-# Calculations
-
-
-# Int10.calc()
-# SplitStream(Int10, Cmp20, Byp13)
 
 Cmp20.calc()
 LinkPorts(Cmp20, Brn30)
@@ -77,15 +61,8 @@ Mix50.Pt_in1  = {'value': MATLAB.Pt5             , 'units': 'Pa'  }
 Mix50.Tt_in1  = {'value': MATLAB.Tt5             , 'units': 'K'   }
 Mix50.W_in1   = {'value': MATLAB.m0 + MATLAB.mf  , 'units': 'pps' }
 Mix50.W_in2   = {'value': MATLAB.mfan            , 'units': 'pps' }
- 
-# pdb.set_trace()
+
+Trb40.calc()
 
 Mix50.calc()
-
-pdb.set_trace()
-
-# Performance Calculations
-
-# Some sort of function to output data
-
 
