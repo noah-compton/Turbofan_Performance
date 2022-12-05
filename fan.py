@@ -110,7 +110,7 @@ class Fan:
         self.Pt_13["value"] = self.PR["value"] * self.Pt_in["value"]
         self.Tt_13["value"] = self.TR["value"] * self.Tt_in["value"]
 
-        self.W_in["value"] = self.W_out["value"]  # -> Noah C. added Dec 4
+        self.W_out["value"] = self.W_in["value"]  # -> Noah C. added Dec 4
 
         # units
         self.TR["units"] = ""
