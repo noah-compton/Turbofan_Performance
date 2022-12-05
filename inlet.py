@@ -18,7 +18,7 @@ R = gd.fluids.air.R
 class Inlet:
     def __init__(self, **kwargs):
 
-        init = {"value": 0.0, "unit": "-"}
+        init = {"value": 0.0, "units": "-"}
 
         self.name = ""
         self.inlet = ""
@@ -61,30 +61,30 @@ class Inlet:
                 self.P_in["value"] = value
 
                 if len(values) == 2:
-                    self.P_in["unit"] = unit
+                    self.P_in["units"] = unit
 
                 elif len(values) < 2:
-                    self.P_in["unit"] = "Pa"
+                    self.P_in["units"] = "Pa"
                     raise Warning("Not enough inputs: assuming Pa for units for P_in")
 
             elif property == "T_in":
                 self.T_in["value"] = value
 
                 if len(values) == 2:
-                    self.T_in["unit"] = unit
+                    self.T_in["units"] = unit
 
                 elif len(values) < 2:
-                    self.T_in["unit"] = "K"
+                    self.T_in["units"] = "K"
                     raise Warning("Not enough inputs: assuming K as units for T_in.")
 
             elif property == "XMN_in":
                 self.XMN_in["value"] = value
 
                 if len(values) == 2:
-                    self.XMN_in["unit"] = unit
+                    self.XMN_in["units"] = unit
 
                 elif len(values) < 2:
-                    self.XMN_in["unit"] = ""
+                    self.XMN_in["units"] = ""
                     raise Warning(
                         "Not enough inputs: assuming dimensionless parameter."
                     )
@@ -93,20 +93,20 @@ class Inlet:
                 self.W_in["value"] = value
 
                 if len(values) == 2:
-                    self.W_in["unit"] = unit
+                    self.W_in["units"] = unit
 
                 elif len(values) < 2:
-                    self.W_in["unit"] = "kg/s"
+                    self.W_in["units"] = "kg/s"
                     raise Warning("Not enough inputs: assuming kg/s as units for m2.")
 
             elif property == "PR":
                 self.PR["value"] = value
 
                 if len(values) == 2:
-                    self.PR["unit"] = unit
+                    self.PR["units"] = unit
 
                 elif len(values) < 2:
-                    self.PR["unit"] = ""
+                    self.PR["units"] = ""
                     raise Warning(
                         "Not enough inputs: assuming dimensionless parameter."
                     )
@@ -143,17 +143,19 @@ class Inlet:
         )
 
         self.Tt_out["value"] = self.Tt_in["value"]
-        self.TR = self.Tt_in["value"] / self.T_in["value"]
+        self.TR = (
+            self.Tt_in["value"] / self.T_in["value"]
+        )  # Does TR just == 1 since Tt_out = Tt_in?
         self.Pt_out["value"] = self.Pt_in["value"] * self.PR["value"]
 
         # units
-        self.a_in["unit"] = "m/s"
-        self.u_in["unit"] = "m/s"
-        self.Tt_in["unit"] = "K"
-        self.Pt_in["unit"] = "Pa"
-        self.Tt_out["unit"] = "K"
-        self.Pt_out["unit"] = "Pa"
-        # self.TR["unit"] = ""
+        self.a_in["units"] = "m/s"
+        self.u_in["units"] = "m/s"
+        self.Tt_in["units"] = "K"
+        self.Pt_in["units"] = "Pa"
+        self.Tt_out["units"] = "K"
+        self.Pt_out["units"] = "Pa"
+        # self.TR["units"] = ""  -> Noah C. Dec 4, for some reason code broke down with this
 
     def __str__(self):
         str = f"{self.name} Characteristics:\n"

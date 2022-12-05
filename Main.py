@@ -63,4 +63,5 @@ Int10.W_in = {"value": W_total, "unit": "kg/s"}
 Int10.XMN_in = {"value": XMN_0, "unit": ""}
 Int10.calc()
 
+Fan20.eff_poly = {"value": ef, "unit": ""}
 LinkPorts(Int10, Fan20)
