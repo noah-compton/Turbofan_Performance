@@ -16,7 +16,7 @@ from burner import Burner
 # from inlet import Inlet 
 
 # from turbine import Turbine
-from methods import LinkPorts
+from processes import LinkPorts
 import pdb
 # import gas_dynamics as gd
 

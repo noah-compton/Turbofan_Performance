@@ -122,7 +122,7 @@ class Compressor:
             elif property == "name":
                 self.name = values
 
-    # Methods
+    # processes
     def poly_efficiency(self):
         y = 1.4
 

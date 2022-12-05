@@ -6,8 +6,8 @@ import pdb
 # Part List
 from part_list import *
 
-# Methods
-from methods import *
+# processes
+from processes import *
 
 # Global variables
 global T0 # Maybe?

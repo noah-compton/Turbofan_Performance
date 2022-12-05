@@ -28,7 +28,7 @@
 #         | alterations for workability                      |
 #         | To do:                                           |
 #         |   - Add _str_ method                             |
-#         |   - Add a5, byp ratio, m0, mfan, and mf methods  |
+#         |   - Add a5, byp ratio, m0, mfan, and mf processes  |
 # ----------------------------------------------------------------------------
 # Nov 25  | First Upload to Github                           |
 # ----------------------------------------------------------------------------
