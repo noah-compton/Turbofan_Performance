@@ -17,28 +17,28 @@ R = gd.fluids.air.R
 
 class Inlet:
     def __init__(self, **kwargs):
-        
-        init = {'value': 0., 'unit': '-'}
-        
-        self.name   = ''
-        self.inlet = ''
-        self.outlet = ''
-        
-        #Inlet
+
+        init = {"value": 0.0, "unit": "-"}
+
+        self.name = ""
+        self.inlet = ""
+        self.outlet = ""
+
+        # Inlet
         self.P_in = init.copy()
-        self.T_in= init.copy()
+        self.T_in = init.copy()
         self.XMN_in = init.copy()
         self.W_in = init.copy()
 
         # Outlet
         self.Pt_in = init.copy()
         self.Tt_in = init.copy()
-        self.a_in = init.copy()    # a_in
-        self.u_in = init.copy()    # u_in
+        self.a_in = init.copy()  # a_in
+        self.u_in = init.copy()  # u_in
         self.Tt_out = init.copy()
         self.Pt_out = init.copy()
 
-        #Characteristics
+        # Characteristics
         self.PR = init.copy()
         self.TR = init.copy()
 
@@ -130,8 +130,18 @@ class Inlet:
         # calculate values
         self.a_in["value"] = math.sqrt(y * R * self.T_in["value"])
         self.u_in["value"] = self.XMN_in["value"] * self.a_in["value"]
-        self.Tt_in["value"] = gd.stagnation_temperature_ratio(mach=self.XMN_in["value"])
-        self.Pt_in["value"] = gd.stagnation_pressure_ratio(mach=self.XMN_in["value"])
+
+        # self.Tt_in["value"] = gd.stagnation_temperature_ratio(mach=self.XMN_in["value"])  -> Noah C. Dec 4
+        # self.Pt_in["value"] = gd.stagnation_pressure_ratio(mach=self.XMN_in["value"])     -> Noah C. Dec 4
+
+        # The following added by Noah C. Dec 4:
+        self.Tt_in["value"] = gd.stagnation_temperature(
+            temperature=self.T_in["value"], mach=self.XMN_in["value"]
+        )
+        self.Pt_in["value"] = gd.stagnation_pressure(
+            pressure=self.P_in["value"], mach=self.XMN_in["value"]
+        )
+
         self.Tt_out["value"] = self.Tt_in["value"]
         self.TR = self.Tt_in["value"] / self.T_in["value"]
         self.Pt_out["value"] = self.Pt_in["value"] * self.PR["value"]
@@ -143,7 +153,7 @@ class Inlet:
         self.Pt_in["unit"] = "Pa"
         self.Tt_out["unit"] = "K"
         self.Pt_out["unit"] = "Pa"
-        self.TR["unit"] = ""
+        # self.TR["unit"] = ""
 
     def __str__(self):
         str = f"{self.name} Characteristics:\n"

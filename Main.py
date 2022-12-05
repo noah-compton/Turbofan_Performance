@@ -55,6 +55,12 @@ P0 = 12  # [kPa] free stream static pressure
 T0 = 223  # [K] free stream static temp
 Pt0 = gd.stagnation_pressure(pressure=P0, mach=XMN_0)
 Tt0 = gd.stagnation_temperature(temperature=T0, mach=XMN_0)
-Int10.Pt_in = {"value": Pt0, "units": "kPa"}
-Int10.Tt_in = {"value": Tt0, "units": "K"}
-Int10.W_in = {"value": W_total, "units": "kg/s"}
+
+# Calculations
+Int10.P_in = {"value": P0, "unit": "kPa"}
+Int10.T_in = {"value": T0, "unit": "K"}
+Int10.W_in = {"value": W_total, "unit": "kg/s"}
+Int10.XMN_in = {"value": XMN_0, "unit": ""}
+Int10.calc()
+
+LinkPorts(Int10, Fan20)
