@@ -294,6 +294,11 @@ class Turbine:
         y = gas.gamma
 
         if Tt_in > 0 and PR > 0 and eff_poly > 0:
+            if eff_poly > 1:
+                raise ValueError(
+                    "Please enter an efficiency less than or equal to one."
+                )
+
             Tt_out = (-Tt_in) * eff_poly * (1 - (PR) ** ((y - 1) / y)) - 1
 
         else:
@@ -302,22 +307,25 @@ class Turbine:
             )
         return Tt_out
 
-    def Pt_out_from_poly_efficiency(self):
-        y = 1.4
+    def Pt_out_from_poly_efficiency(
+        Pt_in: float, TR: float, eff_poly: float, gas=gd.fluids.air
+    ) -> float:
+        y = gas.gamma
 
-        if (
-            self.Pt_in["value"] > 0
-            and self.TR["self"] > 0
-            and self.eff_poly["self"] > 0
-        ):
-            self.Pt_out["value"] = self.Pt_in["value"] * (
-                1 - ((1 - self.TR["value"]) / self.eff_poly["value"])
-            ) ** (y / (y - 1))
+        if Pt_in > 0 and TR > 0 and eff_poly > 0:
+            if eff_poly > 1:
+                raise ValueError(
+                    "Please enter an efficiency less than or equal to one."
+                )
+
+            Pt_out = Pt_in * (1 - ((1 - TR) / eff_poly)) ** (y / (y - 1))
 
         else:
             raise ValueError(
                 "Incorrect inputs. Total pressure in (Pt_in), temperature ratio, and polytropic efficiency required only"
             )
+
+        return Pt_out
 
     def ideal_Tt_out(self):
         y = 1.4
@@ -345,7 +353,37 @@ class Turbine:
                 "Incorrect inputs. Total pressure in (Pt_in) and temperature ratio required only"
             )
 
-    # def pressure_ratio_from_poly_efficiency(self):
+    def pressure_ratio_from_poly_efficiency(
+        TR: float, eff_poly: float, gas=gd.fluids.air
+    ) -> float:
+        y = gas.gamma
+
+        # (1 - ((1 - self.TR["value"]) / self.eff_poly["value"])) ** (y / (y - 1))
+
+        if TR > 0 and eff_poly > 0:
+            PR = (1 - ((1 - TR) / eff_poly)) ** (y / (y - 1))
+
+        else:
+            raise ValueError(
+                "Incorrect inputs. Temperature ratio (TR) and polytropic efficiency required only."
+            )
+
+        return PR
+
+    def temp_ratio_from_poly_efficiency(
+        PR: float, eff_poly: float, gas=gd.fluids.air
+    ) -> float:
+        y = gas.gamma
+
+        if PR > 0 and eff_poly > 0:
+            TR = PR ** ((y - 1) * eff_poly / y)
+
+        else:
+            raise ValueError(
+                "Incorrect inputs. Pressure ratio and polytropic efficiency required only."
+            )
+
+        return TR
 
     def temperature_ratio_from_poly_efficiency(self):
         y = 1.4
@@ -373,6 +411,22 @@ class Turbine:
                 "Incorrect inputs. Total tempurature out (Tt5) and Mach out (XMN_out) required only."
             )
 
+    def speed_of_sound_out(Tt_out: float, mach_out: float, gas=gd.fluids.air) -> float:
+        y = gas.gamma
+        R = gas.R
+
+        if Tt_out > 0 and mach_out > 0:
+            T_out = Tt_out * ((1 + 0.5 * (y - 1) * mach_out**2) ** -1)
+
+            a_out = math.sqrt(R * y * T_out)
+
+        else:
+            raise ValueError(
+                "Incorrect inputs. Total tempurature out (Tt5) and Mach out (mach_out) required only."
+            )
+
+        return a_out
+
     def sonic_velocity_out(self):
         y = 1.4
 
@@ -387,6 +441,23 @@ class Turbine:
             raise ValueError(
                 "Incorrect inputs. Total tempurature out (Tt5) and Mach out (XMN_out) required only."
             )
+
+    def static_pressure_out(
+        Pt_out: float, Tt_out: float, mach_out: float, gas=gd.fluids.air
+    ) -> float:
+        y = gas.gamma
+
+        if Pt_out > 0 and Tt_out > 0 and mach_out > 0:
+            T_out = Tt_out * ((1 + 0.5 * (y - 1) * mach_out**2) ** -1)
+
+            P_out = Pt_out * (((Tt_out / T_out) ** (y / (y - 1))) ** -1)
+
+        else:
+            raise ValueError(
+                "Incorrect inputs. Total temperature out (Tt_out), total pressure out (Pt_out), and Mach number out (XMN_out) required."
+            )
+
+        return P_out
 
     def static_pressure(self):
         y = 1.4
