@@ -10,7 +10,7 @@ from part_list import *
 from methods import *
 
 # Global variables
-global T0
+global T0 # Maybe?
 
 # Flight Conditions (Free Stream)
 T0   = {'value': 223   , 'units': 'K' }
@@ -83,4 +83,9 @@ Mix50.W_in2   = {'value': MATLAB.mfan            , 'units': 'pps' }
 Mix50.calc()
 
 pdb.set_trace()
+
+# Performance Calculations
+
+# Some sort of function to output data
+
 

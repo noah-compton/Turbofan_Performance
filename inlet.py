@@ -2,7 +2,6 @@
 # Isabel H
 # need to define __str__
 
-
 import gas_dynamics as gd
 import math
 
@@ -18,28 +17,30 @@ R = gd.fluids.air.R
 class Inlet:
     def __init__(self, **kwargs):
         
-        init = {'value': 0., 'unit': '-'}
+        init = {'value': 0., 'units': '-'}
         
         self.name   = ''
+        self.inlet = ''
+        self.outlet = ''
         
         #Inlet
-        self.P0 = init.copy()
-        self.T0= init.copy()
-        self.M0 = init.copy()
-        self.m2 = init.copy()
+        self.P_in = init.copy()
+        self.T_in= init.copy()
+        self.XMN_in = init.copy()
+        self.W_in = init.copy()
 
         # Outlet
         self.Pt_in = init.copy()
         self.Tt_in = init.copy()
-        self.a0 = init.copy()    # a_in
-        self.u0 = init.copy()    # u_in
+        self.a_in = init.copy()    # a_in
+        self.u_in = init.copy()    # u_in
         self.Tt_out = init.copy()
         self.Pt_out = init.copy()
-        self.Dram = init.copy()     # Will be calculated outside of the class
+        self.W_out = init.copy()
 
         #Characteristics
-        self.Pi_d = init.copy()
-        self.T_r = init.copy()
+        self.PR = init.copy()
+        self.TR = init.copy()
 
         for property in kwargs:
 
@@ -47,65 +48,65 @@ class Inlet:
 
             if len(values) >= 2:
                 value = values[0]
-                unit = values[1]
+                units = values[1]
 
             elif len(values) == 1:
                 value = values[0]
-                unit = ""
+                units = ""
 
             else:
                 raise ValueError("Not enough inputs")
 
-            if property == "P0":
-                self.P0["value"] = value
+            if property == "P_in":
+                self.P_in["value"] = value
 
                 if len(values) == 2:
-                    self.P0["unit"] = unit
+                    self.P_in["units"] = units
 
                 elif len(values) < 2:
-                    self.P0["unit"] = "Pa"
+                    self.P_in["units"] = "Pa"
                     raise Warning("Not enough inputs: assuming Pa for units for P_in")
 
-            elif property == "T0":
-                self.T0["value"] = value
+            elif property == "T_in":
+                self.T_in["value"] = value
 
                 if len(values) == 2:
-                    self.T0["unit"] = unit
+                    self.T_in["units"] = units
 
                 elif len(values) < 2:
-                    self.T0["unit"] = "K"
+                    self.T_in["units"] = "K"
                     raise Warning("Not enough inputs: assuming K as units for T_in.")
 
-            elif property == "M0":
-                self.T0["value"] = value
+            elif property == "XMN_in":
+                self.XMN_in["value"] = value
 
                 if len(values) == 2:
-                    self.M0["unit"] = unit
+                    self.XMN_in["units"] = units
 
                 elif len(values) < 2:
-                    self.M0["unit"] = ""
+                    self.XMN_in["units"] = ""
                     raise Warning(
                         "Not enough inputs: assuming dimensionless parameter."
                     )
 
-            elif property == "m2":
-                self.m2["value"] = value
+            elif property == "W_in":
+                self.W_in["value"] = value
 
                 if len(values) == 2:
-                    self.m2["unit"] = unit
+                    self.W_in["units"] = units
 
                 elif len(values) < 2:
-                    self.m2["unit"] = "kg/s"
+                    self.W_in["units"] = "kg/s"
                     raise Warning("Not enough inputs: assuming kg/s as units for m2.")
 
-            elif property == "Pi_d":
-                self.Pi_d["value"] = value
+            elif property == "PR":
+                self.PR["value"] = value
 
                 if len(values) == 2:
-                    self.Pi_d["unit"] = unit
+                    self.PR["units"] = units
 
                 elif len(values) < 2:
-                    self.Pi_d["unit"] = ""
+                    self.PR["units"] = ""
                     raise Warning(
                         "Not enough inputs: assuming dimensionless parameter."
                     )
@@ -115,10 +116,10 @@ class Inlet:
 
     def calc(self):
         if (
-            self.T0["value"] > 0
-            and self.P0["value"] > 0
-            and self.M0["value"] > 0
-            and self.m2["value"] > 0
+            self.T_in["value"] > 0
+            and self.P_in["value"] > 0
+            and self.XMN_in["value"] > 0
+            and self.W_in["value"] > 0
         ):
             pass
         else:
@@ -127,23 +128,23 @@ class Inlet:
             )
 
         # calculate values
-        self.a0["value"] = math.sqrt(y * R * self.T0["value"])
-        self.u0["value"] = self.M0["value"] * self.a_in["value"]
-        self.Tt_in["value"] = gd.stagnation_temperature_ratio(mach=self.M0["value"])
-        self.Pt_in["value"] = gd.stagnation_pressure_ratio(mach=self.M0["value"])
+        self.a_in["value"] = math.sqrt(y * R * self.T_in["value"])
+        self.u_in["value"] = self.XMN_in["value"] * self.a_in["value"]
+        self.Tt_in["value"] = gd.stagnation_temperature(temperature = self.T_in["value"], mach=self.XMN_in["value"])
+        self.Pt_in["value"] = gd.stagnation_pressure(pressure = self.P_in["value"], mach=self.XMN_in["value"])
         self.Tt_out["value"] = self.Tt_in["value"]
-        self.T_r = self.Tt_in["value"] / self.T0["value"]
-        self.Pt_out["value"] = self.Pt_in["value"] * self.Pi_d["value"]
-        self.Dram["value"] = self.m2["value"] * self.u_in["value"]
+        self.TR = self.Tt_in["value"] / self.T_in["value"]
+        self.Pt_out["value"] = self.Pt_in["value"] * self.PR["value"]
+        self.W_out["value"] = self.W_in["value"]
 
         # units
-        self.a0["unit"] = "m/s"
-        self.u0["unit"] = "m/s"
-        self.Tt_in["unit"] = "K"
-        self.Pt_in["unit"] = "Pa"
-        self.Tt_out["unit"] = "K"
-        self.Pt_out["unit"] = "Pa"
-        self.Dram["unit"] = "kN"
+        self.a_in["units"] = "m/s"
+        self.u_in["units"] = "m/s"
+        self.Tt_in["units"] = "K"
+        self.Pt_in["units"] = "Pa"
+        self.Tt_out["units"] = "K"
+        self.Pt_out["units"] = "Pa"
+        self.W_out["units"] = "kg/s"
 
     def __str__(self):
         str = f"{self.name} Characteristics:\n"

@@ -18,9 +18,11 @@ y = gd.fluids.air.gamma
 class Nozzle:
     def __init__(self, **kwargs):
 
-        initial = {"value": 0.0, "unit": "-"}
+        initial = {"value": 0.0, "units": "-"}
 
         self.name = ""
+        self.inlet = ""
+        self.outlet = ""
 
         # Inlet
         self.Pt_in = initial.copy()
@@ -41,7 +43,7 @@ class Nozzle:
         self.S1 = initial.copy()
         self.S2 = initial.copy()
 
-        for value in kwargs:
+        for property in kwargs:
             values = kwargs[property]
 
             if len(values) >= 2:

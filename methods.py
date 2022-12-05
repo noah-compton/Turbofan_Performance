@@ -3,37 +3,6 @@
 
 from part_list import *
 
-# class Property():
-#     def __init__(self,value,unit):
-#         self.value = value
-#         self.unit = unit
-
-# class LinkPorts:
-#     def __init__(self) -> None:
-#         pass
-
-import pdb
-# import gas_dynamics as gd
-
-# def Fluid(name: str, gamma: float, R: float, units: str):
-#     gas = gd.fluid(name=name, gamma=gamma, R=R, units=units)
-#     gas.cp = gas.gamma * gas.R / (gas.gamma - 1)
-#     gas.cv = gas.cp - gas.R
-#     return gas    
-    
-def Drag():
-    pass
-    #Calculate Drag
-
-def Thrust():
-    pass
-    # Calculate Net Thrust
-    
-# def LinkPort(outlet):   
-#     inlet = (outlet['value'] , outlet['unit'])
-    
-#     return inlet
-
 def LinkPorts(object1, object2):
     object2.Pt_in = object1.Pt_out
     object2.Tt_in = object1.Tt_out
@@ -42,41 +11,36 @@ def LinkPorts(object1, object2):
     object2.inlet  = object1.name
     object1.outlet = object2.name
 
-
-def LinkStreams(object1, object2, object3):
-    object3.Pt_in1 = object1.Pt_out
-    object3.Tt_in1 = object1.Tt_out
-    object3.W_in1  = object1.W_out
+# def LinkStreams(object1, object2, object3):
+#     object3.Pt_in1 = object1.Pt_out
+#     object3.Tt_in1 = object1.Tt_out
+#     object3.W_in1  = object1.W_out
     
-    object1.outlet  = object3.name
-    object3.inlet1  = object1.name
+#     object1.outlet  = object3.name
+#     object3.inlet1  = object1.name
     
-    object3.Pt_in = object2.Pt_out
-    object3.Tt_in = object2.Tt_out
-    object3.W_in  = object2.W_out
+#     object3.Pt_in = object2.Pt_out
+#     object3.Tt_in = object2.Tt_out
+#     object3.W_in  = object2.W_out
     
-    object3.inlet2  = object2.name
-    object2.outlet  = object1.name
+#     object3.inlet2  = object2.name
+#     object2.outlet  = object1.name
     
-
-    pass
-
-def SplitStream(object1, object2, object3):
-    object2.Pt_in = object1.Pt_out1
-    object2.Tt_in = object1.Tt_out1
-    object2.W_in  = object1.W_out1
+# def SplitStream(object1, object2, object3):
+#     object2.Pt_in = object1.Pt_out1
+#     object2.Tt_in = object1.Tt_out1
+#     object2.W_in  = object1.W_out1
     
-    object2.inlet  = object1.name
-    object1.outlet1 = object2.name
+#     object2.inlet  = object1.name
+#     object1.outlet1 = object2.name
     
-    object3.Pt_in = object1.Pt_out2
-    object3.Tt_in = object1.Tt_out2
-    object3.W_in  = object1.W_out2
+#     object3.Pt_in = object1.Pt_out2
+#     object3.Tt_in = object1.Tt_out2
+#     object3.W_in  = object1.W_out2
     
-    object3.inlet  = object1.name
-    object1.outlet2 = object3.name
+#     object3.inlet  = object1.name
+#     object1.outlet2 = object3.name
     
-    pass    
     
 # Define a function that checks units
 def check_units(var1, var2):

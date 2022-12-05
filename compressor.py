@@ -16,20 +16,20 @@ class Compressor:
         self.outlet = ""
 
         # Inlet
-        self.Pt_in     = init.copy()
-        self.Tt_in     = init.copy()
-        self.W_in      = init.copy()
+        self.Pt_in = init.copy()
+        self.Tt_in = init.copy()
+        self.W_in = init.copy()
 
         # Outlet
-        self.Pt_out    = init.copy()
-        self.Tt_out    = init.copy()
-        self.W_out     = init.copy()
-         
+        self.Pt_out = init.copy()
+        self.Tt_out = init.copy()
+        self.W_out = init.copy()
+
         # Characteristics
-        self.PR        = init.copy()
-        self.TR        = init.copy()
-        self.eff_poly  = init.copy()
-        
+        self.PR = init.copy()
+        self.TR = init.copy()
+        self.eff_poly = init.copy()
+
         for property in kwargs:
 
             values = kwargs[property]
@@ -106,16 +106,18 @@ class Compressor:
                         "TR has not enough inputs, assuming value is dimensionless"
                     )
 
-            elif property == "e":
-                self.eff_poly['value'] = value 
-                
+            elif property == "eff_poy":
+                self.eff_poly["value"] = value
+
                 if len(values) == 2:
-                    self.eff_poly['units']  = units
-                    
+                    self.eff_poly["units"] = units
+
                 if len(values) < 2:
-                    self.eff_poly['units'] = "-"
-                    raise Warning("e has not enough inputs, assuming value is dimensionless")        
-                             
+                    self.eff_poly["units"] = "-"
+                    raise Warning(
+                        "e has not enough inputs, assuming value is dimensionless"
+                    )
+
             elif property == "name":
                 self.name = values
 
@@ -123,22 +125,24 @@ class Compressor:
     def poly_efficiency(self):
         y = 1.4
 
-        self.eff_poly['value'] = ((y-1)/y) * (math.log(self.PR['value'])/ math.log(self.TR['value']))
-        self.eff_poly['units'] = '-'
-    
-    def temperature_ratio(self):
-        y = 1.4
-
-        self.TR['value'] = self.PR['value']**((y-1)/(y*self.eff_poly['value']))
-        self.TR['units'] = '-'    
-
-    def pressure_ratio(self):
-        y = 1.4
+        if self.PR['value'] > 0. and self.TR['value'] > 0.:
+            self.eff_poly['value'] = ((y-1)/y) * (math.log(self.PR['value'])/ math.log(self.TR['value']))
+            self.eff_poly['units'] = '-'
         
-        self.PR['value'] = self.TR['value']**((y*self.eff_poly['value'])/(y-1))
-        self.PR['units'] = '-'
-        
-    def discharge_pressure(self):
+        elif self.PR['value'] > 0. and self.eff_poly['value'] > 0.:
+            self.TR['value'] = self.PR['value']**((y-1)/(y*self.eff_poly['value']))
+            self.TR['units'] = '-'       
+       
+        elif self.TR['value'] > 0. and self.eff_poly['value'] > 0.:        
+        # elif hasattr(self, 'TR['value']') and hasattr(self, "e['value']"):
+            self.PR['value'] = self.TR['value']**((y*self.eff_poly['value'])/(y-1))
+            self.PR['units'] = '-'
+
+        else:
+            raise ValueError(
+                "Not enough compressor characteristics were defined, check input"
+            )
+
         self.Pt_out["value"] = self.PR["value"] * self.Pt_in["value"]
         self.Pt_out["units"] = self.Pt_in["units"]
         
@@ -161,5 +165,3 @@ class Compressor:
     def __str__(self):
         str = f"{self.name} Characteristics:\n" f"Efficiency:\n" f"Pressure Ratio:\n"
         return str
-
-

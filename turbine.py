@@ -1,4 +1,10 @@
 # Date    | Description of Changes:                          | Author
+# -----------------------------------------------------------------------------
+# Dec 4   | Changed W_core to W_in and added W_out.          | Noah C.
+#         | Changed W_f to Wf. Edited for loop:              |
+#         |     "for value in kwargs"                        |
+#         |        - changed to                              |
+#         |     "for property in kwargs"                     |
 # ----------------------------------------------------------------------------
 # Dec 3   | Added units & _str_ def                          | Noah C.
 # ----------------------------------------------------------------------------
@@ -39,13 +45,6 @@ global y, R
 R = gd.fluids.air.R
 y = gd.fluids.air.gamma
 
-from part_list import *
-
-# from fan import Fan
-# from compressor import Compressor
-# from burner import Burner
-# from inlet import Inlet
-
 
 class Turbine:
     def __init__(self, **kwargs):
@@ -53,11 +52,20 @@ class Turbine:
         initial = {"value": 0.0, "units": "-"}
 
         self.name = ""
+        self.inlet = ""
+        self.outlet = ""
 
         # Inlet                                     Dec 2; JR Comment
         self.Pt_in = initial.copy()
         self.Tt_in = initial.copy()
-        self.W_in  = initial.copy()
+        self.W_in = initial.copy()
+
+        self.inlet_TR = initial.copy()
+        self.inlet_W_in = initial.copy()
+        self.fan_TR = initial.copy()
+        self.compr_TR = initial.copy()
+        self.burner_f = initial.copy()
+        self.burner_TRmax = initial.copy()
 
         # Outlet
         self.Pt_out = initial.copy()
@@ -65,7 +73,7 @@ class Turbine:
         self.P_out = initial.copy()
         self.T_out = initial.copy()
         self.a_out = initial.copy()  # Speed of sound at exit
-        self.W_out  = initial.copy()
+        self.W_out = initial.copy()
 
         # Characteristics
         self.PR = initial.copy()  # Pressure Ratio
@@ -74,11 +82,10 @@ class Turbine:
         self.eff_mech = initial.copy()  # Mechanicsal efficiency
         self.BPR = initial.copy()  # BPR -> bypass ratio
         self.XMN_out = initial.copy()  # Mach out
-        self.W_core = initial.copy()  #
-        self.W_f = initial.copy()  # W_f -> fuel flow
+        self.Wf = initial.copy()  # W_f -> fuel flow
         self.W_fan = initial.copy()  # W_fan -> fan mass flow rate
 
-        for property in kwargs: # for value in kwargs: 
+        for value in kwargs:
             values = kwargs[property]
 
             if len(values) >= 2:
@@ -183,25 +190,85 @@ class Turbine:
                     self.mach_at_exit["units"] = ""
                     raise Warning("Using Mach as dimensionless parameter.")
 
-            elif property == "W_core":
-                self.m0["value"] = value
+            elif property == "W_in":
+                self.W_in["value"] = value
 
                 if len(values) == 2:
-                    self.m0["units"] = unit
+                    self.W_in["units"] = unit
 
                 elif len(values) < 2:
-                    self.m0["units"] = "kg/s"
+                    self.W_in["units"] = "kg/s"
                     raise Warning("Not enough inputs: assuming kg/s for units")
 
-            elif property == "W_f":
-                self.mf["value"] = value
+            elif property == "Wf":
+                self.Wf["value"] = value
 
                 if len(values) == 2:
-                    self.mf["units"] = unit
+                    self.Wf["units"] = unit
 
                 elif len(values) < 2:
-                    self.mf["units"] = "kg/s"
+                    self.Wf["units"] = "kg/s"
                     raise Warning("Not enough inputs: assuming kg/s for units")
+
+            elif property == "inlet_TR":
+                self.inlet_TR["value"] = value
+
+                if len(values) == 2:
+                    self.inlet_TR["units"] = unit
+
+                elif len(values) < 2:
+                    self.inlet_TR["units"] = ""
+                    raise Warning("Not enough inputs: assuming dimensionless parameter")
+
+            elif property == "fan_TR":
+                self.fan_TR["value"] = value
+
+                if len(values) == 2:
+                    self.fan_TR["units"] = unit
+
+                elif len(values) < 2:
+                    self.fan_TR["units"] = ""
+                    raise Warning("Not enough inputs: assuming dimensionless parameter")
+
+            elif property == "compr_TR":
+                self.compr_TR["value"] = value
+
+                if len(values) == 2:
+                    self.compr_TR["units"] = unit
+
+                elif len(values) < 2:
+                    self.compr_TR["units"] = ""
+                    raise Warning("Not enough inputs: assuming dimensionless parameter")
+
+            elif property == "burner_f":
+                self.burner_f["value"] = value
+
+                if len(values) == 2:
+                    self.burner_f["units"] = unit
+
+                elif len(values) < 2:
+                    self.burner_f["units"] = ""
+                    raise Warning("Not enough inputs: assuming dimensionless parameter")
+
+            elif property == "burner_TRmax":
+                self.burner_TRmax["value"] = value
+
+                if len(values) == 2:
+                    self.burner_TRmax["units"] = unit
+
+                elif len(values) < 2:
+                    self.burner_TRmax["units"] = ""
+                    raise Warning("Not enough inputs: assuming dimensionless parameter")
+
+            elif property == "inlet_W_in":
+                self.inlet_W_in["value"] = value
+
+                if len(values) == 2:
+                    self.inlet_W_in["units"] = unit
+
+                elif len(values) < 2:
+                    self.inlet_W_in["units"] = "kg/s"
+                    raise Warning("Not enough inputs: assuming kg/s as units")
 
             elif property == "name":
                 self.name = values
@@ -373,33 +440,35 @@ class Turbine:
 
         self.TR["value"] = self.PR["value"] ** ((y - 1) * self.eff_poly["value"] / y)
         self.Tt_out["value"] = self.TR["value"] * self.Tt_in["value"]
-        self.T_out["value"] = self.Tt_out * (
+        self.T_out["value"] = self.Tt_out["value"] * (
             (1 + 0.5 * (y - 1) * self.XMN_out["value"] ** 2) ** -1
         )
         self.a_out["value"] = math.sqrt(y * gd.fluids.air.R * self.T_out["value"])
         self.BPR["value"] = (
             self.eff_mech["value"]
-            * (1 + Burner.f["value"])
-            * Burner.TRmax["value"]
+            * (1 + self.burner_f["value"])
+            * self.burner_TRmax["value"]
             * (1 - self.TR["value"])
-            - Inlet.TR["value"] * (Compressor.TR["value"] - 1)
-        ) / (Inlet.TR["value"] * (Fan.TR["value"] - 1))
+            - self.inlet_TR["value"] * (self.compr_TR["value"] - 1)
+        ) / (self.inlet_TR["value"] * (self.fan_TR["value"] - 1))
         self.Pt_out["value"] = self.Pt_in["value"] * self.PR["value"]
         self.P_out["value"] = self.Pt_out["value"] * (
             ((self.Tt_out["value"] / self.T_out["value"]) ** (y / (y - 1))) ** -1
         )
-        self.W_core["value"] = Inlet.W_total["value"] / (1 + self.BPR["value"])
-        self.W_fan["value"] = Inlet.W_total["value"] - self.W_core["value"]
-        self.W_f["value"] = Burner.f["value"] * self.W_core["value"]
+        self.W_in["value"] = self.inlet_W_in["value"] / (1 + self.BPR["value"])
+        self.W_fan["value"] = self.inlet_W_in["value"] - self.W_in["value"]
+        self.Wf["value"] = self.burner_f["value"] * self.W_in["value"]
+        self.W_out["value"] = self.W_in["value"] + self.Wf["value"]
 
         self.Pt_out["units"] = self.Pt_in["units"]
         self.Tt_out["units"] = self.Tt_in["units"]
         self.T_out["units"] = self.Tt_out["units"]
         self.P_out["units"] = self.Pt_out["units"]
         self.a_out["units"] = "m/s"
-        self.W_core["units"] = "kg/s"
-        self.W_fan["units"] = self.W_core["units"]
-        self.W_f["units"] = self.W_core["units"]
+        self.W_in["units"] = "kg/s"
+        self.W_fan["units"] = self.W_in["units"]
+        self.Wf["units"] = self.W_in["units"]
+        self.W_out["units"] = self.W_in["units"]
 
     def __str__(self):
         str = (
