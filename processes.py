@@ -64,7 +64,7 @@ def check_units(var1, var2):
         raise ValueError("Data type not recognized")
         
         
-def gross_thrust(nozzle: Nozzle):
+def gross_thrust(nozzle):
     
     Fg = {"value": 0.0, "units": "-"}
     Fg['value'] = nozzle.W_out['value'] * nozzle.u_out['value']
@@ -75,7 +75,7 @@ def gross_thrust(nozzle: Nozzle):
     
     return Fg
 
-def ram_drag(inlet: Inlet):
+def ram_drag(inlet):
     
     Dram = {"value": 0.0, "units": "-"}
     Dram['value'] = inlet.W_in['value'] * inlet.u_in['value']
@@ -87,7 +87,7 @@ def ram_drag(inlet: Inlet):
     
     return Dram
 
-def net_thrust(inlet: Inlet, nozzle: Nozzle):
+def net_thrust(inlet, nozzle):
     
     Fn = {"value": 0.0, "units": "-"}
     
@@ -101,7 +101,7 @@ def net_thrust(inlet: Inlet, nozzle: Nozzle):
     
     return Fn
 
-def efficiency(inlet: Inlet, burner: Burner, nozzle: Nozzle):
+def efficiency(inlet, burner, nozzle):
     Qr = 42800000
     
     TSFC      = {"value": 0.0, "units": "-"}
