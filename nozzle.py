@@ -27,6 +27,7 @@ class Nozzle:
         # Inlet
         self.Pt_in = initial.copy()
         self.Tt_in = initial.copy()
+        self.W_in  = initial.copy()
 
         # Outlet
         self.Pt_out = initial.copy()

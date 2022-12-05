@@ -68,7 +68,7 @@ def gross_thrust(nozzle):
     
     Fg = {"value": 0.0, "units": "-"}
     Fg['value'] = nozzle.W_out['value'] * nozzle.u_out['value']
-    Fg['units'] = nozzle.W_in['value'] + nozzle.u['value']
+    Fg['units'] = nozzle.W_out['units'] + nozzle.u_out['units']
     
     if Fg['units'] == 'kg/sm/s':
         Fg['units'] = 'N'
@@ -79,7 +79,7 @@ def ram_drag(inlet):
     
     Dram = {"value": 0.0, "units": "-"}
     Dram['value'] = inlet.W_in['value'] * inlet.u_in['value']
-    Dram['units'] = inlet.W_in['value'] + inlet.u_in['value']
+    Dram['units'] = inlet.W_in['units'] + inlet.u_in['units']
     
     if Dram['units'] == 'kg/sm/s':
         Dram['units'] = 'N'
