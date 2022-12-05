@@ -458,7 +458,7 @@ class Turbine:
         self.W_in["value"] = self.inlet_W_in["value"] / (1 + self.BPR["value"])
         self.W_fan["value"] = self.inlet_W_in["value"] - self.W_in["value"]
         self.Wf["value"] = self.burner_f["value"] * self.W_in["value"]
-        self.W_out["value"] = self.W_in["value"] + self.Wf["out"]
+        self.W_out["value"] = self.W_in["value"] + self.Wf["value"]
 
         self.Pt_out["units"] = self.Pt_in["units"]
         self.Tt_out["units"] = self.Tt_in["units"]

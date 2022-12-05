@@ -94,5 +94,5 @@ Trb50.burner_TRmax = {"value": Brn40.TRmax["value"], "units": Brn40.TRmax["units
 Trb50.compr_TR = {"value": Cmp30.TR["value"], "units": Cmp30.TR["units"]}
 Trb50.fan_TR = {"value": Fan20.TR["value"], "units": Fan20.TR["units"]}
 Trb50.inlet_TR = {"value": Int10.TR["value"], "units": Int10.TR["units"]}
-LinkPorts(Trb50, Brn40)
+LinkPorts(Brn40, Trb50)
 Trb50.calc()
