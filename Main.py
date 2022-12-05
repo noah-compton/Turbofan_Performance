@@ -70,3 +70,9 @@ Fan20.eff_poly = {"value": ef, "units": ""}
 Fan20.PR = {"value": pi_f, "units": ""}
 LinkPorts(Int10, Fan20)
 Fan20.calc()
+
+# Compressor
+Cmp30.PR = {"value": pi_c, "units": ""}
+Cmp30.eff_poly = {"value": ec, "units": ""}
+LinkPorts(Fan20, Cmp30)
+Cmp30.calc()

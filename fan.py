@@ -21,8 +21,8 @@ class Fan:
         self.Tt_in = init.copy()
         self.W_in = init.copy()  # -> Added Noah C. Dec 4
         # Outlet
-        self.Pt_13 = init.copy()
-        self.Tt_13 = init.copy()
+        self.Pt_out = init.copy()
+        self.Tt_out = init.copy()
         self.W_out = init.copy()  # -> Noah C. added Dec 4
         # Characteristics
         self.TR = init.copy()  # TR
@@ -107,15 +107,15 @@ class Fan:
 
         # values
         self.TR["value"] = self.PR["value"] ** ((y - 1) / (y * self.eff_poly["value"]))
-        self.Pt_13["value"] = self.PR["value"] * self.Pt_in["value"]
-        self.Tt_13["value"] = self.TR["value"] * self.Tt_in["value"]
+        self.Pt_out["value"] = self.PR["value"] * self.Pt_in["value"]
+        self.Tt_out["value"] = self.TR["value"] * self.Tt_in["value"]
 
         self.W_out["value"] = self.W_in["value"]  # -> Noah C. added Dec 4
 
         # units
         self.TR["units"] = ""
-        self.Pt_13["units"] = "Pa"
-        self.Tt_13["units"] = "K"
+        self.Pt_out["units"] = "Pa"
+        self.Tt_out["units"] = "K"
         self.W_out["units"] = self.W_in["units"]  # -> Noah C. added Dec 4
 
     def __str__(self):
