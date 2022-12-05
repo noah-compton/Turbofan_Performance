@@ -276,33 +276,31 @@ class Turbine:
             else:
                 raise ValueError("Incorrect inputs!")
 
-    def polytropic_efficiency(TR: float, PR: float, gas=gd.fluids.air):
-        y = gd.fluids.air.gamma
+    def polytropic_efficiency(TR: float, PR: float, gas=gd.fluids.air) -> float:
+        y = gas.gamma
 
         if TR > 0 and PR > 0:
             eff_poly = (1 - TR) / (1 - (PR ** ((y - 1) / y)))
+
         else:
             raise ValueError(
                 "Incorrect inputs. Temperature ratio and pressure ratio required only."
             )
         return eff_poly
 
-    def Tt_out_from_poly_efficiency(self):
-        y = 1.4
+    def Tt_out_from_poly_efficiency(
+        Tt_in: float, PR: float, eff_poly: float, gas=gd.fluids.air
+    ) -> float:
+        y = gas.gamma
 
-        if (
-            self.Tt_in["value"] > 0
-            and self.PR["value"] > 0
-            and self.eff_poly["value"] > 0
-        ):
-            self.Tt_out["value"] = (-self.Tt_in["value"]) * self.eff_poly["value"] * (
-                1 - (self.PR["value"]) ** ((y - 1) / y)
-            ) - 1
+        if Tt_in > 0 and PR > 0 and eff_poly > 0:
+            Tt_out = (-Tt_in) * eff_poly * (1 - (PR) ** ((y - 1) / y)) - 1
 
         else:
             raise ValueError(
                 "Incorrect inputs. Total temperature in (Tt_in), pressure ratio, and polytropic efficiency required only"
             )
+        return Tt_out
 
     def Pt_out_from_poly_efficiency(self):
         y = 1.4
