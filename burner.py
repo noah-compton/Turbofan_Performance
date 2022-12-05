@@ -1,7 +1,7 @@
 # Date    | Description of Changes:                          | Author
 # ----------------------------------------------------------------------------
 
-from methods import check_units
+from processes import check_units
 
 class Burner:
     def __init__(self, **kwargs):
@@ -108,7 +108,7 @@ class Burner:
             elif property == "name":
                 self.name = values
 
-    # Methods
+    # processes
     def temperature_ratio(self):
         if self.Tt_out['units'] == self.Tt_in['units']:
             dTt = self.Tt_out['value'] - self.Tt_in['value']

@@ -80,9 +80,9 @@ Tt5 = T_t*Tt4 # [K]
 T5 = Tt5*((1+0.5*(y-1)*M5**2)**-1) # [K]
 a5 = math.sqrt(y*R*T5) # [m/s]
 bypass_ratio = (nm*(1+f)*T_x*(1-T_t) - T_r*(T_c - 1))/(T_r*(T_f - 1)) # [-]
-# m0 = m2/(1+bypass_ratio) # [kg/s]
-# mfan = m2 - m0 # [kg/s]
-# mf = f*m0 # [kg/s]
+m0 = m2/(1+bypass_ratio) # [kg/s]
+mfan = m2 - m0 # [kg/s]
+mf = f*m0 # [kg/s]
 
 # (f) Mixing
 Pt5 = pi_t*Pt4 # [Pa] ----------------------------- > Moved to the Turbine

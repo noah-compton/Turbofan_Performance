@@ -6,8 +6,8 @@ import pdb
 # Part List
 from part_list import *
 
-# Methods
-from methods import *
+# processes
+from processes import *
 
 # Global variables
 global T0 # Maybe?
@@ -65,4 +65,3 @@ Mix50.W_in2   = {'value': MATLAB.mfan            , 'units': 'pps' }
 Trb40.calc()
 
 Mix50.calc()
-
