@@ -37,6 +37,7 @@ class Inlet:
         self.u_in = init.copy()  # u_in
         self.Tt_out = init.copy()
         self.Pt_out = init.copy()
+        self.W_out = init.copy()  # -> Noah C. added Dec 4
 
         # Characteristics
         self.PR = init.copy()
@@ -147,6 +148,8 @@ class Inlet:
             self.Tt_in["value"] / self.T_in["value"]
         )  # Does TR just == 1 since Tt_out = Tt_in?
         self.Pt_out["value"] = self.Pt_in["value"] * self.PR["value"]
+
+        self.W_out["value"] = self.W_in["value"]  # -> Noah C. added Dec 4
 
         # units
         self.a_in["units"] = "m/s"

@@ -57,11 +57,16 @@ Pt0 = gd.stagnation_pressure(pressure=P0, mach=XMN_0)
 Tt0 = gd.stagnation_temperature(temperature=T0, mach=XMN_0)
 
 # Calculations
-Int10.P_in = {"value": P0, "unit": "kPa"}
-Int10.T_in = {"value": T0, "unit": "K"}
-Int10.W_in = {"value": W_total, "unit": "kg/s"}
-Int10.XMN_in = {"value": XMN_0, "unit": ""}
+# Inlet/Diffuser
+Int10.PR = {"value": pi_d, "units": ""}
+Int10.P_in = {"value": P0, "units": "kPa"}
+Int10.T_in = {"value": T0, "units": "K"}
+Int10.W_in = {"value": W_total, "units": "kg/s"}
+Int10.XMN_in = {"value": XMN_0, "units": ""}
 Int10.calc()
 
-Fan20.eff_poly = {"value": ef, "unit": ""}
+# Fan
+Fan20.eff_poly = {"value": ef, "units": ""}
+Fan20.PR = {"value": pi_f, "units": ""}
 LinkPorts(Int10, Fan20)
+Fan20.calc()

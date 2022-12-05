@@ -19,9 +19,11 @@ class Fan:
         # Inlet
         self.Pt_in = init.copy()
         self.Tt_in = init.copy()
+        self.W_in = init.copy()  # -> Added Noah C. Dec 4
         # Outlet
         self.Pt_13 = init.copy()
         self.Tt_13 = init.copy()
+        self.W_out = init.copy()  # -> Noah C. added Dec 4
         # Characteristics
         self.TR = init.copy()  # TR
         self.PR = init.copy()  # PR
@@ -108,10 +110,13 @@ class Fan:
         self.Pt_13["value"] = self.PR["value"] * self.Pt_in["value"]
         self.Tt_13["value"] = self.TR["value"] * self.Tt_in["value"]
 
+        self.W_in["value"] = self.W_out["value"]  # -> Noah C. added Dec 4
+
         # units
         self.TR["units"] = ""
         self.Pt_13["units"] = "Pa"
         self.Tt_13["units"] = "K"
+        self.W_out["units"] = self.W_in["units"]  # -> Noah C. added Dec 4
 
     def __str__(self):
         str = f"{self.name} Characteristics:\n"
