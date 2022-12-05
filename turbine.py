@@ -45,10 +45,10 @@ global y, R
 R = gd.fluids.air.R
 y = gd.fluids.air.gamma
 
-from fan import Fan
-from compressor import Compressor
-from burner import Burner
-from inlet import Inlet
+from Main import Int10
+from Main import Fan20
+from Main import Cmp30
+from Main import Brn40
 
 
 class Turbine:
@@ -384,18 +384,18 @@ class Turbine:
         self.a_out["value"] = math.sqrt(y * gd.fluids.air.R * self.T_out["value"])
         self.BPR["value"] = (
             self.eff_mech["value"]
-            * (1 + Burner.f["value"])
-            * Burner.TRmax["value"]
+            * (1 + Brn40.f["value"])
+            * Brn40.TRmax["value"]
             * (1 - self.TR["value"])
-            - Inlet.TR["value"] * (Compressor.TR["value"] - 1)
-        ) / (Inlet.TR["value"] * (Fan.TR["value"] - 1))
+            - Int10.TR["value"] * (Cmp30.TR["value"] - 1)
+        ) / (Int10.TR["value"] * (Fan20.TR["value"] - 1))
         self.Pt_out["value"] = self.Pt_in["value"] * self.PR["value"]
         self.P_out["value"] = self.Pt_out["value"] * (
             ((self.Tt_out["value"] / self.T_out["value"]) ** (y / (y - 1))) ** -1
         )
-        self.W_in["value"] = Inlet.W_total["value"] / (1 + self.BPR["value"])
-        self.W_fan["value"] = Inlet.W_total["value"] - self.W_in["value"]
-        self.Wf["value"] = Burner.f["value"] * self.W_in["value"]
+        self.W_in["value"] = Int10.W_total["value"] / (1 + self.BPR["value"])
+        self.W_fan["value"] = Int10.W_total["value"] - self.W_in["value"]
+        self.Wf["value"] = Brn40.f["value"] * self.W_in["value"]
         self.W_out["value"] = self.W_in["value"] + self.Wf["out"]
 
         self.Pt_out["units"] = self.Pt_in["units"]

@@ -76,3 +76,11 @@ Cmp30.PR = {"value": pi_c, "units": ""}
 Cmp30.eff_poly = {"value": ec, "units": ""}
 LinkPorts(Fan20, Cmp30)
 Cmp30.calc()
+
+# Burner
+Brn40.PR = {"value": pi_b, "units": ""}
+Brn40.eff_mech = {"value": nb, "units": ""}
+Brn40.Tt_out = {"value": Tt4, "units": "K"}
+LinkPorts(Cmp30, Brn40)
+Brn40.calc()
+print(Brn40.TR["value"])
