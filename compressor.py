@@ -6,12 +6,6 @@
 # ----------------------------------------------------------------------------
 # Nov 30  | Initial .py file on GitHub                       | Jose R.
 
-import math
-import pdb
-
-# Note, try to define global variable for all packages, and see if
-
-
 class Compressor:
     def __init__(self, **kwargs):
 
@@ -125,35 +119,45 @@ class Compressor:
             elif property == "name":
                 self.name = values
 
-    def calc(self):
+    # Methods
+    def poly_efficiency(self):
         y = 1.4
 
-        if self.PR['value'] > 0. and self.TR['value'] > 0.:
-            self.eff_poly['value'] = ((y-1)/y) * (math.log(self.PR['value'])/ math.log(self.TR['value']))
-            self.eff_poly['units'] = '-'
+        self.eff_poly['value'] = ((y-1)/y) * (math.log(self.PR['value'])/ math.log(self.TR['value']))
+        self.eff_poly['units'] = '-'
+    
+    def temperature_ratio(self):
+        y = 1.4
+
+        self.TR['value'] = self.PR['value']**((y-1)/(y*self.eff_poly['value']))
+        self.TR['units'] = '-'    
+
+    def pressure_ratio(self):
+        y = 1.4
         
-        elif self.PR['value'] > 0. and self.eff_poly['value'] > 0.:
-            self.TR['value'] = self.PR['value']**((y-1)/(y*self.eff_poly['value']))
-            self.TR['units'] = '-'       
-       
-        elif self.TR['value'] > 0. and self.eff_poly['value'] > 0.:        
-        # elif hasattr(self, 'TR['value']') and hasattr(self, "e['value']"):
-            self.PR['value'] = self.TR['value']**((y*self.eff_poly['value'])/(y-1))
-            self.PR['units'] = '-'
-
-        else:
-            raise ValueError(
-                "Not enough compressor characteristics were defined, check input"
-            )
-
+        self.PR['value'] = self.TR['value']**((y*self.eff_poly['value'])/(y-1))
+        self.PR['units'] = '-'
+        
+    def discharge_pressure(self):
         self.Pt_out["value"] = self.PR["value"] * self.Pt_in["value"]
-        self.Tt_out["value"] = self.TR["value"] * self.Tt_in["value"]
-        self.W_out["value"] = self.W_in["value"]
-        # pdb.set_trace()
         self.Pt_out["units"] = self.Pt_in["units"]
+        
+    def discharge_temperature(self):
+        self.Tt_out["value"] = self.TR["value"] * self.Tt_in["value"]
         self.Tt_out["units"] = self.Tt_in["units"]
-        self.W_out["units"] = self.W_in["units"]
-
+    
+    def mass_conservation(self):
+        self.W_out["value"]  = self.W_in["value"]
+        self.W_out["units"]  = self.W_in["units"]
+        
+    # Calculations
+    def calc(self):
+        
+        self.temperature_ratio()
+        self.discharge_pressure()
+        self.discharge_temperature()
+        self.mass_conservation()
+        
     def __str__(self):
         str = f"{self.name} Characteristics:\n" f"Efficiency:\n" f"Pressure Ratio:\n"
         return str

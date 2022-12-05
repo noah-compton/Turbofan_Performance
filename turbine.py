@@ -39,22 +39,25 @@ global y, R
 R = gd.fluids.air.R
 y = gd.fluids.air.gamma
 
-from fan import Fan
-from compressor import Compressor
-from burner import Burner
-from inlet import Inlet
+from part_list import *
+
+# from fan import Fan
+# from compressor import Compressor
+# from burner import Burner
+# from inlet import Inlet
 
 
 class Turbine:
     def __init__(self, **kwargs):
 
-        initial = {"value": 0.0, "unit": "-"}
+        initial = {"value": 0.0, "units": "-"}
 
         self.name = ""
 
         # Inlet                                     Dec 2; JR Comment
         self.Pt_in = initial.copy()
         self.Tt_in = initial.copy()
+        self.W_in  = initial.copy()
 
         # Outlet
         self.Pt_out = initial.copy()
@@ -62,6 +65,7 @@ class Turbine:
         self.P_out = initial.copy()
         self.T_out = initial.copy()
         self.a_out = initial.copy()  # Speed of sound at exit
+        self.W_out  = initial.copy()
 
         # Characteristics
         self.PR = initial.copy()  # Pressure Ratio
@@ -74,7 +78,7 @@ class Turbine:
         self.W_f = initial.copy()  # W_f -> fuel flow
         self.W_fan = initial.copy()  # W_fan -> fan mass flow rate
 
-        for value in kwargs:
+        for property in kwargs: # for value in kwargs: 
             values = kwargs[property]
 
             if len(values) >= 2:
@@ -117,7 +121,7 @@ class Turbine:
                 self.PR["value"] = value
 
                 if len(values) == 2:
-                    self.PR["unit"] = unit
+                    self.PR["units"] = unit
 
                 if len(values) < 2:
                     self.PR["units"] = ""
@@ -345,7 +349,7 @@ class Turbine:
 
     def calc(self):
         y = 1.4
-
+        
         if self.PR["value"] > 0 and self.eff_poly["value"] > 0:
             self.TR["value"] = self.PR["value"] ** (
                 (y - 1) * self.eff_poly["value"] / y
@@ -400,7 +404,7 @@ class Turbine:
     def __str__(self):
         str = (
             f"{self.name} Characteristics:\n Temperature Ratio: {self.TR}\n Bypass Ratio: {self.BPR}\n Mach at exit: {self.XMN_out}\n Core mass flow rate: {self.W_core}\n Fuel mass flow rate: {self.W_f}\n Fan mass flow rate: {self.W_fan}"
-            f"Efficiency:\n Polytropic Efficiency: {self.eff_poly}\n Mechanical Efficiency: {self.eff_mech}"
-            f"Pressure Ratio: {self.PR}"
+            f"Efficiency:\n Polytropic Efficiency: {self.eff_poly}\n Mechanical Efficiency: {self.eff_mech}\n"
+            f" Pressure Ratio: {self.PR}"
         )
         return str

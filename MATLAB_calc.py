@@ -85,11 +85,11 @@ mfan = m2 - m0 # [kg/s]
 mf = f*m0 # [kg/s]
 
 # (f) Mixing
-Pt5 = pi_t*Pt4 # [Pa]
-P5 = Pt5*(((Tt5/T5)**(y/(y-1)))**-1) # [Pa]
+Pt5 = pi_t*Pt4 # [Pa] ----------------------------- > Moved to the Turbine
+P5 = Pt5*(((Tt5/T5)**(y/(y-1)))**-1) # [Pa] ------- > Moved to the Turbine
 
-ht6m = ((cp*T0)/(1+bypass_ratio+f))*((1+f)*T_t*T_x + bypass_ratio*T_r*T_f) # [J/kg]
-Tt6m = ht6m/cp # [K]
+ht6m = ((cp*T0)/(1+bypass_ratio+f))*((1+f)*T_t*T_x + bypass_ratio*T_r*T_f) # [J/kg]   -? Found
+Tt6m = ht6m/cp # [K]  -> Found
 M15 = M5 # [-]
 T15 = Tt15*((1+((y-1)/2)*M15**2)**-1) # [K]
 a15 = math.sqrt(y*R*T15) # [m/s]

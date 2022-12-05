@@ -2,35 +2,52 @@
 # ----------------------------------------------------------------------------
 
 import pdb
+from methods import *
+import gas_dynamics as gd
 
 
 class Mixer:
     def __init__(self, **kwargs):
 
-        init = {"value": 0.0, "unit": "-"}
+        init = {"value": 0.0, "units": "-"}
 
         self.name = ""
         self.inlet1 = ""
         self.inlet2 = ""
         self.outlet = ""
 
-        # Inlet
-        self.Pt_in = init.copy()
-        self.Tt_in = init.copy()
-        self.W_in = init.copy()
-        self.Wf = init.copy()
+        # Inlet1
+        self.Pt_in1   = init.copy()
+        self.Tt_in1   = init.copy()
+        self.P_in1    = init.copy()
+        self.T_in1    = init.copy()
+        self.W_in1    = init.copy()
+        self.XMN_in1  = init.copy()
+
+        # Inlet2
+        self.Pt_in2   = init.copy()
+        self.Tt_in2   = init.copy()
+        self.P_in2    = init.copy()
+        self.T_in2    = init.copy()
+        self.W_in2    = init.copy()
+        self.XMN_in2  = init.copy()
 
         # Outlet
-        self.Pt_out = init.copy()
-        self.Tt_out = init.copy()
-        self.W_out = init.copy()
+        self.Pt_out   = init.copy()
+        self.Tt_out   = init.copy()
+        self.P_out    = init.copy()
+        self.T_out    = init.copy()
+        self.W_out    = init.copy()
+        self.XMN_out  = init.copy()
+        self.Ht_out   = init.copy()
 
         # Characteristics
-        self.PR = init.copy()
-        self.TR = init.copy()
-        self.TRmax = init.copy()
-        self.e = init.copy()
-        self.f = init.copy()
+        self.PR       = init.copy()
+        self.PRi      = init.copy()
+        self.PRm      = init.copy()
+        self.TR       = init.copy()
+        self.AR       = init.copy()
+        self.FAR      = init.copy()
 
         for property in kwargs:
 
@@ -51,21 +68,21 @@ class Mixer:
                 self.Pt_in["value"] = value
 
                 if len(values) < 2:
-                    self.Pt_in["unit"] = "Pa"
+                    self.Pt_in["units"] = "Pa"
                     raise Warning("Pt_in has not enough inputs, assuming kPa for units")
 
             elif property == "Tt_in":
                 self.Tt_in["value"] = value
 
                 if len(values) < 2:
-                    self.Tt_in["unit"] = "K"
+                    self.Tt_in["units"] = "K"
                     raise Warning("Tt_in has not enough inputs, assuming K for units")
 
             elif property == "W_in":
                 self.W_in["value"] = value
 
                 if len(values) < 2:
-                    self.W_in["unit"] = "lbm/s"
+                    self.W_in["units"] = "lbm/s"
                     raise Warning(
                         "W_in has not enough inputs, assuming lbm/s for units"
                     )
@@ -74,21 +91,21 @@ class Mixer:
                 self.Wf["value"] = value
 
                 if len(values) < 2:
-                    self.Wf["unit"] = "lbm/hr"
+                    self.Wf["units"] = "lbm/hr"
                     raise Warning("Wf has not enough inputs, assuming lbm/hr for units")
 
             elif property == "Tt_out":
                 self.Tt_out["value"] = value
 
                 if len(values) < 2:
-                    self.Tt_out["unit"] = "K"
+                    self.Tt_out["units"] = "K"
                     raise Warning("Tt_in has not enough inputs, assuming K for units")
 
             elif property == "PR":
                 self.PR["value"] = value
 
                 if len(values) < 2:
-                    self.PR["unit"] = "-"
+                    self.PR["units"] = "-"
                     raise Warning(
                         "PR has not enough inputs, assuming value is dimensionless"
                     )
@@ -97,47 +114,134 @@ class Mixer:
                 self.TR["value"] = value
 
                 if len(values) < 2:
-                    self.TR["unit"] = "-"
+                    self.TR["units"] = "-"
                     raise Warning(
                         "TR has not enough inputs, assuming value is dimensionless"
                     )
 
             elif property == "e":
-                self.e["value"] = value
+                self.eff_poly["value"] = value
 
                 if len(values) < 2:
-                    self.e["unit"] = "-"
+                    self.eff_poly["units"] = "-"
                     raise Warning(
                         "e has not enough inputs, assuming value is dimensionless"
                     )
 
             elif property == "name":
                 self.name = values
-
-    def calc(self):
-        y = 1.4  # This can go away by adding the air as inlet fluid
+    
+    def discharge_temperature(self):
+        check_units(self.Tt_in1, self.Tt_in2)
+        check_units(self.W_in1, self.W_in2)
+        
+        self.Tt_out['value'] = (self.W_in1['value'] * self.Tt_in1['value'] + self.W_in2['value'] * self.Tt_in2['value']) / (self.W_in1['value'] + self.W_in2['value'])
+        self.Tt_out['units'] = self.Tt_in1['units']
+        
+    def discharge_enthalpy(self):
         cp = 1004  # This can go away by adding the air as inlet fluid
-        Q = 42800000  # This can go away by adding the air as inlet fluid
-        T0 = 223  # This should be a global variable
+        
+        self.Ht_out['value'] = cp * self.Tt_out['value']
+        self.Ht_out['units'] = 'J / kg'
 
-        if self.Tt_out["unit"] == self.Tt_in["unit"]:
-            dTt = self.Tt_out["value"] - self.Tt_in["value"]
+    def assume_ideal(self):
+        
+        if self.XMN_in1['value'] > 0:
+            self.XMN_in2['value'] = self.XMN_in1['value']
+            self.XMN_in2['units'] = self.XMN_in1['units']
+
+        elif self.XMN_in2['value'] > 0:
+            self.XMN_in1['value'] = self.XMN_in2['value']
+            self.XMN_in1['units'] = self.XMN_in2['units']
+            
+        if self.P_in1['value'] > 0:
+            self.P_in2['value'] = self.P_in1['value']
+            self.P_in1['units'] = self.P_in2['units']
+            
+        elif self.P_in2['value'] > 0:
+            self.P_in1['value'] = self.P_in2['value']
+            self.P_in1['units'] = self.P_in2['units']
+
+    def area_ratio(self):
+        
+        if self.T_in2['value'] > 0:
+            pass
         else:
-            raise ValueError(
-                f"Units not consistent, check Tt_out and Tt_in for {self.name}"
-            )
+            T_Tt_2 = gd.stagnation_temperature_ratio(mach=self.XMN_in2['value'])
+            self.T_in2['value'] = self.Tt_in2['value'] * T_Tt_2
+            self.T_in2['units'] = self.Tt_in2['units']
+            
+        check_units(self.T_in1, self.T_in2)
+        check_units(self.W_in1, self.W_in2)
 
-        self.f["value"] = cp * (dTt) / (Q * self.e["value"] - cp * self.Tt_out["value"])
+        self.AR['value'] = (self.W_in2['value']/self.W_in1['value']) * (self.T_in2['value'] / self.T_in1['value']) ** (1/2)
 
-        self.TRmax["value"] = self.Tt_out["value"] / T0
-        self.TRmax["unit"] = "-"
+    def sonic_velocity(self, T):
+        y = 1.4
+        R = 287
 
-        self.Pt_out["value"] = self.PR["value"] * self.Pt_in["value"]
-        self.Pt_out["unit"] = self.Pt_in["unit"]
+        a = (y*R*T) ** (1/2)
+        return a
+    
+    def discharge_mach(self):
+        y = 1.4
+        cp = 1004
+        
+        a1  = self.sonic_velocity(self.T_in1['value'])
+        a2  = self.sonic_velocity(self.T_in2['value'])
 
-        if self.Tt_out == 0:
-            self.Tt_out["value"] = self.TR["value"] * self.Tt_in["value"]
-            self.Tt_out["unit"] = self.Tt_in["unit"]
+        temp1 = ((1 + y * self.XMN_in1['value'] ** 2) + self.AR['value'] * (1 + y * self.XMN_in2['value'] ** 2)) / (1 + self.AR['value'])
+        temp2 = (( (y-1)*self.Ht_out['value']) ** (1/2) ) *( (self.XMN_in1['value'] / a1 ) + self.AR['value'] * (self.XMN_in2['value'] / a2) ) / (1 + self.AR['value'])
+        temp3 = (temp1 / temp2) ** 2
+        temp4 = (2 * y ** 2) - temp3 * (y-1) 
+        temp5 = ((temp3 - 2*y) ** 2) - 2*temp4
+        
+        self.XMN_out['value'] = ((temp3 - 2*y - (temp5)**(1/2)) / temp4)**(1/2)
+
+    def discharge_static_pressure(self):
+        y = 1.4
+        temp1 = ((1 + y * self.XMN_in1['value'] ** 2) + self.AR['value'] * (1 + y * self.XMN_in2['value'] ** 2)) / (1 + self.AR['value'])
+
+        self.P_out['value'] = self.P_in1['value'] * (temp1/(1 + y * self.XMN_out['value']**2))
+        self.P_out['units'] = self.P_in1['units']
+
+    def pressure_ratio_ideal(self):
+        y = 1.4
+
+        num = 1 + (1/2)*(y-1) * self.XMN_out['value'] ** 2
+        den = 1 + (1/2)*(y-1) * self.XMN_in1['value'] ** 2
+        exp = y / (y - 1)
+
+        check_units(self.P_in1, self.Pt_out)
+        
+        self.PRi['value'] = (self.P_out['value'] / self.P_in1['value']) * (num / den) ** exp 
+        self.PRi['units'] = '-' 
+        
+    def pressure_ratio_mixed(self):
+        self.PRm['value'] = self.PRi['value'] * self.PR['value']
+        pass
+
+    def discharge_pressure_mixed(self):
+        self.Pt_out['value'] = self.PRm['value'] * self.PRi['value'] * self.Pt_in1['value']
+        self.Pt_out['units'] = self.Pt_in1['units']
+        
+    def mass_convervation(self):
+        check_units(self.W_in1, self.W_in2)
+        self.W_out['value'] = self.W_in1['value'] + self.W_in2['value']
+        self.W_out['units'] = self.W_in1['units']
+        
+    def calc(self):
+        
+        self.discharge_temperature()
+        self.discharge_enthalpy()
+        self.assume_ideal()
+        self.area_ratio()
+        self.discharge_mach()
+        self.discharge_static_pressure()
+        self.pressure_ratio_ideal()
+        self.pressure_ratio_mixed()
+        self.discharge_pressure_mixed()
+        self.mass_convervation()
 
     def __str__(self):
         str = f"{self.name} Characteristics:\n" f"Efficiency:\n" f"Pressure Ratio:\n"

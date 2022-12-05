@@ -1,12 +1,12 @@
 # Date    | Description of Changes:                          | Author
 # ----------------------------------------------------------------------------
 
-import pdb
+from methods import check_units
 
 class Burner:
     def __init__(self, **kwargs):
         
-        init = {'value': 0., 'units': '-'}
+        init = {'value': float, 'units': str}
         
         self.name   = ''
         self.inlet = ''
@@ -30,7 +30,7 @@ class Burner:
         self.eff_mech   = init.copy()
         self.eff_poly   = init.copy()
         self.eff_isen   = init.copy()
-        self.f          = init.copy()
+        self.FAR        = init.copy()
         
         for property in kwargs:
             
@@ -108,26 +108,46 @@ class Burner:
             elif property == "name":
                 self.name = values
 
-    def calc(self):
-        y = 1.4        # This can go away by adding the air as inlet fluid
-        cp = 1004      # This can go away by adding the air as inlet fluid
-        Q = 42800000   # This can go away by adding the air as inlet fluid
-        T0 = 223       # This should be a global variable
-
+    # Methods
+    def temperature_ratio(self):
         if self.Tt_out['units'] == self.Tt_in['units']:
             dTt = self.Tt_out['value'] - self.Tt_in['value']
             
             if self.Tt_out['value'] > 0 and self.Tt_in['value'] > 0:
                     self.TR['value'] = self.Tt_out['value'] / self.Tt_in['value']
        
-        else:
-            raise ValueError(f"Units not consistent, Tt_out is in {self.Tt_out['units']} and Tt_in is in {self.Tt_in['units']}")
+    def fuel_to_air_ratio(self):
+        y = 1.4        # This can go away by adding the air as inlet fluid
+        cp = 1004      # This can go away by adding the air as inlet fluid
+        Q = 42800000   # This can go away by adding the air as inlet fluid
         
-        self.f['value'] = cp * ( dTt ) / (Q*self.eff_mech['value'] - cp*self.Tt_out['value'])
+        check_units(self.Tt_in, self.Tt_out)
+        self.FAR['value'] = cp * (self.Tt_out['value'] - self.Tt_in['value']) / (Q*self.eff_mech['value'] - cp*self.Tt_out['value'])
+    
+    def fuel_flow(self):
+        self.Wf['value'] = self.W_in['value'] * self.FAR['value']
+        self.Wf['units'] = self.W_in['units']
         
-        # Check units
-        self.TRmax['value'] = self.Tt_out['value'] / T0
+    def max_temperature_ratio(self, T0):
+        check_units(self.Tt_out, T0)
+        self.TRmax['value'] = self.Tt_out['value'] / T0['value']
         self.TRmax['units'] = '-'
+    
+    def mass_conservation(self):
+        check_units(self.W_in, self.Wf)
+        self.W_out['value'] = self.W_in['value'] + self.Wf['value']
+        self.W_out['units'] = self.W_in['units']
+        
+    def calc(self, T0):
+        # Calculate TR
+        self.temperature_ratio()
+
+        # Calculate FAR
+        self.fuel_to_air_ratio()
+        
+        # Calculate TRmax
+        self.max_temperature_ratio(T0)
+
         
         self.Pt_out['value'] = self.PR['value'] * self.Pt_in['value']
         self.Pt_out['units'] = self.Pt_in['units']
@@ -136,7 +156,7 @@ class Burner:
             self.Tt_out['value'] = self.TR['value'] * self.Tt_in['value']
             self.Tt_out['units'] = self.Tt_in['units']     
 
-
+    
     def __str__(self): 
         str = f"{self.name} Characteristics:\n" \
               f"Efficiency:\n" \
