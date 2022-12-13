@@ -1,6 +1,7 @@
-# inlet/flight conditions calculations
-# Isabel H
-# need to define __str__
+__author__ = "Isabel Husted"
+__version__ = "0.0.1"
+__email__ = "ihusted@ufl.edu"
+__status__ = "Development"
 
 import gas_dynamics as gd
 import math
@@ -19,7 +20,6 @@ class Inlet:
 
     def __init__(self, **kwargs):
 
-        init = {"value": 0.0, "units": "-"}
             """Initializes an Inlet class to define flow changes within the stage.
                 Parameters:
                 Parameters are characterized by a dictionary with 2 keys and values to maintain a quantitative and qualitative description.
@@ -41,7 +41,8 @@ class Inlet:
             TR              (dict):     Temperature ratio across the inlet.
             
             """
-       
+        init = {'value': 0., 'units': '-'}
+      
         self.name = ""
         self.inlet = ""
         self.outlet = ""
