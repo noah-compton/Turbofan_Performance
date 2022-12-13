@@ -1,3 +1,5 @@
+import pdb
+
 def LinkPorts(object1, object2):
     object2.Pt_in = object1.Pt_out
     object2.Tt_in = object1.Tt_out
@@ -8,16 +10,22 @@ def LinkPorts(object1, object2):
 
 
 def LinkStreams(object1, object2, object3):
-    object3.Pt_in1 = object1.Pt_out
-    object3.Tt_in1 = object1.Tt_out
-    object3.W_in1  = object1.W_out
+    object3.Pt_in1   = object1.Pt_out
+    object3.P_in1    = object1.P_out
+    object3.Tt_in1   = object1.Tt_out
+    object3.T_in1    = object1.T_out
+    object3.W_in1    = object1.W_out
+    object3.XMN_in1  = object1.XMN_out
     
     object1.outlet  = object3.name
     object3.inlet1  = object1.name
     
-    object3.Pt_in = object2.Pt_out
-    object3.Tt_in = object2.Tt_out
-    object3.W_in  = object2.W_out
+    object3.Pt_in2   = object2.Pt_out
+    object3.P_in2    = object2.P_out
+    object3.Tt_in2   = object2.Tt_out
+    object3.T_in     = object2.T_out
+    object3.W_in2    = object2.W_out
+    object3.XMN_in2  = object2.XMN_out
     
     object3.inlet2  = object2.name
     object2.outlet  = object1.name
@@ -103,8 +111,8 @@ def efficiency(inlet, burner, nozzle):
     TSFC      = {"value": 0.0, "units": "-"}
     
     KE2 = (1/2) * nozzle.W_out['value'] *    nozzle.u_out['value'] 
-    KE1 = (1/2) *  inlet.W_out['value'] *     inlet.u_out['value']
-    den = Qr    *    burner.Wf['value'] * burner.eff_poly['value']
+    KE1 = (1/2) *  inlet.W_out['value'] *     inlet.u_in['value']
+    den = Qr    *    burner.Wf['value'] * burner.eff_mech['value']
     
     eff_ther  = (KE2 - KE1) / den
 

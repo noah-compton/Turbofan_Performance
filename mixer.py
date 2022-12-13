@@ -93,84 +93,6 @@ class Mixer:
                 raise Warning("Some inputs were not expected, ignoring extra inputs")
 
 
-            # if len(values) >= 2:
-            #     value = values[0]
-            #     unit = values[1]
-
-            # elif len(values) == 1:
-            #     value = values[0]
-            #     unit = ""
-
-            # else:
-            #     raise ValueError("Not enough inputs")
-
-            # if mix_in == "Pt_in":
-            #     self.Pt_in["value"] = value
-
-            #     if len(values) < 2:
-            #         self.Pt_in["units"] = "Pa"
-            #         raise Warning("Pt_in has not enough inputs, assuming kPa for units")
-
-            # elif mix_in == "Tt_in":
-            #     self.Tt_in["value"] = value
-
-            #     if len(values) < 2:
-            #         self.Tt_in["units"] = "K"
-            #         raise Warning("Tt_in has not enough inputs, assuming K for units")
-
-            # elif mix_in == "W_in":
-            #     self.W_in["value"] = value
-
-            #     if len(values) < 2:
-            #         self.W_in["units"] = "lbm/s"
-            #         raise Warning(
-            #             "W_in has not enough inputs, assuming lbm/s for units"
-            #         )
-
-            # elif mix_in == "Wf":
-            #     self.Wf["value"] = value
-
-            #     if len(values) < 2:
-            #         self.Wf["units"] = "lbm/hr"
-            #         raise Warning("Wf has not enough inputs, assuming lbm/hr for units")
-
-            # elif mix_in == "Tt_out":
-            #     self.Tt_out["value"] = value
-
-            #     if len(values) < 2:
-            #         self.Tt_out["units"] = "K"
-            #         raise Warning("Tt_in has not enough inputs, assuming K for units")
-
-            # elif mix_in == "PR":
-            #     self.PR["value"] = value
-
-            #     if len(values) < 2:
-            #         self.PR["units"] = "-"
-            #         raise Warning(
-            #             "PR has not enough inputs, assuming value is dimensionless"
-            #         )
-
-            # elif mix_in == "TR":
-            #     self.TR["value"] = value
-
-            #     if len(values) < 2:
-            #         self.TR["units"] = "-"
-            #         raise Warning(
-            #             "TR has not enough inputs, assuming value is dimensionless"
-            #         )
-
-            # elif mix_in == "e":
-            #     self.eff_poly["value"] = value
-
-            #     if len(values) < 2:
-            #         self.eff_poly["units"] = "-"
-            #         raise Warning(
-            #             "e has not enough inputs, assuming value is dimensionless"
-            #         )
-
-            # elif mix_in == "name":
-            #     self.name = values
-    
     def discharge_temperature(self):
         check_units(self.Tt_in1, self.Tt_in2)
         check_units(self.W_in1, self.W_in2)
@@ -210,7 +132,7 @@ class Mixer:
             T_Tt_2 = gd.stagnation_temperature_ratio(mach=self.XMN_in2['value'])
             self.T_in2['value'] = self.Tt_in2['value'] * T_Tt_2
             self.T_in2['units'] = self.Tt_in2['units']
-            
+        
         check_units(self.T_in1, self.T_in2)
         check_units(self.W_in1, self.W_in2)
 

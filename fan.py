@@ -19,12 +19,15 @@ class Fan:
         self.Pt_in = init.copy()
         self.Tt_in = init.copy()
         self.W_in = init.copy()
+
         #Outlet
         self.Pt_out1 = init.copy()
         self.Pt_out2 = init.copy()
-        self.Tt_out = init.copy()
+        self.Tt_out1 = init.copy()
+        self.Tt_out2 = init.copy()
         self.W_out1 = init.copy()
         self.W_out2 = init.copy()
+
         #Characteristics
         self.BPR = init.copy()
         self.TR = init.copy()    # TR
@@ -109,7 +112,15 @@ class Fan:
            
             elif property == "name":
                 self.name = values
-    
+                
+    def mass_conservation(self):
+        self.W_out1['value'] =  self.W_in['value'] / (self.BPR['value'] + 1)
+        self.W_out2['value'] =  self.W_in['value'] - self.W_out1['value']
+
+        self.W_out1['units'] =  self.W_in['units']
+        self.W_out2['units'] =  self.W_in['units']
+
+
     def calc(self):
         if (self.Pt_in["value"] > 0 and self.Tt_in["value"] > 0):
              pass
@@ -120,18 +131,17 @@ class Fan:
         self.TR["value"] = (self.PR["value"] ** ((y - 1)/(y*self.eff_poly["value"])))
         self.Pt_out1["value"] = self.PR["value"] * self.Pt_in["value"]
         self.Pt_out2["value"] = self.PR["value"] * self.Pt_in["value"]
-        self.Tt_out["value"] = self.TR["value"] * self.Tt_in["value"]
-        self.W_out1["value"] = self.W_in["value"]
-        self.W_out2["value"] = 0
-
+        self.Tt_out1["value"] = self.TR["value"] * self.Tt_in["value"]
+        self.Tt_out2["value"] = self.TR["value"] * self.Tt_in["value"]
 
         #units
         self.TR["units"] =''
-        self.Pt_out1["units"] = 'Pa'
-        self.Pt_out2["units"] = 'Pa'
-        self.Tt_out["units"] = 'K'
-        self.W_out1["units"] = 'kg/s'
-        self.W_out2["units"] = 'kg/s'
+        self.Pt_out1["units"] = self.Pt_in["units"]
+        self.Pt_out2["units"] = self.Pt_in["units"]
+        self.Tt_out1["units"] = self.Tt_in["units"]
+        self.Tt_out2["units"] = self.Tt_in["units"]
+        self.W_out1["units"]  = self.W_in["units"] 
+        self.W_out2["units"]  = self.W_in["units"] 
 
 
     def __str__(self):
