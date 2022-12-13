@@ -1,10 +1,9 @@
-# Date    | Description of Changes:                          | Author
-# ----------------------------------------------------------------------------
+__author__ = "Jose M. Roque"
+__version__ = "0.0.1"
+__status__ = "Development"
 
-import pdb
 from processes import *
 import gas_dynamics as gd
-
 
 class Mixer:
     def __init__(self, **kwargs):

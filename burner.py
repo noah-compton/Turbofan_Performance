@@ -1,5 +1,6 @@
-# Date    | Description of Changes:                          | Author
-# ----------------------------------------------------------------------------
+__author__ = "Jose M. Roque"
+__version__ = "0.0.1"
+__status__ = "Development"
 
 from processes import check_units
 import gas_dynamics as gd
@@ -102,81 +103,7 @@ class Burner:
             else:
                 raise Warning("Some inputs were not expected, ignoring extra inputs")
 
-            # values = kwargs[brn_in]
-            
-            # if len(values) >= 2:
-            #     value = values[0]
-            #     unit = values[1]
-                
-            # elif len(values) == 1:
-            #     value = values[0]
-            #     unit = ''
-            
-            # else:
-            #     raise ValueError('Not enough inputs')
-                
-
-            # if brn_in == "Pt_in":
-            #     self.Pt_in['value'] = value 
-                
-            #     if len(values) < 2:
-            #         self.Pt_in['units'] = 'Pa'
-            #         raise Warning("Pt_in has not enough inputs, assuming kPa for units")   
-                
-            # elif brn_in == "Tt_in":
-            #     self.Tt_in['value'] = value 
-                
-            #     if len(values) < 2:
-            #         self.Tt_in['units'] = "K"
-            #         raise Warning("Tt_in has not enough inputs, assuming K for units")   
-            
-                
-            # elif brn_in == "W_in":
-            #     self.W_in['value'] = value 
-                
-            #     if len(values) < 2:
-            #         self.W_in['units'] = "lbm/s"
-            #         raise Warning("W_in has not enough inputs, assuming lbm/s for units")   
-            
-            # elif brn_in == "Wf":
-            #     self.Wf['value'] = value 
-                
-            #     if len(values) < 2:
-            #         self.Wf['units'] = "lbm/hr"
-            #         raise Warning("Wf has not enough inputs, assuming lbm/hr for units")   
-            
-            # elif brn_in == "Tt_out":
-            #     self.Tt_out['value'] = value 
-                
-            #     if len(values) < 2:
-            #         self.Tt_out['units'] = "K"
-            #         raise Warning("Tt_in has not enough inputs, assuming K for units")   
-                        
-            # elif brn_in == "PR":
-            #     self.PR['value'] = value 
-                
-            #     if len(values) < 2:
-            #         self.PR['units'] = "-"
-            #         raise Warning("PR has not enough inputs, assuming value is dimensionless")        
-
-            # elif brn_in == "TR":
-            #     self.TR['value'] = value 
-                
-            #     if len(values) < 2:
-            #         self.TR['units'] = "-"
-            #         raise Warning("TR has not enough inputs, assuming value is dimensionless")     
-                    
-            # elif brn_in == "eff_mech":
-            #     self.eff_mech['value'] = value 
-                
-            #     if len(values) < 2:
-            #         self.eff_mech['units'] = "-"
-            #         raise Warning("e has not enough inputs, assuming value is dimensionless")        
-                             
-            # elif brn_in == "name":
-            #     self.name = values
-
-    # processes
+      # processes
     def temperature_ratio(self):
         if self.Tt_out['units'] == self.Tt_in['units']:
             dTt = self.Tt_out['value'] - self.Tt_in['value']

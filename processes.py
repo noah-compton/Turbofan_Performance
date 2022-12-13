@@ -1,5 +1,9 @@
-import pdb
-
+__author__ = "Jose M. Roque"
+__version__ = "0.0.1"
+__status__ = "Development"
+'''
+processes are functions used accross all classes that represent components, as well as to connect stations
+'''
 def LinkPorts(object1, object2):
     object2.Pt_in = object1.Pt_out
     object2.Tt_in = object1.Tt_out
