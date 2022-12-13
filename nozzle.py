@@ -36,8 +36,8 @@ class Nozzle:
             u_eff           (dict):     Effective velocity out of the nozzle.
             a_out           (dict):     Speed of sound out of the nozzle.
             S1              (dict):     Arbitrary variable defined for calculation.
-            S2              (dict):     Arbitrary variable defined for calculation.                                
-                                    
+            S2              (dict):     Arbitrary variable defined for calculation.
+
         """
 
         initial = {"value": 0.0, "units": "-"}
@@ -164,7 +164,6 @@ class Nozzle:
         else:
             raise ValueError("Incorrecpt inputs for nozzle.")
 
-        self.P_out["value"] = Freestream.P["value"]
         self.Pt_P["value"] = self.Pt_out["value"] / self.P_out["value"]
         self.S1["value"] = (self.Pt_P["value"]) ** ((y - 1) / y) - 1
         self.XMN_out["value"] = math.sqrt(2 * self.S1["value"] / (y - 1))
