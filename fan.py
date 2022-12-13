@@ -168,6 +168,7 @@ class Fan:
 
 
     def __str__(self):
-        str = f"{self.name} Characteristics:\n"
-        
+        str = (f"{self.name} Characteristics:\n Temperature Ratio: {self.TR}\n Bypass Ratio: {self.BPR}\n Pressure" 
+        f"Ratio {self.PR}\n Polytropic Efficiency: {self.eff_poly}")
+        return str
 
