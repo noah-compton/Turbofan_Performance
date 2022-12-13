@@ -6,9 +6,6 @@ __status__ = "Development"
 import gas_dynamics as gd
 import math
 
-global y
-y = gd.fluids.air.gamma
-
 
 class Nozzle:
     """A model for describing the characterisics of a nozzle"""
