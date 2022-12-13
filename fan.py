@@ -8,7 +8,30 @@ global y
 y = gd.fluids.air.gamma
 
 class Fan:
+        """A model for describing the characterisics of a fan"""
+
     def __init__(self, **kwargs):
+        """Initializes a Fan class to define flow changes within the stage.
+                Parameters:
+                Parameters are characterized by a dictionary with 2 keys and values to maintain a quantitative and qualitative description.
+                The form of the parameters is such: {"value": 0.0, "units": "str"}
+                Example: self.Pt_in = {"value": 1000, "units": "kPa"}
+
+            Pt_in            (dict):     Inlet total pressure.
+            Tt_in            (dict):     Inlet total temperature.
+            W_in             (dict):     Incoming mass flow rate.
+            Pt_out1          (dict):     Outgoing port 1 total pressure.
+            Pt_out2          (dict):     Outgoing port 2 total pressure.
+            Tt_out1          (dict):     Outgoing port 1 total temperature.
+            Tt_out2          (dict):     Outgoing port 2 total temperature.
+            W_out1           (dict):     Outgoing port 1 mass flow.
+            W_out2           (dict):     Outgoing port 2 mass flow.
+            BPR              (dict):     Bypass ratio.
+            PR               (dict):     Pressure ratio across the fan.
+            TR               (dict):     Temperature ratio across the fan.
+            eff_poly         (dict):     Polytropic efficiency.
+            
+            """
         init = {'value': 0., 'units': '-'}
         
         self.name   = ''
