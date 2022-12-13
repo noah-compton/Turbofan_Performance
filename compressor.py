@@ -1,13 +1,9 @@
-# Date    | Description of Changes:                          | Author
-# ----------------------------------------------------------------------------
-# Dec 1   | First compressor class working                   | Jose R.
-#         | Need to incorporate gas_dynamics package         |
-#         | Update __str__ definition                        |
-# ----------------------------------------------------------------------------
-# Nov 30  | Initial .py file on GitHub                       | Jose R.
+__author__ = "Jose M. Roque"
+__version__ = "0.0.1"
+__status__ = "Development"
+
 import math
 import gas_dynamics as gd
-import pdb
 
 class Compressor:
     '''
