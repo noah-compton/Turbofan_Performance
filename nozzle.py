@@ -9,7 +9,6 @@ import math
 global y
 y = gd.fluids.air.gamma
 
-
 class Nozzle:
     """A model for describing the characterisics of a nozzle"""
 
@@ -36,8 +35,8 @@ class Nozzle:
             u_eff           (dict):     Effective velocity out of the nozzle.
             a_out           (dict):     Speed of sound out of the nozzle.
             S1              (dict):     Arbitrary variable defined for calculation.
-            S2              (dict):     Arbitrary variable defined for calculation.
-
+            S2              (dict):     Arbitrary variable defined for calculation.                                
+                                    
         """
 
         initial = {"value": 0.0, "units": "-"}
@@ -71,8 +70,9 @@ class Nozzle:
         for property in kwargs:
             values = kwargs[property]
 
-            # This is checking the inputs for each parameter. If the number of inputs is == 1 then a default unit is assigned.
-            # If input == 0 then a value error is raised
+            """This is checking the inputs for each parameter. If the number of inputs is == 1 then a default unit is assigned.
+                If input == 0 then a value error is raised
+                """
 
             if len(values) >= 2:
                 value = values[0]
@@ -141,19 +141,18 @@ class Nozzle:
                 raise ValueError("Incorrect inputs!")
 
     def calc(self):
-        """The main calculation method for the Nozzle class. Should only be run once when evaluating the nozzle.
+        """The main calculation method for the class. Should only be run once when evaluating the nozzle.
         Requirements:
             The parameters described earlier must be defined.
             Calc methods for previous stages must be run.
                 The previous stages are:
                     Inlet
                     Fan
-                    Bypass
                     Compressor
                     Burner
                     Turbine
                     Mixer
-                If these stages are not analyzed before using this method then results will be incorrect.
+                If these stages are not analyzed before using this class method then results will be incorrect.
         """
 
         y = gd.fluids.air.gamma
@@ -164,6 +163,7 @@ class Nozzle:
         else:
             raise ValueError("Incorrecpt inputs for nozzle.")
 
+        # self.P_out["value"] = Freestream.P["value"]
         self.Pt_P["value"] = self.Pt_out["value"] / self.P_out["value"]
         self.S1["value"] = (self.Pt_P["value"]) ** ((y - 1) / y) - 1
         self.XMN_out["value"] = math.sqrt(2 * self.S1["value"] / (y - 1))

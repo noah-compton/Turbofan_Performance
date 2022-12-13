@@ -33,7 +33,7 @@ class Burner:
     
     def __init__(self, **kwargs):
         
-        init = {'value': float, 'units': str}
+        init = {'value': 0., 'units': '-'}
         
         brn_vars = [
                       'name'     , 'inlet'    , 'outlet'   , 
@@ -193,8 +193,7 @@ class Burner:
         R = air.R
         
         Q = 42800000   # This can go away by adding the air as inlet fluid
-        pdb.set_trace()
-        
+
         check_units(self.Tt_in, self.Tt_out)
         self.FAR['value'] = cp * (self.Tt_out['value'] - self.Tt_in['value']) / (Q*self.eff_mech['value'] - cp*self.Tt_out['value'])
     

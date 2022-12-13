@@ -1,21 +1,27 @@
 class Bypass:
     def __init__(self, **kwargs):
 
-        init = {"value": float, "units": str}
+        init = {"value": 0., "units": '-'}
 
         self.name = ""
         self.inlet = ""
         self.outlet = ""
 
         # Inlet
-        self.Pt_in = init.copy()
-        self.Tt_in = init.copy()
-        self.W_in = init.copy()
+        self.Pt_in   = init.copy()
+        self.P_in    = init.copy()
+        self.Tt_in   = init.copy()
+        self.T_in    = init.copy()
+        self.W_in    = init.copy()
+        self.XMN_in  = init.copy()
 
         # Outlet
-        self.Pt_out = init.copy()
-        self.Tt_out = init.copy()
-        self.W_out = init.copy()
+        self.Pt_out   = init.copy()
+        self.P_out    = init.copy()
+        self.Tt_out   = init.copy()
+        self.T_out    = init.copy()
+        self.W_out    = init.copy()
+        self.XMN_out  = init.copy()
 
         # Characteristics
         self.PR = init.copy()
