@@ -496,16 +496,17 @@ class Turbine:
             )
 
     def calc(self):
-        """The main calculation method for the class. Should only be run once when evaluating the turbine.
+        """The main calculation method for the Turbine class. Should only be run once when evaluating the turbine.
         Requirements:
             The parameters described earlier must be defined.
             Calc methods for previous stages must be run.
                 The previous stages are:
                     Inlet
                     Fan
+                    Bypass
                     Compressor
                     Burner
-                If these stages are not analyzed before using this class method then results will be incorrect.
+                If these stages are not analyzed before using this method then results will be incorrect.
         """
 
         y = gd.fluids.air.gamma
