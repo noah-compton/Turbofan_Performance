@@ -1,53 +1,48 @@
-# Date    | Description of Changes:                          | Author
-# -----------------------------------------------------------------------------
-# Dec 4   | Changed W_core to W_in and added W_out.          | Noah C.
-#         | Changed W_f to Wf. Edited for loop:              |
-#         |     "for value in kwargs"                        |
-#         |        - changed to                              |
-#         |     "for property in kwargs"                     |
-# ----------------------------------------------------------------------------
-# Dec 3   | Added units & _str_ def                          | Noah C.
-# ----------------------------------------------------------------------------
-# Dec 3   | Added remaining calc.                            | Noah C.
-#         | Need to check characteristics.                   |
-#         | To do:                                           |
-#         |  - add _str_ def                                 |
-#         |  - check remaining stuff                         |
-# ----------------------------------------------------------------------------
-# Dec 3   | Static T def set. Variable names changed.        | Noah C.
-#         | To do:                                           |
-#         |  - Create cacl(self) method                      |
-#         |  - Define remaining outputs/characteristics      |
-#         |    - (whew)                                      |
-# ----------------------------------------------------------------------------
-# Dec 2   | Added comments                                   | Jose R.
-#         | Downstream station needs:                        |
-#         |  - Static P and T exiting Turbine                |
-# ----------------------------------------------------------------------------
-# Dec 2   | Turbine changed to a Class with appropriate      | Noah C.
-#         | alterations for workability                      |
-#         | To do:                                           |
-#         |   - Add _str_ method                             |
-#         |   - Add a5, byp ratio, m0, mfan, and mf processes  |
-# ----------------------------------------------------------------------------
-# Nov 25  | First Upload to Github                           |
-# ----------------------------------------------------------------------------
-# Nov 20  | Initial file creation as a collection of         | Noah C.
-#         | functions.                                       |
-# ----------------------------------------------------------------------------
-
-# .gamma .R .cp
+__author__ = "Noah Thomas Compton"
+__version__ = "0.0.1"
+__email__ = "noah.compton@ufl.edu"
+__status__ = "Development"
 
 import gas_dynamics as gd
 import math
 
-global y, R
-R = gd.fluids.air.R
-y = gd.fluids.air.gamma
-
 
 class Turbine:
+    """A model for describing the characterisics of a turbine"""
+
     def __init__(self, **kwargs):
+        """Initializes a Turbine class do define flow changes within the stage.
+
+        Paramerters:
+
+            Parameters are characterized by a dictionary with 2 keys and values to maintain a quantitative and qualitative description.
+            The form of the parameters is such: {"value": 0.0, "units": "str"}
+            Example: self.Pt_in = {"value": 1000, "units": "kPa"}
+
+            Pt_in           (dict):     Incoming total pressure.
+            Tt_in           (dict):     Incoming total temperature.
+            W_in            (dict):     Incoming mass flow rate.
+            inlet_TR        (dict):     Temperature ratio of the Turbofan inlet.
+            inlet_W         (dict):     The mass flow rate entering the inlet of the Turbofan.
+            fan_TR          (dict):     Temperature ratio of the Turbofan fan.
+            compr_TR        (dict):     Temperautre ratio of the Turbofan compressor.
+            burner_f        (dict):     Fuel ratio of the burner.
+            burner_TRmax    (dict):     Maximum Temperature ratio of the burner.
+            Pt_out          (dict):     Total pressure out of the turbine.
+            Tt_out          (dict):     Total temperature out of the turbine.
+            P_out           (dict):     Static pressure out of the turbine.
+            T_out           (dict):     Static temperature out of the turbine.
+            a_out           (dict):     Speed of sound out of the turbine.
+            W_out           (dict):     Mass flow rate out of the turbine.
+            PR              (dict):     Pressure ratio across the turbine.
+            TR              (dict):     Temperature ratio across the turbine.
+            eff_poly        (dict):     Polytropic efficiency ( < 1, non-zero decimal value) of the turbine.
+            eff_mech        (dict):     Mechanical efficiency ( < 1, non-zero decimal value) of the turbine.
+            BPR             (dict):     Bypass ratio for the turbofan engine.
+            XNM_out         (dict):     Mach value at the exit of the turbine.
+            Wf              (dict):     Fuel flow within the turbine.
+            W_fan           (dict):     Mass flow rate through the fan of the turbofan engine.
+        """
 
         initial = {"value": 0.0, "units": "-"}
 
@@ -55,7 +50,7 @@ class Turbine:
         self.inlet = ""
         self.outlet = ""
 
-        # Inlet                                     Dec 2; JR Comment
+        # Inlet
         self.Pt_in = initial.copy()
         self.Tt_in = initial.copy()
         self.W_in = initial.copy()
@@ -72,21 +67,25 @@ class Turbine:
         self.Tt_out = initial.copy()
         self.P_out = initial.copy()
         self.T_out = initial.copy()
-        self.a_out = initial.copy()  # Speed of sound at exit
+        self.a_out = initial.copy()
         self.W_out = initial.copy()
 
         # Characteristics
-        self.PR = initial.copy()  # Pressure Ratio
-        self.TR = initial.copy()  # Temperature Ratio
-        self.eff_poly = initial.copy()  # Polytropic efficiency
-        self.eff_mech = initial.copy()  # Mechanicsal efficiency
-        self.BPR = initial.copy()  # BPR -> bypass ratio
-        self.XMN_out = initial.copy()  # Mach out
-        self.Wf = initial.copy()  # W_f -> fuel flow
-        self.W_fan = initial.copy()  # W_fan -> fan mass flow rate
+        self.PR = initial.copy()
+        self.TR = initial.copy()
+        self.eff_poly = initial.copy()
+        self.eff_mech = initial.copy()
+        self.BPR = initial.copy()
+        self.XMN_out = initial.copy()
+        self.Wf = initial.copy()
+        self.W_fan = initial.copy()
 
         for property in kwargs:
             values = kwargs[property]
+
+            """This is checking the inputs for each parameter. If the number of inputs is == 1 then a default unit is assigned.
+                If input == 0 then a value error is raised
+                """
 
             if len(values) >= 2:
                 value = values[0]
@@ -277,6 +276,8 @@ class Turbine:
                 raise ValueError("Incorrect inputs!")
 
     def polytropic_efficiency(TR: float, PR: float, gas=gd.fluids.air) -> float:
+        """Gives the user the capability to calculate the polytropic efficiency. Should only be run if analyzing only the turbine."""
+
         y = gas.gamma
 
         if TR > 0 and PR > 0:
@@ -291,6 +292,8 @@ class Turbine:
     def Tt_out_from_poly_efficiency(
         Tt_in: float, PR: float, eff_poly: float, gas=gd.fluids.air
     ) -> float:
+        """Gives the user the capability to calculate the output total temperature. Should only be run if analyzing only the turbine."""
+
         y = gas.gamma
 
         if Tt_in > 0 and PR > 0 and eff_poly > 0:
@@ -310,6 +313,7 @@ class Turbine:
     def Pt_out_from_poly_efficiency(
         Pt_in: float, TR: float, eff_poly: float, gas=gd.fluids.air
     ) -> float:
+        """Gives the user the capability to calculate the total pressure out. Should only be run if analyzing only the turbine."""
         y = gas.gamma
 
         if Pt_in > 0 and TR > 0 and eff_poly > 0:
@@ -356,6 +360,7 @@ class Turbine:
     def pressure_ratio_from_poly_efficiency(
         TR: float, eff_poly: float, gas=gd.fluids.air
     ) -> float:
+        """Gives the user the capability to calculate the pressure ratio from polytopic efficiency. Should only be run if analyzing only the turbine."""
         y = gas.gamma
 
         # (1 - ((1 - self.TR["value"]) / self.eff_poly["value"])) ** (y / (y - 1))
@@ -373,6 +378,7 @@ class Turbine:
     def temp_ratio_from_poly_efficiency(
         PR: float, eff_poly: float, gas=gd.fluids.air
     ) -> float:
+        """Gives the user the capability to calculate the temperature ratio from polytropic efficiency. Should only be run if analyzing only the turbine."""
         y = gas.gamma
 
         if PR > 0 and eff_poly > 0:
@@ -412,6 +418,7 @@ class Turbine:
             )
 
     def speed_of_sound_out(Tt_out: float, mach_out: float, gas=gd.fluids.air) -> float:
+        """Gives the user the capability to calculate the speed of sound at turbine exit. Should only be run if analyzing only the turbine."""
         y = gas.gamma
         R = gas.R
 
@@ -445,6 +452,7 @@ class Turbine:
     def static_pressure_out(
         Pt_out: float, Tt_out: float, mach_out: float, gas=gd.fluids.air
     ) -> float:
+        """Gives the user the capability to calculate the static pressure out. Should only be run if analyzing only the turbine."""
         y = gas.gamma
 
         if Pt_out > 0 and Tt_out > 0 and mach_out > 0:
@@ -481,7 +489,19 @@ class Turbine:
             )
 
     def calc(self):
-        y = 1.4
+        """The main calculation method for the class. Should only be run once when evaluating the turbine.
+        Requirements:
+            The parameters described earlier must be defined.
+            Calc methods for previous stages must be run.
+                The previous stages are:
+                    Inlet
+                    Fan
+                    Compressor
+                    Burner
+                If these stages are not analyzed before using this class method then results will be incorrect.
+        """
+
+        y = gd.fluids.air.gamma
 
         if self.PR["value"] > 0 and self.eff_poly["value"] > 0:
             self.TR["value"] = self.PR["value"] ** (
@@ -536,6 +556,7 @@ class Turbine:
         self.Wf["units"] = self.W_in["units"]
         self.W_out["units"] = self.W_in["units"]
 
+    # Defining the string method for the class.
     def __str__(self):
         output = (
             f"{self.name} Characteristics:\n Temperature Ratio: {self.TR}\n Bypass Ratio: {self.BPR}\n Mach at exit: {self.XMN_out}\n Core mass flow rate: {self.W_core}\n Fuel mass flow rate: {self.W_f}\n Fan mass flow rate: {self.W_fan}"
