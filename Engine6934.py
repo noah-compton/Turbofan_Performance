@@ -1,3 +1,5 @@
+import pdb
+
 # Part List
 from inlet       import Inlet
 from fan         import Fan
@@ -34,10 +36,16 @@ Mix50 =      Mixer(name='Mix50') # Mixing Plane
 Noz70 =     Nozzle(name='Noz70') # Exhaust
 
 # ----------------------------------- TEST DATA ------------------------------------------
-# Inlet, Station: 00
+# Freestream + Inlet, Station: 00
 Int00.T_in       = {'value': 223.    , 'units': 'K'    }
 Int00.P_in       = {'value': 12000   , 'units': 'Pa'   }
 Int00.XMN_in     = {'value': 2.      , 'units': '-'    }
+Int00.W_in       = {'value': 25.     , 'units': 'kg/s' }
+Int00.PR         = {'value': 0.9     , 'units': '-'    }
+
+# Fan, Station: 10
+Fan10.PR         = {'value': 1.5     , 'units': '-'    }
+Fan10.eff_poly   = {'value': 0.9     , 'units': '-'    }
 
 # Compressor, Station: 20
 Cmp20.PR       = {'value': 20.     , 'units': '-'    }
@@ -48,9 +56,17 @@ Brn30.PR       = {'value': 0.95    , 'units': '-'    }
 Brn30.eff_mech = {'value': 0.98    , 'units': '-'    }
 Brn30.Tt_out   = {'value': 1673.   , 'units': 'K'    }
 
+# Turbine, Station: 40
+Trb40.eff_poly  = {'value': 0.92    , 'units': '-'    }
+Trb40.eff_mech  = {'value': 0.95    , 'units': '-'    }
+Trb40.XMN_out   = {'value': 0.5     , 'units': '-'    }
+
+# Mixer, Station: 50
+Mix50.PR       = {'value': 0.98     , 'units': '-'    } 
+
 # Nozzle, Station: 70
-Noz70.u_out    = {'value': 735.    , 'units': 'm/s'  }
-Noz70.W_out    = {'value': 25.1070 , 'units': 'kg/s' }
+Noz70.PR       = {'value': 0.9      , 'units': '-'    }
+Noz70.P_out    = Int00.P_in
 
 # ----------------------------------- SIMULATION ------------------------------------------
 Int00.calc()
@@ -58,24 +74,42 @@ LinkPorts(Int00, Fan10)
 
 Fan10.calc()
 SplitStream(Fan10, Cmp20, Byp13)
+Byp13.calc()
+
+pdb.set_trace()
 
 Cmp20.calc()
 LinkPorts(Cmp20, Brn30)
 
-Brn30.calc()
+Brn30.calc(T0=Int00.T_in)
 LinkPorts(Brn30, Trb40)
 
+# Turbine Calculated Parameters
+Trb40.inlet_TR     = Int00.TR
+Trb40.inlet_W_in   = Int00.W_in
+Trb40.fan_TR       = Fan10.TR
+Trb40.compr_TR     = Cmp20.TR
+Trb40.burner_FAR   = Brn30.FAR
+Trb40.burner_TRmax = Brn30.TRmax
+
 Trb40.calc()
+
+# Bypass Calculation
+Fan10.BPR = Trb40.BPR
+Fan10.mass_conservation()
+
 LinkPorts(Byp13, Byp15)
+Byp15.calc()
+
 LinkStreams(Trb40, Byp15, Mix50)
 
 Mix50.calc()
 LinkPorts(Mix50, Noz70)
 
 Noz70.calc()
-
 # ----------------------------------- PERFORMANCE ------------------------------------------
 
 Fn = net_thrust(Int00, Noz70)
 eff_ther, eff_prop, eff_all = efficiency(Int00, Brn30, Noz70)
 TSFC = tsfc(Int00, Brn30, Noz70)
+

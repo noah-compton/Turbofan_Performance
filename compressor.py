@@ -6,126 +6,122 @@
 # ----------------------------------------------------------------------------
 # Nov 30  | Initial .py file on GitHub                       | Jose R.
 import math
+import gas_dynamics as gd
+import pdb
 
 class Compressor:
+    '''
+    class Compressor(**kwargs) has attributes to store typical compressor performance parameters, or parameteres needed to make typical compressor calculations, 
+    and it can be modified to input and output different parameters, depending on the simulation that is desired to run.
+
+    Input:
+    Compressor will take varios compressor typical inlet parameters, such as total and static conditions of the flow as Pt_in, Tt_in, and W_in, 
+    as well as performance characterization like eff_poly, eff_mech, and eff_isen for Polytropic, Mechanical and Isentropic Efficiencies.
+
+    Output:
+    Compressor will output downstream (or discharge) conditions, such as Pt_out, Tt_out and W_out
+    '''
+
+    '''
+    Examples:
+    Ex1: Direct Assigment:
+    Cmp20 = Compressor(name='Cmp20', Pt_in ={'value': 101.325, 'units': 'kPa}, Tt_in = {'value': 288.15, 'units': 'K'})
+    
+    Ex2: Initializing, then assignment of values:
+    Cmp20 = Compressor()
+    Cmp20.name  =  'Cmp20'
+    Cmp20.Pt_in = {'value': 101.325 , 'units': 'kPa} 
+    Cmp20.Tt_in = {'value': 288.15  , 'units': 'K' }
+    '''
+
     def __init__(self, **kwargs):
 
         init = {"value": 0.0, "units": "-"}
-
+        
+        cmp_vars = [
+                      'name'     , 'inlet'    , 'outlet'   , 
+                      'Pt_in'    , 'Tt_in'    , 'W_in'     , 
+                      'Pt_out'   , 'Tt_out'   , 'W_out'    , 
+                      'PR'       , 'TR'       , 'N_mech'   ,
+                      'eff_poly' , 'eff_mech' , 'eff_isen' ,
+                      ]
+        
+        # Indicators
         self.name = ""
         self.inlet = ""
         self.outlet = ""
 
         # Inlet
-        self.Pt_in = init.copy()
-        self.Tt_in = init.copy()
-        self.W_in = init.copy()
+        self.Pt_in    = init.copy()
+        self.Tt_in    = init.copy()
+        self.W_in     = init.copy()
 
         # Outlet
-        self.Pt_out = init.copy()
-        self.Tt_out = init.copy()
-        self.W_out = init.copy()
+        self.Pt_out   = init.copy()
+        self.Tt_out   = init.copy()
+        self.W_out    = init.copy()
 
         # Characteristics
-        self.PR = init.copy()
-        self.TR = init.copy()
+        self.PR       = init.copy()
+        self.TR       = init.copy()
+        self.N_mech   = init.copy()
+        
+        # Efficiencies
         self.eff_poly = init.copy()
+        self.eff_mech = init.copy()
+        self.eff_isen = init.copy()
 
-        for property in kwargs:
+        interested = [
+                      'name'     , 'inlet'    , 'outlet'   , 
+                      'Pt_in'    , 'Tt_in'    , 'W_in'     , 
+                      'Pt_out'   , 'Tt_out'   , 'W_out'    , 
+                      'PR'       , 'TR'       , 'N_mech'   ,
+                      'eff_poly' , 'eff_mech' , 'eff_isen' ,
+                      ]
 
-            values = kwargs[property]
+        for cmp_in in kwargs:
 
-            if len(values) >= 2:
-                value = values[0]
-                units = values[1]
+            values = kwargs[cmp_in]
+            
+            if cmp_in == 'name':
+                continue
+            
+            elif len(values) == 2:
+                value = values['value']
+                units = values['units']
 
-                if len(values) > 2 and property != "name":
-                    raise Warning(
-                        f"Property {property} had too many inputs, using first 2 provided"
-                    )
+            elif len(values) < 1:
+                raise ValueError("Input is missing value or units")
+                
+            elif len(values) > 2:
+                raise ValueError("Input has more than one value or units")
+            
 
-            elif len(values) == 1:
-                value = values[0]
-                units = ""
-
-            else:
-                raise ValueError("Not enough inputs")
-
-            if property == "Pt_in":
-                self.Pt_in["value"] = value
-
-                if len(values) == 2:
-                    self.Pt_in["units"] = units
-
-                elif len(values) < 2:
-                    self.Pt_in["units"] = "kPa"
-                    raise Warning("Pt_in has not enough inputs, assuming kPa for units")
-
-            elif property == "Tt_in":
-                self.Tt_in["value"] = value
-
-                if len(values) == 2:
-                    self.Tt_in["units"] = units
-
-                if len(values) < 2:
-                    self.Tt_in["units"] = "K"
-                    raise Warning("Tt_in has not enough inputs, assuming K for units")
-
-            elif property == "W_in":
-                self.W_in["value"] = value
-
-                if len(values) == 2:
-                    self.W_in["units"] = units
-
-                if len(values) < 2:
-                    self.W_in["units"] = "lbm/s"
-                    raise Warning(
-                        "W_in has not enough inputs, assuming lbm/s for units"
-                    )
-
-            elif property == "PR":
-                self.PR["value"] = value
-
-                if len(values) == 2:
-                    self.PR["units"] = units
-
-                if len(values) < 2:
-                    self.PR["units"] = "-"
-                    raise Warning(
-                        "PR has not enough inputs, assuming value is dimensionless"
-                    )
-
-            elif property == "TR":
-                self.TR["value"] = value
-
-                if len(values) == 2:
-                    self.TR["units"] = units
-
-                if len(values) < 2:
-                    self.TR["units"] = "-"
-                    raise Warning(
-                        "TR has not enough inputs, assuming value is dimensionless"
-                    )
-
-            elif property == "eff_poy":
-                self.eff_poly["value"] = value
-
-                if len(values) == 2:
-                    self.eff_poly["units"] = units
-
-                if len(values) < 2:
-                    self.eff_poly["units"] = "-"
-                    raise Warning(
-                        "e has not enough inputs, assuming value is dimensionless"
-                    )
-
-            elif property == "name":
+            if cmp_in == 'name':
                 self.name = values
 
-    # processes
-    def poly_efficiency(self):
-        y = 1.4
+            elif cmp_in in cmp_vars:
+                exp1 = f"self.{cmp_in}['value'] = value"
+                exp2 = f"self.{cmp_in}['units'] = units"
 
+                exec(exp1)                
+                exec(exp2)
+
+            else:
+                raise Warning("Some inputs were not expected, ignoring extra inputs")
+
+
+    def temperature_ratio(self):
+        '''
+        function temperature_ratio() check input of the compressor to calculate one of the following: pressure ratio, 
+        temperature ratio or polytropic efficiency.
+        '''
+        # Working fluid:
+        air = gd.fluid('air', gamma=1.4, R=287, units ='J/kg-K')
+        
+        y = air.gamma
+        R = air.R
+        
         if self.PR['value'] > 0. and self.TR['value'] > 0.:
             self.eff_poly['value'] = ((y-1)/y) * (math.log(self.PR['value'])/ math.log(self.TR['value']))
             self.eff_poly['units'] = '-'
@@ -158,10 +154,14 @@ class Compressor:
     def calc(self):
         
         self.temperature_ratio()
-        self.discharge_pressure()
+        # self.discharge_pressure()
         self.discharge_temperature()
         self.mass_conservation()
         
     def __str__(self):
-        str = f"{self.name} Characteristics:\n" f"Efficiency:\n" f"Pressure Ratio:\n"
-        return str
+        out = f"Compressor: {self.name}\n \
+                Polytropic Efficiency: {self.eff_poly}\n \
+                Isentropic Efficiency: {self.eff_isen}\n \
+                Pressure Ratio: {self.PR}"
+
+        return out

@@ -6,6 +6,7 @@ def LinkPorts(object1, object2):
     object2.inlet  = object1.name
     object1.outlet = object2.name
 
+
 def LinkStreams(object1, object2, object3):
     object3.Pt_in1 = object1.Pt_out
     object3.Tt_in1 = object1.Tt_out

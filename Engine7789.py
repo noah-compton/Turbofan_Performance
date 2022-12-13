@@ -45,6 +45,9 @@ Int00.T_in       = {'value': 223.    , 'units': 'K'    }
 Int00.P_in       = {'value': 12000   , 'units': 'Pa'   }
 Int00.XMN_in     = {'value': 2.      , 'units': '-'    }
 
+# Fan, Station: 10
+
+
 # Compressor, Station: 20
 Cmp20.PR       = {'value': 20.     , 'units': '-'    }
 Cmp20.eff_poly = {'value': 0.9     , 'units': '-'    }
@@ -53,6 +56,11 @@ Cmp20.eff_poly = {'value': 0.9     , 'units': '-'    }
 Brn30.PR       = {'value': 0.95    , 'units': '-'    }
 Brn30.eff_mech = {'value': 0.98    , 'units': '-'    }
 Brn30.Tt_out   = {'value': 1673.   , 'units': 'K'    }
+
+# Turbine, Station: 40
+
+# Mixer, Station: 50
+
 
 # Nozzle, Station: 70
 Noz70.u_out    = {'value': 735.    , 'units': 'm/s'  }

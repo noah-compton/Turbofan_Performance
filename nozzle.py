@@ -9,7 +9,6 @@ import math
 global y
 y = gd.fluids.air.gamma
 
-
 class Nozzle:
     """A model for describing the characterisics of a nozzle"""
 

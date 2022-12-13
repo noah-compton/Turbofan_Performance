@@ -10,7 +10,19 @@ class Mixer:
     def __init__(self, **kwargs):
 
         init = {"value": 0.0, "units": "-"}
-
+        
+        mix_vars = [
+                      'name'   , 'inlet1' , 'inlet2'  , 'outlet' , 
+                      'Pt_in1' , 'Tt_in1' , 'W_in1'   ,
+                      'P_in1'  , 'T_in1'  , 'XMN_in1' ,
+                      'Pt_in2' , 'Tt_in2' , 'W_in2'   ,
+                      'P_in2'  , 'T_in2'  , 'XMN_in2' ,         
+                      'Pt_out' , 'Tt_out' , 'W_out'   , 'Ht_out' ,
+                      'P_out'  , 'T_out'  , 'XMN_out' ,        
+                      'PR'     , 'PRi'    , 'PRm'     , 
+                      'TR'     , 'AR'     , 'FAR'     ,
+                      ]
+        
         self.name = ""
         self.inlet1 = ""
         self.inlet2 = ""
@@ -49,87 +61,115 @@ class Mixer:
         self.AR       = init.copy()
         self.FAR      = init.copy()
 
-        for property in kwargs:
+        for mix_in in kwargs:
 
-            values = kwargs[property]
+            values = kwargs[mix_in]
+            
+            if mix_in == 'name':
+                continue
+            
+            elif len(values) == 2:
+                value = values['value']
+                units = values['units']
 
-            if len(values) >= 2:
-                value = values[0]
-                unit = values[1]
+            elif len(values) < 1:
+                raise ValueError("Input is missing value or units")
+                
+            elif len(values) > 2:
+                raise ValueError("Input has more than one value or units")
+            
 
-            elif len(values) == 1:
-                value = values[0]
-                unit = ""
+            if mix_in == 'name':
+                self.name = values
+
+            elif mix_in in mix_vars:
+                exp1 = f"self.{mix_in}['value'] = value"
+                exp2 = f"self.{mix_in}['units'] = units"
+
+                exec(exp1)                
+                exec(exp2)
 
             else:
-                raise ValueError("Not enough inputs")
+                raise Warning("Some inputs were not expected, ignoring extra inputs")
 
-            if property == "Pt_in":
-                self.Pt_in["value"] = value
 
-                if len(values) < 2:
-                    self.Pt_in["units"] = "Pa"
-                    raise Warning("Pt_in has not enough inputs, assuming kPa for units")
+            # if len(values) >= 2:
+            #     value = values[0]
+            #     unit = values[1]
 
-            elif property == "Tt_in":
-                self.Tt_in["value"] = value
+            # elif len(values) == 1:
+            #     value = values[0]
+            #     unit = ""
 
-                if len(values) < 2:
-                    self.Tt_in["units"] = "K"
-                    raise Warning("Tt_in has not enough inputs, assuming K for units")
+            # else:
+            #     raise ValueError("Not enough inputs")
 
-            elif property == "W_in":
-                self.W_in["value"] = value
+            # if mix_in == "Pt_in":
+            #     self.Pt_in["value"] = value
 
-                if len(values) < 2:
-                    self.W_in["units"] = "lbm/s"
-                    raise Warning(
-                        "W_in has not enough inputs, assuming lbm/s for units"
-                    )
+            #     if len(values) < 2:
+            #         self.Pt_in["units"] = "Pa"
+            #         raise Warning("Pt_in has not enough inputs, assuming kPa for units")
 
-            elif property == "Wf":
-                self.Wf["value"] = value
+            # elif mix_in == "Tt_in":
+            #     self.Tt_in["value"] = value
 
-                if len(values) < 2:
-                    self.Wf["units"] = "lbm/hr"
-                    raise Warning("Wf has not enough inputs, assuming lbm/hr for units")
+            #     if len(values) < 2:
+            #         self.Tt_in["units"] = "K"
+            #         raise Warning("Tt_in has not enough inputs, assuming K for units")
 
-            elif property == "Tt_out":
-                self.Tt_out["value"] = value
+            # elif mix_in == "W_in":
+            #     self.W_in["value"] = value
 
-                if len(values) < 2:
-                    self.Tt_out["units"] = "K"
-                    raise Warning("Tt_in has not enough inputs, assuming K for units")
+            #     if len(values) < 2:
+            #         self.W_in["units"] = "lbm/s"
+            #         raise Warning(
+            #             "W_in has not enough inputs, assuming lbm/s for units"
+            #         )
 
-            elif property == "PR":
-                self.PR["value"] = value
+            # elif mix_in == "Wf":
+            #     self.Wf["value"] = value
 
-                if len(values) < 2:
-                    self.PR["units"] = "-"
-                    raise Warning(
-                        "PR has not enough inputs, assuming value is dimensionless"
-                    )
+            #     if len(values) < 2:
+            #         self.Wf["units"] = "lbm/hr"
+            #         raise Warning("Wf has not enough inputs, assuming lbm/hr for units")
 
-            elif property == "TR":
-                self.TR["value"] = value
+            # elif mix_in == "Tt_out":
+            #     self.Tt_out["value"] = value
 
-                if len(values) < 2:
-                    self.TR["units"] = "-"
-                    raise Warning(
-                        "TR has not enough inputs, assuming value is dimensionless"
-                    )
+            #     if len(values) < 2:
+            #         self.Tt_out["units"] = "K"
+            #         raise Warning("Tt_in has not enough inputs, assuming K for units")
 
-            elif property == "e":
-                self.eff_poly["value"] = value
+            # elif mix_in == "PR":
+            #     self.PR["value"] = value
 
-                if len(values) < 2:
-                    self.eff_poly["units"] = "-"
-                    raise Warning(
-                        "e has not enough inputs, assuming value is dimensionless"
-                    )
+            #     if len(values) < 2:
+            #         self.PR["units"] = "-"
+            #         raise Warning(
+            #             "PR has not enough inputs, assuming value is dimensionless"
+            #         )
 
-            elif property == "name":
-                self.name = values
+            # elif mix_in == "TR":
+            #     self.TR["value"] = value
+
+            #     if len(values) < 2:
+            #         self.TR["units"] = "-"
+            #         raise Warning(
+            #             "TR has not enough inputs, assuming value is dimensionless"
+            #         )
+
+            # elif mix_in == "e":
+            #     self.eff_poly["value"] = value
+
+            #     if len(values) < 2:
+            #         self.eff_poly["units"] = "-"
+            #         raise Warning(
+            #             "e has not enough inputs, assuming value is dimensionless"
+            #         )
+
+            # elif mix_in == "name":
+            #     self.name = values
     
     def discharge_temperature(self):
         check_units(self.Tt_in1, self.Tt_in2)
@@ -177,15 +217,20 @@ class Mixer:
         self.AR['value'] = (self.W_in2['value']/self.W_in1['value']) * (self.T_in2['value'] / self.T_in1['value']) ** (1/2)
 
     def sonic_velocity(self, T):
-        y = 1.4
-        R = 287
-
-        a = (y*R*T) ** (1/2)
+        # Working fluids:
+        air  = gd.fluid('air' , gamma=1.4, R=287, units ='J/kg-K')
+        
+        # a = (y*R*T) ** (1/2)
+        a = gd.sonic_velocity(temperature=T, gas=air)
         return a
     
     def discharge_mach(self):
-        y = 1.4
+        # Working fluids:
+        air  = gd.fluid('air' , gamma=1.4, R=287, units ='J/kg-K')
+        
         cp = 1004
+        y = air.gamma
+        R = air.R
         
         a1  = self.sonic_velocity(self.T_in1['value'])
         a2  = self.sonic_velocity(self.T_in2['value'])
@@ -199,14 +244,25 @@ class Mixer:
         self.XMN_out['value'] = ((temp3 - 2*y - (temp5)**(1/2)) / temp4)**(1/2)
 
     def discharge_static_pressure(self):
-        y = 1.4
+        # Working fluids:
+        air  = gd.fluid('air' , gamma=1.4, R=287, units ='J/kg-K')
+        
+        cp = 1004
+        y = air.gamma
+        R = air.R
+        
         temp1 = ((1 + y * self.XMN_in1['value'] ** 2) + self.AR['value'] * (1 + y * self.XMN_in2['value'] ** 2)) / (1 + self.AR['value'])
 
         self.P_out['value'] = self.P_in1['value'] * (temp1/(1 + y * self.XMN_out['value']**2))
         self.P_out['units'] = self.P_in1['units']
 
     def pressure_ratio_ideal(self):
-        y = 1.4
+        # Working fluids:
+        air  = gd.fluid('air' , gamma=1.4, R=287, units ='J/kg-K')
+        
+        cp = 1004
+        y = air.gamma
+        R = air.R
 
         num = 1 + (1/2)*(y-1) * self.XMN_out['value'] ** 2
         den = 1 + (1/2)*(y-1) * self.XMN_in1['value'] ** 2
@@ -244,5 +300,6 @@ class Mixer:
         self.mass_convervation()
 
     def __str__(self):
-        str = f"{self.name} Characteristics:\n" f"Efficiency:\n" f"Pressure Ratio:\n"
-        return str
+        out = f"Mixer: {self.name}\n"
+
+        return out

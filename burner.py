@@ -2,12 +2,49 @@
 # ----------------------------------------------------------------------------
 
 from processes import check_units
+import gas_dynamics as gd
+import pdb
 
-class Burner:
+class Burner:    
+    '''
+    class Burner(**kwargs) has attributes to store typical burner performance parameters, or parameteres needed to make typical burner calculations, 
+    and it can be modified to input and output different parameters, depending on the simulation that is desired to run.
+
+    Input:
+    Burner will take varios compressor typical inlet parameters, such as total and static conditions of the flow as Pt_in, Tt_in, and W_in, 
+    as well as performance characterization like eff_poly, eff_mech, and eff_isen for Polytropic, Mechanical and Isentropic Efficiencies.
+
+    Output:
+    Burner will output downstream (or discharge) conditions, such as Pt_out, Tt_out and W_out
+    and other parameters like Fuel-to-Air Ratio (FAR)
+    '''
+
+    '''
+    Examples:
+    Ex1: Direct Assigment:
+    Brn30 = Burner(name='Brn30', Pt_in ={'value': 101.325, 'units': 'kPa}, Tt_in = {'value': 288.15, 'units': 'K'})
+    
+    Ex2: Initializing, then assignment of values:
+    Brn30 = Burner()
+    Brn30.name  =  'Brn30'
+    Brn30.Pt_in = {'value': 101.325 , 'units': 'kPa} 
+    Brn30.Tt_in = {'value': 288.15  , 'units': 'K' }
+    '''
+    
     def __init__(self, **kwargs):
         
         init = {'value': float, 'units': str}
         
+        brn_vars = [
+                      'name'     , 'inlet'    , 'outlet'   , 
+                      'Pt_in'    , 'Tt_in'    , 'W_in'     , 
+                      'Pt_out'   , 'Tt_out'   , 'W_out'    , 
+                      'PR'       , 'TR'       , 'TRmax'    ,
+                      'eff_poly' , 'eff_mech' , 'eff_isen' ,
+                      'FAR'      ,
+                      ]
+        
+        # Indicators
         self.name   = ''
         self.inlet = ''
         self.outlet = ''
@@ -27,86 +64,117 @@ class Burner:
         self.PR         = init.copy()
         self.TR         = init.copy()
         self.TRmax      = init.copy()
+        self.FAR        = init.copy()
+        
+        # Efficiencies
         self.eff_mech   = init.copy()
         self.eff_poly   = init.copy()
         self.eff_isen   = init.copy()
-        self.FAR        = init.copy()
         
-        for property in kwargs:
+        for brn_in in kwargs:
+           
+            values = kwargs[brn_in]
             
-            values = kwargs[property]
+            if brn_in == 'name':
+                continue
             
-            if len(values) >= 2:
-                value = values[0]
-                unit = values[1]
-                
-            elif len(values) == 1:
-                value = values[0]
-                unit = ''
-            
-            else:
-                raise ValueError('Not enough inputs')
-                
+            elif len(values) == 2:
+                value = values['value']
+                units = values['units']
 
-            if property == "Pt_in":
-                self.Pt_in['value'] = value 
+            elif len(values) < 1:
+                raise ValueError("Input is missing value or units")
                 
-                if len(values) < 2:
-                    self.Pt_in['units'] = 'Pa'
-                    raise Warning("Pt_in has not enough inputs, assuming kPa for units")   
-                
-            elif property == "Tt_in":
-                self.Tt_in['value'] = value 
-                
-                if len(values) < 2:
-                    self.Tt_in['units'] = "K"
-                    raise Warning("Tt_in has not enough inputs, assuming K for units")   
+            elif len(values) > 2:
+                raise ValueError("Input has more than one value or units")
             
-                
-            elif property == "W_in":
-                self.W_in['value'] = value 
-                
-                if len(values) < 2:
-                    self.W_in['units'] = "lbm/s"
-                    raise Warning("W_in has not enough inputs, assuming lbm/s for units")   
-            
-            elif property == "Wf":
-                self.Wf['value'] = value 
-                
-                if len(values) < 2:
-                    self.Wf['units'] = "lbm/hr"
-                    raise Warning("Wf has not enough inputs, assuming lbm/hr for units")   
-            
-            elif property == "Tt_out":
-                self.Tt_out['value'] = value 
-                
-                if len(values) < 2:
-                    self.Tt_out['units'] = "K"
-                    raise Warning("Tt_in has not enough inputs, assuming K for units")   
-                        
-            elif property == "PR":
-                self.PR['value'] = value 
-                
-                if len(values) < 2:
-                    self.PR['units'] = "-"
-                    raise Warning("PR has not enough inputs, assuming value is dimensionless")        
 
-            elif property == "TR":
-                self.TR['value'] = value 
-                
-                if len(values) < 2:
-                    self.TR['units'] = "-"
-                    raise Warning("TR has not enough inputs, assuming value is dimensionless")     
-                    
-            elif property == "eff_mech":
-                self.eff_mech['value'] = value 
-                
-                if len(values) < 2:
-                    self.eff_mech['units'] = "-"
-                    raise Warning("e has not enough inputs, assuming value is dimensionless")        
-                             
-            elif property == "name":
+            if brn_in == 'name':
                 self.name = values
+
+            elif brn_in in brn_vars:
+                exp1 = f"self.{brn_in}['value'] = value"
+                exp2 = f"self.{brn_in}['units'] = units"
+
+                exec(exp1)                
+                exec(exp2)
+
+            else:
+                raise Warning("Some inputs were not expected, ignoring extra inputs")
+
+            # values = kwargs[brn_in]
+            
+            # if len(values) >= 2:
+            #     value = values[0]
+            #     unit = values[1]
+                
+            # elif len(values) == 1:
+            #     value = values[0]
+            #     unit = ''
+            
+            # else:
+            #     raise ValueError('Not enough inputs')
+                
+
+            # if brn_in == "Pt_in":
+            #     self.Pt_in['value'] = value 
+                
+            #     if len(values) < 2:
+            #         self.Pt_in['units'] = 'Pa'
+            #         raise Warning("Pt_in has not enough inputs, assuming kPa for units")   
+                
+            # elif brn_in == "Tt_in":
+            #     self.Tt_in['value'] = value 
+                
+            #     if len(values) < 2:
+            #         self.Tt_in['units'] = "K"
+            #         raise Warning("Tt_in has not enough inputs, assuming K for units")   
+            
+                
+            # elif brn_in == "W_in":
+            #     self.W_in['value'] = value 
+                
+            #     if len(values) < 2:
+            #         self.W_in['units'] = "lbm/s"
+            #         raise Warning("W_in has not enough inputs, assuming lbm/s for units")   
+            
+            # elif brn_in == "Wf":
+            #     self.Wf['value'] = value 
+                
+            #     if len(values) < 2:
+            #         self.Wf['units'] = "lbm/hr"
+            #         raise Warning("Wf has not enough inputs, assuming lbm/hr for units")   
+            
+            # elif brn_in == "Tt_out":
+            #     self.Tt_out['value'] = value 
+                
+            #     if len(values) < 2:
+            #         self.Tt_out['units'] = "K"
+            #         raise Warning("Tt_in has not enough inputs, assuming K for units")   
+                        
+            # elif brn_in == "PR":
+            #     self.PR['value'] = value 
+                
+            #     if len(values) < 2:
+            #         self.PR['units'] = "-"
+            #         raise Warning("PR has not enough inputs, assuming value is dimensionless")        
+
+            # elif brn_in == "TR":
+            #     self.TR['value'] = value 
+                
+            #     if len(values) < 2:
+            #         self.TR['units'] = "-"
+            #         raise Warning("TR has not enough inputs, assuming value is dimensionless")     
+                    
+            # elif brn_in == "eff_mech":
+            #     self.eff_mech['value'] = value 
+                
+            #     if len(values) < 2:
+            #         self.eff_mech['units'] = "-"
+            #         raise Warning("e has not enough inputs, assuming value is dimensionless")        
+                             
+            # elif brn_in == "name":
+            #     self.name = values
 
     # processes
     def temperature_ratio(self):
@@ -117,9 +185,15 @@ class Burner:
                     self.TR['value'] = self.Tt_out['value'] / self.Tt_in['value']
        
     def fuel_to_air_ratio(self):
-        y = 1.4        # This can go away by adding the air as inlet fluid
-        cp = 1004      # This can go away by adding the air as inlet fluid
+        # Working fluids:
+        air  = gd.fluid('air' , gamma=1.4, R=287, units ='J/kg-K')
+        
+        cp = 1004
+        y = air.gamma
+        R = air.R
+        
         Q = 42800000   # This can go away by adding the air as inlet fluid
+        pdb.set_trace()
         
         check_units(self.Tt_in, self.Tt_out)
         self.FAR['value'] = cp * (self.Tt_out['value'] - self.Tt_in['value']) / (Q*self.eff_mech['value'] - cp*self.Tt_out['value'])
@@ -161,9 +235,11 @@ class Burner:
             self.Tt_out['value'] = self.TR['value'] * self.Tt_in['value']
             self.Tt_out['units'] = self.Tt_in['units']     
 
-    
-    def __str__(self): 
-        str = f"{self.name} Characteristics:\n" \
-              f"Efficiency:\n" \
-              f"Pressure Ratio:\n"
-        return str
+
+    def __str__(self):
+        out = f"Burner: {self.name}\n \
+                Mechanical Efficiency: {self.eff_mech}\n \
+                Fuel-to-Air Ratio: {self.FAR}\n \
+                Pressure Ratio: {self.PR}"
+
+        return out
