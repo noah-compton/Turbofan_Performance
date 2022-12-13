@@ -6,6 +6,30 @@ from processes import *
 import gas_dynamics as gd
 
 class Mixer:
+    '''
+    class Mixer(**kwargs) has attributes to store typical mixer performance parameters, or parameteres needed to make typical mixer calculations, 
+    and it can be modified to input and output different parameters, depending on the simulation that is desired to run.
+
+    Input:
+    Mixer will take varios mixer typical inlet parameters for the two strems mixing, such as total and static conditions of the flow as Pt_in, Tt_in, and W_in, 
+    as well as performance characterization like eff_poly, eff_mech, and eff_isen for Polytropic, Mechanical and Isentropic Efficiencies.
+
+    Output:
+    Mixer will output downstream (or discharge) conditions of the mixed flow, such as Pt_out, Tt_out and W_out.
+    '''
+
+    '''
+    Examples:
+    Ex1: Direct Assigment:
+    Mix50 = Burner(name='Mix50', Pt_in ={'value': 101.325, 'units': 'kPa}, Tt_in = {'value': 288.15, 'units': 'K'})
+    
+    Ex2: Initializing, then assignment of values:
+    Mix50 = Burner()
+    Mix50.name  =  'Mix50'
+    Mix50.Pt_in = {'value': 101.325 , 'units': 'kPa} 
+    Mix50.Tt_in = {'value': 288.15  , 'units': 'K' }
+    '''
+
     def __init__(self, **kwargs):
 
         init = {"value": 0.0, "units": "-"}
