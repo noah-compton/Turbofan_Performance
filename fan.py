@@ -1,6 +1,7 @@
-# fan
-# Isabel H
-# need to define __str__
+__author__ = "Isabel Husted"
+__version__ = "0.0.1"
+__email__ = "ihusted@ufl.edu"
+__status__ = "Development"
 
 import gas_dynamics as gd
 
