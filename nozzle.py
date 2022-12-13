@@ -1,12 +1,7 @@
-# Date    | Description of Changes:                          | Author
-# ----------------------------------------------------------------------------
-# Dec 3   | Created and nearly finished nozzle class.        | Noah C.
-#         | To do:                                           |
-#         |  - define _str_ method                           |
-#         |  - check the variables from other classes.       |
-# ----------------------------------------------------------------------------
-# Nov 30  | Initial upload to GitHub                         | Noah C.
-# ----------------------------------------------------------------------------
+__author__ = "Noah Thomas Compton"
+__version__ = "0.0.1"
+__email__ = "noah.compton@ufl.edu"
+__status__ = "Development"
 
 import gas_dynamics as gd
 import math
@@ -16,7 +11,34 @@ y = gd.fluids.air.gamma
 
 
 class Nozzle:
+    """A model for describing the characterisics of a nozzle"""
+
     def __init__(self, **kwargs):
+        """Initializes a Nozzle class do define flow changes within the stage.
+
+        Paramerters:
+
+            Parameters are characterized by a dictionary with 2 keys and values to maintain a quantitative and qualitative description.
+            The form of the parameters is such: {"value": 0.0, "units": "str"}
+            Example: self.Pt_in = {"value": 1000, "units": "kPa"}
+
+            Pt_in           (dict):     Incoming total pressure.
+            Tt_in           (dict):     Incoming total temperature.
+            W_in            (dict):     Incoming mass flow rate.
+            Pt_out          (dict):     Total pressure out of the nozz;e.
+            Tt_out          (dict):     Total temperature out of the nozzle.
+            W_out           (dict):     Mass flow rate out of the nozzle.
+            Pt_P            (dict):     Total pressure ratio for turbofan engine.
+            XNM_out         (dict):     Mach value at the exit of the nozzle.
+            T_out           (dict):     Static temperature out of the nozzle.
+            P_out           (dict):     Static pressure out of the nozzle.
+            u_out           (dict):     Velocity at exit of nozzle.
+            u_eff           (dict):     Effective velocity out of the nozzle.
+            a_out           (dict):     Speed of sound out of the nozzle.
+            S1              (dict):     Arbitrary variable defined for calculation.
+            S2              (dict):     Arbitrary variable defined for calculation.                                
+                                    
+        """
 
         initial = {"value": 0.0, "units": "-"}
 
@@ -27,7 +49,7 @@ class Nozzle:
         # Inlet
         self.Pt_in = initial.copy()
         self.Tt_in = initial.copy()
-        self.W_in  = initial.copy()
+        self.W_in = initial.copy()
 
         # Outlet
         self.Pt_out = initial.copy()
@@ -39,6 +61,7 @@ class Nozzle:
         self.P_out = initial.copy()
         self.u_out = initial.copy()
         self.u_effective = initial.copy()
+        self.W_out = initial.copy()
 
         # Characteristics
         self.a_out = initial.copy()
@@ -47,6 +70,10 @@ class Nozzle:
 
         for property in kwargs:
             values = kwargs[property]
+
+            """This is checking the inputs for each parameter. If the number of inputs is == 1 then a default unit is assigned.
+                If input == 0 then a value error is raised
+                """
 
             if len(values) >= 2:
                 value = values[0]
@@ -115,7 +142,21 @@ class Nozzle:
                 raise ValueError("Incorrect inputs!")
 
     def calc(self):
-        y = 1.4
+        """The main calculation method for the class. Should only be run once when evaluating the nozzle.
+        Requirements:
+            The parameters described earlier must be defined.
+            Calc methods for previous stages must be run.
+                The previous stages are:
+                    Inlet
+                    Fan
+                    Compressor
+                    Burner
+                    Turbine
+                    Mixer
+                If these stages are not analyzed before using this class method then results will be incorrect.
+        """
+
+        y = gd.fluids.air.gamma
 
         if self.PR["value"] > 0 and self.Pt_in["value"]:
             self.Pt_out["value"] = self.PR["value"] * self.Pt_in["value"]
@@ -133,6 +174,7 @@ class Nozzle:
         self.a_out["value"] = math.sqrt(y * gd.fluids.air.R * self.T_out["value"])
         self.u_out["value"] = self.a_out["value"] * self.XMN_out["value"]
         self.u_effective["value"] = self.u_out["value"]
+        self.W_out["value"] = self.W_in["value"]
 
         self.P_out["units"] = self.Pt_in["units"]
         self.Pt_out["units"] = self.Pt_in["units"]
@@ -145,7 +187,9 @@ class Nozzle:
         self.a_out["units"] = "m/s"
         self.u_out["units"] = "m/s"
         self.u_effective["units"] = self.u_out["units"]
+        self.W_out["units"] = self.W_in["units"]
 
+    # Defining the string method for the class.
     def __str__(self):
         str = f"{self.name} Characteristics:\n" f"Efficiency:\n" f"Pressure Ratio:\n"
         return str
