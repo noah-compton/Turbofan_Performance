@@ -174,4 +174,5 @@ class Inlet:
         self.W_out["units"] = "kg/s"
 
     def __str__(self):
-        str = f"{self.name} Characteristics:\n"
+        str = (f"{self.name} Characteristics:\n Temperature Ratio: {self.TR}\n Pressure Ratio: {self.PR}")
+        return str
