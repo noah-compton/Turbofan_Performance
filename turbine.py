@@ -507,6 +507,16 @@ class Turbine:
                     Compressor
                     Burner
                 If these stages are not analyzed before using this method then results will be incorrect.
+            Pressure ratios and temperature ratios from the following stations must aslo be defined as:
+                self.inlet_TR       --> inlet temperature ratio
+                self.inlet_W_in     --> inlet mass flow in
+                self.fan_TR         --> fan temperature ratio
+                self.compr_TR       --> compressor temperature ratio
+                self.burner_FAR     --> burner fuel to air ratio
+                self.burner_TRmax   --> burner max temperature ratio
+                self.compr_PR       --> compressor pressure ratio
+                self.burner_PR      --> burner pressure ratio
+                self.fan_PR         --> fan pressure ratio
         """
 
         y = gd.fluids.air.gamma
