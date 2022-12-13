@@ -1,4 +1,4 @@
-# Jet Engine Package
+# Turbofan Performance
 
 ## Authors
 ### Noah Compton | Isabel Husted | Jose Roque
