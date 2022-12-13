@@ -15,10 +15,33 @@ R = gd.fluids.air.R
 
 
 class Inlet:
+        """A model for describing the characterisics of free stream conditions and an inlet"""
+
     def __init__(self, **kwargs):
 
         init = {"value": 0.0, "units": "-"}
+            """Initializes an Inlet class to define flow changes within the stage.
+                Parameters:
+                Parameters are characterized by a dictionary with 2 keys and values to maintain a quantitative and qualitative description.
+                The form of the parameters is such: {"value": 0.0, "units": "str"}
+                Example: self.Pt_in = {"value": 1000, "units": "kPa"}
 
+            P_in            (dict):     Free stream stagnation pressure.
+            T_in            (dict):     Free stream stagnation temperature.
+            XMN_in          (dict):     Free stream mach number.
+            W_in            (dict):     Incoming mass flow rate.
+            Pt_in           (dict):     Free stream total pressure.
+            Tt_in           (dict):     Free stream total temperature.
+            a_in            (dict):     Speed of sound.
+            u_in            (dict):     Free stream velocity.
+            Tt_out          (dict):     Total outlet temperature.
+            Pt_out          (dict):     Total outlet pressure.
+            W_out           (dict):     Outgoing mass flow rate.
+            PR              (dict):     Pressure ratio across the inlet.
+            TR              (dict):     Temperature ratio across the inlet.
+            
+            """
+       
         self.name = ""
         self.inlet = ""
         self.outlet = ""
