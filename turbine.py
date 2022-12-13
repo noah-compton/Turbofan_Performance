@@ -26,7 +26,7 @@ class Turbine:
             inlet_W         (dict):     The mass flow rate entering the inlet of the Turbofan.
             fan_TR          (dict):     Temperature ratio of the Turbofan fan.
             compr_TR        (dict):     Temperautre ratio of the Turbofan compressor.
-            burner_f        (dict):     Fuel ratio of the burner.
+            burner_FAR      (dict):     Fuel ratio of the burner.
             burner_TRmax    (dict):     Maximum Temperature ratio of the burner.
             Pt_out          (dict):     Total pressure out of the turbine.
             Tt_out          (dict):     Total temperature out of the turbine.
@@ -55,11 +55,12 @@ class Turbine:
         self.Tt_in = initial.copy()
         self.W_in = initial.copy()
 
+        # Parameters from previous stages
         self.inlet_TR = initial.copy()
         self.inlet_W_in = initial.copy()
         self.fan_TR = initial.copy()
         self.compr_TR = initial.copy()
-        self.burner_f = initial.copy()
+        self.burner_FAR = initial.copy()
         self.burner_TRmax = initial.copy()
 
         # Outlet
@@ -532,7 +533,7 @@ class Turbine:
         self.a_out["value"] = math.sqrt(y * gd.fluids.air.R * self.T_out["value"])
         self.BPR["value"] = (
             self.eff_mech["value"]
-            * (1 + self.burner_f["value"])
+            * (1 + self.burner_FAR["value"])
             * self.burner_TRmax["value"]
             * (1 - self.TR["value"])
             - self.inlet_TR["value"] * (self.compr_TR["value"] - 1)
@@ -543,7 +544,7 @@ class Turbine:
         )
         self.W_in["value"] = self.inlet_W_in["value"] / (1 + self.BPR["value"])
         self.W_fan["value"] = self.inlet_W_in["value"] - self.W_in["value"]
-        self.Wf["value"] = self.burner_f["value"] * self.W_in["value"]
+        self.Wf["value"] = self.burner_FAR["value"] * self.W_in["value"]
         self.W_out["value"] = self.W_in["value"] + self.Wf["value"]
 
         self.Pt_out["units"] = self.Pt_in["units"]
