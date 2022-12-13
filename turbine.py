@@ -25,9 +25,12 @@ class Turbine:
             inlet_TR        (dict):     Temperature ratio of the Turbofan inlet.
             inlet_W         (dict):     The mass flow rate entering the inlet of the Turbofan.
             fan_TR          (dict):     Temperature ratio of the Turbofan fan.
+            fan_PR          (dict):     Pressure ratio of the Turbofan fan.
             compr_TR        (dict):     Temperautre ratio of the Turbofan compressor.
+            compr_PR        (dict):     Pressure ratio of the Turbofan compressor.
             burner_FAR      (dict):     Fuel ratio of the burner.
             burner_TRmax    (dict):     Maximum Temperature ratio of the burner.
+            burner_PR       (dict):     Pressure ratio of the Turbofan burner.
             Pt_out          (dict):     Total pressure out of the turbine.
             Tt_out          (dict):     Total temperature out of the turbine.
             P_out           (dict):     Static pressure out of the turbine.
@@ -59,7 +62,10 @@ class Turbine:
         self.inlet_TR = initial.copy()
         self.inlet_W_in = initial.copy()
         self.fan_TR = initial.copy()
+        self.fan_PR = initial.copy()
         self.compr_TR = initial.copy()
+        self.compr_PR = initial.copy()
+        self.burner_PR = initial.copy()
         self.burner_FAR = initial.copy()
         self.burner_TRmax = initial.copy()
 
@@ -504,27 +510,9 @@ class Turbine:
 
         y = gd.fluids.air.gamma
 
-        if self.PR["value"] > 0 and self.eff_poly["value"] > 0:
-            self.TR["value"] = self.PR["value"] ** (
-                (y - 1) * self.eff_poly["value"] / y
-            )
-            self.TR["units"] = "-"
-
-        elif self.TR["value"] > 0 and self.eff_poly["value"] > 0:
-            self.PR["value"] = (
-                1 - ((1 - self.TR["value"]) / self.eff_poly["value"])
-            ) ** (y / (y - 1))
-            self.PR["units"] = "-"
-
-        elif self.TR["value"] > 0 and self.PR["value"] > 0:
-            self.eff_poly["value"] = (1 - self.TR["value"]) / (
-                1 - (self.PR["value"] ** ((y - 1) / y))
-            )
-            self.eff_poly["units"] = "-"
-
-        else:
-            raise ValueError("Not enough turbine characteristics defined. Check input.")
-
+        self.PR["value"] = (self.fan_PR["value"]) / (
+            self.burner_PR["value"] * self.compr_PR["value"]
+        )
         self.TR["value"] = self.PR["value"] ** ((y - 1) * self.eff_poly["value"] / y)
         self.Tt_out["value"] = self.TR["value"] * self.Tt_in["value"]
         self.T_out["value"] = self.Tt_out["value"] * (
