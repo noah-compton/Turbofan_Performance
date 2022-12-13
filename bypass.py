@@ -1,4 +1,12 @@
+__author__ = "Jose M. Roque"
+__version__ = "0.0.1"
+__status__ = "Development"
+
 class Bypass:
+    '''
+    class Bypass(**kwargs) has attributes to store inlet and outlet conditions down the bypass.
+    '''
+
     def __init__(self, **kwargs):
 
         init = {"value": 0., "units": '-'}
@@ -133,5 +141,8 @@ class Bypass:
         self.energy_conservation()
         
     def __str__(self):
-        str = f"{self.name} Characteristics:\n" f"Efficiency:\n" f"Pressure Ratio:\n"
-        return str
+        out = f"Bypass: {self.name}\n \
+                Temperature Ratio: {self.TR}\n \
+                Pressure Ratio: {self.PR}"
+
+        return out
