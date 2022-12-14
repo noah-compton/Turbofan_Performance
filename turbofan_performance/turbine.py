@@ -13,7 +13,7 @@ class Turbine:
     def __init__(self, **kwargs):
         """Initializes a Turbine class do define flow changes within the stage.
 
-        Paramerters:
+        Parameters:
 
             Parameters are characterized by a dictionary with 2 keys and values to maintain a quantitative and qualitative description.
             The form of the parameters is such: {"value": 0.0, "units": "str"}

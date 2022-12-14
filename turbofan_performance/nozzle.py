@@ -9,13 +9,14 @@ import math
 global y
 y = gd.fluids.air.gamma
 
+
 class Nozzle:
     """A model for describing the characterisics of a nozzle"""
 
     def __init__(self, **kwargs):
         """Initializes a Nozzle class do define flow changes within the stage.
 
-        Paramerters:
+        Parameters:
 
             Parameters are characterized by a dictionary with 2 keys and values to maintain a quantitative and qualitative description.
             The form of the parameters is such: {"value": 0.0, "units": "str"}
@@ -35,8 +36,8 @@ class Nozzle:
             u_eff           (dict):     Effective velocity out of the nozzle.
             a_out           (dict):     Speed of sound out of the nozzle.
             S1              (dict):     Arbitrary variable defined for calculation.
-            S2              (dict):     Arbitrary variable defined for calculation.                                
-                                    
+            S2              (dict):     Arbitrary variable defined for calculation.
+
         """
 
         initial = {"value": 0.0, "units": "-"}
