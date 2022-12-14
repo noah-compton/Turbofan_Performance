@@ -227,3 +227,12 @@ def set_stations(inlet, fan, compressor, burner, turbine, mixer, nozzle, bypass)
     Pt13     = bypass.Pt_in
     Tt13     = bypass.Tt_in
     XMN13    = bypass.XMN_in
+    
+    return( P0   , T0   , Pt0  , Tt0  , XMN0  ,
+            P1   , T1   , Pt1  , Tt1  , XMN1  , 
+            P2   , T2   , Pt2  , Tt2  , XMN2  , 
+            P3   , T3   , Pt3  , Tt3  , XMN3  , 
+            P4   , T4   , Pt4  , Tt4  , XMN4  , 
+            P5   , T5   , Pt5  , Tt5  , XMN5  , 
+            P7   , T7   , Pt7  , Tt7  , XMN7  , 
+            P13  , T13  , Pt13 , Tt13 , XMN13  )

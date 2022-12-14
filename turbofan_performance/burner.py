@@ -4,7 +4,6 @@ __status__ = "Development"
 
 from processes import check_units
 import gas_dynamics as gd
-import pdb
 
 class Burner:    
     '''
