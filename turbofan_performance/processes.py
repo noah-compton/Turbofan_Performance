@@ -45,7 +45,7 @@ def LinkStreams(object1, object2, object3):
     object2.outlet  = object1.name
     
 def SplitStream(object1, object2, object3):
-        '''
+    '''
     function SplitStreams(object1, object2, object3) links the two outlets of object1 and object2 in the inlet of object3
     which should be a component that joins streams such as mixer
     '''
@@ -144,7 +144,8 @@ def efficiency(inlet, burner, nozzle):
     function efficiency(inlet, burner, nozzle) calculates the efficiencies of the engine built and simulated using the 
     Turbofan_performance package
     '''
-
+    Qr = 42800000
+    
     KE2 = (1/2) * nozzle.W_out['value'] *    nozzle.u_out['value'] 
     KE1 = (1/2) *  inlet.W_out['value'] *     inlet.u_in['value']
     den = Qr    *    burner.Wf['value'] * burner.eff_mech['value']

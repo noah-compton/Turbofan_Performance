@@ -3,7 +3,7 @@ from inlet       import Inlet
 from fan         import Fan
 from bypass      import Bypass
 from compressor  import Compressor
-from turbofan_performance.burner      import Burner
+from burner      import Burner
 from turbine     import Turbine
 from mixer       import Mixer
 from nozzle      import Nozzle
@@ -126,4 +126,5 @@ def my_engine():
     return Int00, Fan10, Cmp20, Brn30, Trb40, Mix50, Noz70, Fn, TSFC
 
 # Running the simulation
-Int00, Fan10, Cmp20, Brn30, Trb40, Mix50, Noz70, Fn, TSFC = my_engine()
+# Int00, Fan10, Cmp20, Brn30, Trb40, Mix50, Noz70, Fn, TSFC = my_engine()
+

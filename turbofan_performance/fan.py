@@ -9,7 +9,7 @@ global y
 y = gd.fluids.air.gamma
 
 class Fan:
-        """A model for describing the characterisics of a fan"""
+    """A model for describing the characterisics of a fan"""
 
     def __init__(self, **kwargs):
         """Initializes a Fan class to define flow changes within the stage.
